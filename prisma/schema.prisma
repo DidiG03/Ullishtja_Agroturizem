@@ -1,0 +1,204 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Restaurant Management Models
+
+model Reservation {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String
+  date        DateTime
+  time        String
+  guests      Int
+  specialRequests String?
+  status      ReservationStatus @default(PENDING)
+  clerkUserId String?  // Link to Clerk user if they're registered
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("reservations")
+}
+
+
+
+model RestaurantSettings {
+  id              String   @id @default(cuid())
+  restaurantName  String   @default("Ullishtja Agriturizem")
+  email          String   @default("info@ullishtja.com")
+  phone          String   @default("+355 XX XXX XXX")
+  address        String   @default("Rruga e Ullishtes, Tirane, Albania")
+  
+  // Operating hours (JSON format)
+  operatingHours String   @default("{\"monday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"tuesday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"wednesday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"thursday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"friday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"saturday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"sunday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false}}")
+  
+  maxCapacity    Int      @default(50)
+  tableCapacity  String   @default("{\"2\":8,\"4\":6,\"6\":4,\"8\":2}")  // JSON: seats -> number of tables
+  
+  // Social media & website
+  websiteUrl     String?
+  facebookUrl    String?
+  instagramUrl   String?
+  
+  // Notification settings
+  emailNotifications Boolean @default(true)
+  smsNotifications   Boolean @default(false)
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  @@map("restaurant_settings")
+}
+
+model Customer {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  phone       String?
+  clerkUserId String?  @unique // Link to Clerk user
+  totalVisits Int      @default(0)
+  lastVisit   DateTime?
+  preferences String?  // JSON string for dietary preferences, favorite dishes, etc.
+  notes       String?  // Staff notes about the customer
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("customers")
+}
+
+model Review {
+  id           String      @id @default(cuid())
+  customerName String
+  customerEmail String?
+  rating       Int         // 1-5 stars
+  title        String?
+  comment      String
+  status       ReviewStatus @default(PENDING)
+  isPublic     Boolean     @default(false)
+  reply        String?     // Restaurant reply to review
+  source       String?     // "website", "google", "facebook", etc.
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  
+  @@map("reviews")
+}
+
+model GalleryImage {
+  id          String   @id @default(cuid())
+  title       String?
+  description String?
+  imageUrl    String
+  altText     String?
+  category    String?  // "food", "interior", "exterior", "events"
+  displayOrder Int     @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@map("gallery_images")
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  isAllDay    Boolean   @default(false)
+  eventType   String    @default("private") // "private", "public", "special_menu"
+  maxGuests   Int?
+  price       Float?
+  imageUrl    String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@map("events")
+}
+
+model AdminActivity {
+  id          String   @id @default(cuid())
+  adminId     String   // Clerk user ID
+  adminName   String
+  action      String   // "created_reservation", "updated_menu", "approved_review", etc.
+  entityType  String   // "reservation", "menu_item", "review", etc.
+  entityId    String?  // ID of the affected entity
+  details     String?  // Additional details in JSON format
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+  
+  @@map("admin_activities")
+}
+
+model MenuCategory {
+  id          String     @id @default(cuid())
+  nameAL      String     // Albanian name
+  nameEN      String     // English name  
+  nameIT      String     // Italian name
+  slug        String     @unique // URL-friendly identifier
+  displayOrder Int       @default(0)
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  // Relations
+  menuItems   MenuItem[]
+  
+  @@map("menu_categories")
+}
+
+model MenuItem {
+  id          String      @id @default(cuid())
+  categoryId  String
+  nameAL      String      // Albanian name
+  nameEN      String      // English name
+  nameIT      String      // Italian name
+  descriptionAL String?   // Albanian description
+  descriptionEN String?   // English description
+  descriptionIT String?   // Italian description
+  ingredientsAL String?   // Albanian ingredients
+  ingredientsEN String?   // English ingredients
+  ingredientsIT String?   // Italian ingredients
+  price       Float       // Price in ALL (Albanian Lek)
+  currency    String      @default("ALL")
+  displayOrder Int        @default(0)
+  isActive    Boolean     @default(true)
+  isVegetarian Boolean    @default(false)
+  isSpicy     Boolean     @default(false)
+  isRecommended Boolean   @default(false)
+  isNew       Boolean     @default(false)
+  allergens   String?     // JSON array of allergen codes
+  imageUrl    String?     // Optional dish image
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+  // Relations
+  category    MenuCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  @@map("menu_items")
+}
+
+// Enums
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
