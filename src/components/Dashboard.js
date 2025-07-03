@@ -3,6 +3,7 @@ import { useUser, UserButton } from '@clerk/clerk-react';
 import { Navigate } from 'react-router-dom';
 import { reservationService } from '../services/mockDatabase.js';
 import MenuManagement from './MenuManagement';
+import RestaurantLayout from './RestaurantLayout';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -140,6 +141,8 @@ Created: ${new Date(reservation.createdAt).toLocaleString()}`);
 
   const renderTabContent = () => {
     switch (activeTab) {
+      case 'layout':
+        return <RestaurantLayout />;
       case 'menu':
         return <MenuManagement />;
       case 'overview':
@@ -325,6 +328,12 @@ Created: ${new Date(reservation.createdAt).toLocaleString()}`);
             onClick={() => setActiveTab('menu')}
           >
             🍽️ Menu
+          </button>
+          <button 
+            className={`nav-tab ${activeTab === 'layout' ? 'active' : ''}`}
+            onClick={() => setActiveTab('layout')}
+          >
+            🏛️ Layout
           </button>
           <button 
             className={`nav-tab ${activeTab === 'settings' ? 'active' : ''}`}

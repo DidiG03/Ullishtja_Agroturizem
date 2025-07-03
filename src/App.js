@@ -322,23 +322,6 @@ function App() {
                 <span className="btn-text">View Menu</span>
               </a>
             </div>
-
-            <div className="hero-stats">
-              <div className="stat-item">
-                <div className="stat-number">2021</div>
-                <div className="stat-label">Since</div>
-              </div>
-              <div className="stat-divider"></div>
-              <div className="stat-item">
-                <div className="stat-number">100%</div>
-                <div className="stat-label">Fresh</div>
-              </div>
-              <div className="stat-divider"></div>
-              <div className="stat-item">
-                <div className="stat-number">⭐⭐⭐⭐⭐</div>
-                <div className="stat-label">Experience</div>
-              </div>
-            </div>
           </div>
 
           <div className="hero-visual">
