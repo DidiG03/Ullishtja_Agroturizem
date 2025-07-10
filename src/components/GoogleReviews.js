@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import googleReviewsService from '../services/googleReviews';
 import './GoogleReviews.css';
 
-const GoogleReviews = () => {
+const GoogleReviews = ({ currentLanguage, translations }) => {
   const [reviewsData, setReviewsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(3);
@@ -35,7 +35,7 @@ const GoogleReviews = () => {
     return (
       <div className="reviews-loading">
         <div className="loading-spinner"></div>
-        <p>Loading reviews...</p>
+        <p>{translations.googleReviews.loadingReviews}</p>
       </div>
     );
   }
@@ -43,7 +43,7 @@ const GoogleReviews = () => {
   if (!reviewsData || reviewsData.reviews.length === 0) {
     return (
       <div className="reviews-error">
-        <p>Unable to load reviews at this time.</p>
+        <p>{translations.googleReviews.unableToLoad}</p>
       </div>
     );
   }
@@ -52,7 +52,7 @@ const GoogleReviews = () => {
     <section className="google-reviews-section">
       <div className="container">
         <div className="reviews-header">
-          <h2>What Our Guests Say</h2>
+          <h2>{translations.googleReviews.title}</h2>
           <div className="overall-rating">
             <div className="rating-display">
               <div className="rating-stars">
@@ -63,7 +63,7 @@ const GoogleReviews = () => {
                   {googleReviewsService.formatRating(reviewsData.averageRating)}
                 </span>
                 <span className="rating-based-on">
-                  Based on {reviewsData.totalReviews} Google reviews
+                  {translations.googleReviews.basedOn} {reviewsData.totalReviews} {translations.googleReviews.googleReviews}
                 </span>
               </div>
             </div>
@@ -74,7 +74,7 @@ const GoogleReviews = () => {
               className="google-link"
             >
               <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" />
-              View on Google
+              {translations.googleReviews.viewOnGoogle}
             </a>
           </div>
         </div>
@@ -120,11 +120,11 @@ const GoogleReviews = () => {
           <div className="reviews-actions">
             {displayCount < reviewsData.reviews.length ? (
               <button className="show-more-btn" onClick={handleShowMore}>
-                Show More Reviews ({reviewsData.reviews.length - displayCount} remaining)
+                {translations.googleReviews.showMoreReviews} ({reviewsData.reviews.length - displayCount} {translations.googleReviews.remaining})
               </button>
             ) : (
               <button className="show-less-btn" onClick={handleShowLess}>
-                Show Less Reviews
+                {translations.googleReviews.showLessReviews}
               </button>
             )}
           </div>
@@ -132,7 +132,7 @@ const GoogleReviews = () => {
 
         <div className="reviews-footer">
           <p className="reviews-disclaimer">
-            * Showing 4 and 5-star reviews only. All reviews are verified Google reviews.
+            {translations.googleReviews.disclaimer}
           </p>
           <a 
             href="https://www.google.com/search?q=Ullishtja+Agroturizem+write+review" 
@@ -140,7 +140,7 @@ const GoogleReviews = () => {
             rel="noopener noreferrer"
             className="write-review-btn"
           >
-            Write a Review on Google
+            {translations.googleReviews.writeReview}
           </a>
         </div>
       </div>

@@ -31,7 +31,8 @@
     "server": "node server/index.js",
     "dev": "concurrently \"npm run server\" \"npm start\"",
     "seed-menu": "node scripts/seed-menu.js",
-    "clear-reservations": "node scripts/clear-test-reservations.js"
+    "clear-reservations": "node scripts/clear-test-reservations.js",
+    "postinstall": "prisma generate"
   },
   "eslintConfig": {
     "extends": [

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { translations } from './translations';
-import FullMenu from './FullMenu';
 import DynamicMenu from './components/DynamicMenu';
 import GoogleReviews from './components/GoogleReviews';
 import MenuService from './services/menuService';
@@ -24,7 +23,6 @@ function App() {
   
   // Dynamic menu state
   const [menuCategories, setMenuCategories] = useState([]);
-  const [menuLoading, setMenuLoading] = useState(true);
   
   // Google Reviews state
   const [reviewsData, setReviewsData] = useState(null);
@@ -35,13 +33,10 @@ function App() {
   useEffect(() => {
     const loadMenu = async () => {
       try {
-        setMenuLoading(true);
         const data = await MenuService.getCompleteMenu();
         setMenuCategories(data);
       } catch (error) {
         console.error('Error loading menu:', error);
-      } finally {
-        setMenuLoading(false);
       }
     };
 
@@ -189,7 +184,6 @@ function App() {
             <a href="#home" className="nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
             <a href="#about" className="nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
             <a href="#menu" className="nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-            <a href="#gallery" className="nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a>
             <a href="#contact" className="nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
           </nav>
 
@@ -200,11 +194,10 @@ function App() {
               <button className="mobile-close-btn" onClick={closeMobileMenu}>×</button>
             </div>
             <nav className="mobile-nav-menu">
-              <a href="#home" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
-              <a href="#about" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
-              <a href="#menu" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-              <a href="#gallery" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a>
-              <a href="#contact" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
+                          <a href="#home" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
+            <a href="#about" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
+            <a href="#menu" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
+            <a href="#contact" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
             </nav>
             <div className="mobile-language-selector">
               <button 
@@ -295,15 +288,15 @@ function App() {
             <div className="hero-highlights">
               <div className="highlight-item">
                 <span className="highlight-icon">🌱</span>
-                <span className="highlight-text">Farm Fresh</span>
+                <span className="highlight-text">{t.hero.highlights.farmFresh}</span>
               </div>
               <div className="highlight-item">
                 <span className="highlight-icon">👨‍🍳</span>
-                <span className="highlight-text">Traditional Recipes</span>
+                <span className="highlight-text">{t.hero.highlights.traditionalRecipes}</span>
               </div>
               <div className="highlight-item">
                 <span className="highlight-icon">🏔️</span>
-                <span className="highlight-text">Mountain Views</span>
+                <span className="highlight-text">{t.hero.highlights.mountainViews}</span>
               </div>
             </div>
 
@@ -319,7 +312,7 @@ function App() {
               </a>
               <a href="#menu" className="cta-button secondary" onClick={closeMobileMenu}>
                 <span className="btn-icon">🍽️</span>
-                <span className="btn-text">View Menu</span>
+                <span className="btn-text">{t.hero.viewMenu}</span>
               </a>
             </div>
           </div>
@@ -340,7 +333,7 @@ function App() {
                 <div className="card-content">
                   <div className="card-icon">🍽️</div>
                   <div className="card-text">
-                    <div className="card-title">Open Daily</div>
+                    <div className="card-title">{t.hero.openDaily}</div>
                     <div className="card-subtitle">11:00 - 22:00</div>
                   </div>
                 </div>
@@ -354,10 +347,10 @@ function App() {
                   {reviewsData ? (
                     <>
                       <div className="rating-number">{googleReviewsService.formatRating(reviewsData.averageRating)}</div>
-                      <div className="rating-count">{reviewsData.totalReviews} Google Reviews</div>
+                      <div className="rating-count">{reviewsData.totalReviews} {t.hero.googleReviews}</div>
                     </>
                   ) : (
-                    'Loading reviews...'
+                    t.hero.loadingReviews
                   )}
                 </div>
               </div>
@@ -365,11 +358,6 @@ function App() {
           </div>
         </div>
 
-        {/* Scroll Indicator */}
-        <div className="scroll-indicator">
-          <div className="scroll-text">Discover More</div>
-          <div className="scroll-arrow">↓</div>
-        </div>
       </section>
 
 
@@ -386,20 +374,7 @@ function App() {
               <p>
                 {t.about.text2}
               </p>
-              <div className="features">
-                <div className="feature">
-                  <h3>{t.about.features.fresh.title}</h3>
-                  <p>{t.about.features.fresh.desc}</p>
-                </div>
-                <div className="feature">
-                  <h3>{t.about.features.views.title}</h3>
-                  <p>{t.about.features.views.desc}</p>
-                </div>
-                <div className="feature">
-                  <h3>{t.about.features.recipes.title}</h3>
-                  <p>{t.about.features.recipes.desc}</p>
-                </div>
-              </div>
+
             </div>
           </div>
         </div>
@@ -476,33 +451,10 @@ function App() {
         </div>
       </section>
 
-      {/* Gallery Section */}
-      <section id="gallery" className="gallery">
-        <div className="container">
-          <h2>{t.gallery.title}</h2>
-          <div className="gallery-grid">
-            <div className="gallery-item">
-              <div className="placeholder-image">🍽️</div>
-              <p>{t.gallery.dining}</p>
-            </div>
-            <div className="gallery-item">
-              <div className="placeholder-image">🏔️</div>
-              <p>{t.gallery.views}</p>
-            </div>
-            <div className="gallery-item">
-              <div className="placeholder-image">🫒</div>
-              <p>{t.gallery.olives}</p>
-            </div>
-            <div className="gallery-item">
-              <div className="placeholder-image">👨‍🍳</div>
-              <p>{t.gallery.kitchen}</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       {/* Google Reviews Section */}
-      <GoogleReviews />
+      <GoogleReviews currentLanguage={currentLanguage} translations={t} />
 
       {/* Contact Section */}
       <section id="contact" className="contact">

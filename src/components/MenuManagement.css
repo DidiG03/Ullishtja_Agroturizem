@@ -37,23 +37,23 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  background: linear-gradient(135deg, #6B8E23 0%, #2d4a36 100%);
   color: white;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+  box-shadow: 0 4px 12px rgba(107, 142, 35, 0.3);
 }
 
 .btn-secondary {
-  background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+  background: linear-gradient(135deg, #C4602D 0%, #CD853F 100%);
   color: white;
 }
 
 .btn-secondary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  box-shadow: 0 4px 12px rgba(196, 96, 45, 0.3);
 }
 
 .btn-secondary:disabled {
@@ -150,8 +150,8 @@
 }
 
 .category-item.active {
-  border-color: #27ae60;
-  background: linear-gradient(135deg, #d5eddb 0%, #a8e6cf 100%);
+  border-color: #6B8E23;
+  background: linear-gradient(135deg, #e8f5cd 0%, #d4e6a3 100%);
 }
 
 .category-info h4 {
@@ -205,9 +205,9 @@
 }
 
 .menu-item-card:hover {
-  border-color: #27ae60;
+  border-color: #6B8E23;
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(39, 174, 96, 0.15);
+  box-shadow: 0 8px 25px rgba(107, 142, 35, 0.15);
 }
 
 .item-header {
@@ -224,7 +224,7 @@
 }
 
 .price {
-  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+  background: linear-gradient(135deg, #C4602D 0%, #CD853F 100%);
   color: white;
   padding: 4px 12px;
   border-radius: 20px;

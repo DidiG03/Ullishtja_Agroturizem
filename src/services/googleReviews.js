@@ -132,4 +132,5 @@ class GoogleReviewsService {
   }
 }
 
-export default new GoogleReviewsService(); 
+const googleReviewsService = new GoogleReviewsService();
+export default googleReviewsService; 

@@ -13,7 +13,16 @@ export const translations = {
       title: "Mirë se vini tek 'Ullishtja Agriturizem'",
       subtitle: "Përvojë Autentike Të Agroturizmit Shqiptar",
       description: "Zbuloni shijen e traditës në zemrën e Shqipërisë. Përbërës të freskët, receta të vjetra dhe mikpritje e ngrohtë që nga viti 2021.",
-      cta: "Rezervoni Tavolinën Tuaj"
+      cta: "Rezervoni Tavolinën Tuaj",
+      viewMenu: "Shiko Menunë",
+      highlights: {
+        farmFresh: "Përbërës të Freskët",
+        traditionalRecipes: "Receta Tradicionale",
+        mountainViews: "Pamje Malesh"
+      },
+      openDaily: "Hapur Çdo Ditë",
+      googleReviews: "Recensione Google",
+      loadingReviews: "Duke ngarkuar recensionet..."
     },
     // About Section
     about: {
@@ -365,6 +374,20 @@ export const translations = {
           }
         ]
       }
+    },
+    // Google Reviews Section
+    googleReviews: {
+      title: "Çfarë Thonë Mysafirët Tanë",
+      basedOn: "Bazuar në",
+      googleReviews: "recensione Google",
+      viewOnGoogle: "Shiko në Google",
+      showMoreReviews: "Trego Më Shumë Recensione",
+      remaining: "të mbetura",
+      showLessReviews: "Trego Më Pak Recensione",
+      disclaimer: "* Tregojmë vetëm recensionet 4 dhe 5 yje. Të gjitha recensionet janë recensione të verifikuara nga Google.",
+      writeReview: "Shkruaj një Recensione në Google",
+      loadingReviews: "Duke ngarkuar recensionet...",
+      unableToLoad: "Nuk mund të ngarkojmë recensionet në këtë moment."
     }
   },
   en: {
@@ -381,7 +404,16 @@ export const translations = {
       title: "Welcome to 'Ullishtja Agriturizem'",
       subtitle: "Authentic Albanian Agritourism Experience",
       description: "Discover the taste of tradition in the heart of Albania. Fresh ingredients, time-honored recipes, and warm hospitality since 2021.",
-      cta: "Reserve Your Table"
+      cta: "Reserve Your Table",
+      viewMenu: "View Menu",
+      highlights: {
+        farmFresh: "Fresh Ingredients",
+        traditionalRecipes: "Traditional Recipes",
+        mountainViews: "Mountain Views"
+      },
+      openDaily: "Open Daily",
+      googleReviews: "Google Reviews",
+      loadingReviews: "Loading reviews..."
     },
     // About Section
     about: {
@@ -733,6 +765,20 @@ export const translations = {
           }
         ]
       }
+    },
+    // Google Reviews Section
+    googleReviews: {
+      title: "What Do Our Guests Say?",
+      basedOn: "Based on",
+      googleReviews: "Google Reviews",
+      viewOnGoogle: "View on Google",
+      showMoreReviews: "Show More Reviews",
+      remaining: "remaining",
+      showLessReviews: "Show Less Reviews",
+      disclaimer: "* We only show reviews with 4 and 5 stars. All reviews are verified by Google.",
+      writeReview: "Write a Review on Google",
+      loadingReviews: "Loading reviews...",
+      unableToLoad: "Unable to load reviews at this moment."
     }
   },
   it: {
@@ -749,7 +795,16 @@ export const translations = {
       title: "Benvenuti a 'Ullishtja Agriturizem'",
       subtitle: "Autentica Esperienza di Agriturismo Albanese",
       description: "Scoprite il sapore della tradizione nel cuore dell'Albania. Ingredienti freschi, ricette antiche e calorosa ospitalità dal 2021.",
-      cta: "Prenota il Tuo Tavolo"
+      cta: "Prenota il Tuo Tavolo",
+      viewMenu: "Vedi Menu",
+      highlights: {
+        farmFresh: "Ingredienti Freschi",
+        traditionalRecipes: "Ricette Tradizionali",
+        mountainViews: "Vista Montagna"
+      },
+      openDaily: "Aperto ogni giorno",
+      googleReviews: "Recensioni Google",
+      loadingReviews: "Caricamento recensioni..."
     },
     // About Section
     about: {
@@ -1101,6 +1156,20 @@ export const translations = {
           }
         ]
       }
+    },
+    // Google Reviews Section
+    googleReviews: {
+      title: "Che dicono i nostri ospiti?",
+      basedOn: "Basato su",
+      googleReviews: "recensioni Google",
+      viewOnGoogle: "Vedi su Google",
+      showMoreReviews: "Mostra più recensioni",
+      remaining: "rimanenti",
+      showLessReviews: "Mostra meno recensioni",
+      disclaimer: "* Mostriamo solo recensioni con 4 e 5 stelle. Tutte le recensioni sono verificate da Google.",
+      writeReview: "Scrivi una recensione su Google",
+      loadingReviews: "Caricamento recensioni...",
+      unableToLoad: "Impossibile caricare le recensioni in questo momento."
     }
   }
 }; 

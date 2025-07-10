@@ -553,13 +553,13 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background: #3182ce;
+  background: linear-gradient(135deg, #6B8E23 0%, #D4AF37 100%);
   color: white;
   border: none;
   font-size: 24px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(49, 130, 206, 0.3);
+  box-shadow: 0 4px 12px rgba(107, 142, 35, 0.3);
   transition: all 0.3s ease;
   z-index: 1000;
   display: flex;
@@ -568,9 +568,9 @@
 }
 
 .fab-button:hover {
-  background: #2c5aa0;
+  background: linear-gradient(135deg, #2d4a36 0%, #CD853F 100%);
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(49, 130, 206, 0.4);
+  box-shadow: 0 6px 16px rgba(107, 142, 35, 0.4);
 }
 
 .fab-button:active {
@@ -678,8 +678,8 @@
 .reservation-form .form-group select:focus,
 .reservation-form .form-group textarea:focus {
   outline: none;
-  border-color: #3182ce;
-  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+  border-color: #6B8E23;
+  box-shadow: 0 0 0 3px rgba(107, 142, 35, 0.1);
 }
 
 .reservation-form .form-group textarea {
@@ -713,7 +713,7 @@
 }
 
 .submit-btn {
-  background: #3182ce;
+  background: linear-gradient(135deg, #6B8E23 0%, #D4AF37 100%);
   border: none;
   color: white;
   padding: 12px 24px;
@@ -722,10 +722,13 @@
   font-size: 14px;
   font-weight: 500;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(107, 142, 35, 0.3);
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: #2c5aa0;
+  background: linear-gradient(135deg, #2d4a36 0%, #CD853F 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(107, 142, 35, 0.4);
 }
 
 .submit-btn:disabled {

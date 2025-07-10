@@ -1,5 +1,4 @@
 import emailjs from '@emailjs/browser';
-import { reservationService, customerService } from './services/mockDatabase.js';
 
 // EmailJS Configuration - You'll need to set these up at https://www.emailjs.com/
 const EMAILJS_CONFIG = {
@@ -15,8 +14,77 @@ const RESTAURANT_CONFIG = {
   name: 'Ullishtja Agriturizem'
 };
 
+// API Base URL
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+
 // Initialize EmailJS
 emailjs.init(EMAILJS_CONFIG.publicKey);
+
+// API Helper Functions
+const apiCall = async (endpoint, options = {}) => {
+  const url = `${API_BASE_URL}/api${endpoint}`;
+  const response = await fetch(url, {
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+    ...options,
+  });
+  
+  if (!response.ok) {
+    throw new Error(`API call failed: ${response.statusText}`);
+  }
+  
+  return response.json();
+};
+
+// Reservation Service using API calls
+const reservationService = {
+  async create(reservationData) {
+    try {
+      const result = await apiCall('/reservations', {
+        method: 'POST',
+        body: JSON.stringify(reservationData),
+      });
+      return result;
+    } catch (error) {
+      console.error('Error creating reservation:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  async getAll(options = {}) {
+    try {
+      const params = new URLSearchParams(options);
+      const result = await apiCall(`/reservations?${params}`);
+      return result;
+    } catch (error) {
+      console.error('Error fetching reservations:', error);
+      return { success: false, error: error.message };
+    }
+  },
+
+  async updateStatus(id, status) {
+    try {
+      const result = await apiCall(`/reservations/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify({ status }),
+      });
+      return result;
+    } catch (error) {
+      console.error('Error updating reservation:', error);
+      return { success: false, error: error.message };
+    }
+  },
+};
+
+// Customer Service using API calls
+const customerService = {
+  async upsert(customerData) {
+    // This is handled automatically in the reservation creation API
+    return { success: true, data: customerData };
+  },
+};
 
 // Send reservation via email
 export const sendReservationEmail = async (reservationData) => {
@@ -74,6 +142,9 @@ Sent from Ullishtja Website
   
   return { success: true, url: whatsappUrl };
 };
+
+// Export the reservation service
+export { reservationService };
 
 // Main reservation handler
 export const handleReservation = async (formData, preferredMethod = 'email') => {

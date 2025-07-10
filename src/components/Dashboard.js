@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useUser, UserButton } from '@clerk/clerk-react';
 import { Navigate } from 'react-router-dom';
-import { reservationService } from '../services/mockDatabase.js';
+import { reservationService } from '../reservationService.js';
 import MenuManagement from './MenuManagement';
 import RestaurantLayout from './RestaurantLayout';
 import './Dashboard.css';

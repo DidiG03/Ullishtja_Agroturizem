@@ -382,7 +382,6 @@ class PDFExportService {
 
   // Add vintage-styled footer
   addFooter(language = 'al') {
-    const t = translations[language];
     
     // Go to bottom of page
     this.currentY = this.pageHeight - this.margins.bottom - 25;
@@ -508,4 +507,5 @@ class PDFExportService {
   }
 }
 
-export default new PDFExportService(); 
+const pdfExportService = new PDFExportService();
+export default pdfExportService; 

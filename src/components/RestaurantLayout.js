@@ -24,7 +24,6 @@ const RestaurantLayout = () => {
   ]);
 
   const [selectedTable, setSelectedTable] = useState(null);
-  const [showAddModal, setShowAddModal] = useState(false);
 
   // Handle table click
   const handleTableClick = (table) => {
@@ -141,9 +140,6 @@ const RestaurantLayout = () => {
           <p>Ullishtja Agroturizem - Table Management System</p>
         </div>
         <div className="layout-controls">
-          <button className="add-table-btn" onClick={() => setShowAddModal(true)}>
-            <span>+</span> Add Table
-          </button>
           <div className="status-legend">
             <div className="legend-item">
               <div className="legend-color available"></div>

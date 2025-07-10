@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import MenuService from '../services/menuService';
 import './MenuManagement.css';
 
@@ -42,12 +42,17 @@ function MenuManagement() {
     displayOrder: 0
   });
 
-  // Load data
-  useEffect(() => {
-    loadCategories();
-  }, []);
+  const loadMenuItems = useCallback(async (categoryId = selectedCategory) => {
+    try {
+      const data = await MenuService.getMenuItems(categoryId);
+      setMenuItems(data);
+    } catch (error) {
+      setError('Failed to load menu items');
+      console.error(error);
+    }
+  }, [selectedCategory]);
 
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     try {
       setLoading(true);
       const data = await MenuService.getCategories();
@@ -62,17 +67,12 @@ function MenuManagement() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCategory, loadMenuItems]);
 
-  const loadMenuItems = async (categoryId = selectedCategory) => {
-    try {
-      const data = await MenuService.getMenuItems(categoryId);
-      setMenuItems(data);
-    } catch (error) {
-      setError('Failed to load menu items');
-      console.error(error);
-    }
-  };
+  // Load data
+  useEffect(() => {
+    loadCategories();
+  }, [loadCategories]);
 
   // Category handlers
   const handleCategorySubmit = async (e) => {
