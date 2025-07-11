@@ -51,7 +51,7 @@ export const translations = {
       text1: "Ullishtja Agriturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga dasmat tradicionale shqiptare te ndjekat e punës dhe festimet familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
       text2: "Stafi ynë i dedikuar bashkëpunon me ju për të planifikuar çdo detaj, nga menuja e personalizuar me specialitete lokale te dekorimi dhe koordinimi i plotë i ngjarjes.",
       features: {
-        weddings: "Dasma Tradicionale",
+        weddings: "Fejesë Tradicionale",
         corporate: "Evente Korporative", 
         family: "Festa Familjare",
         capacity: "Deri në 120 mysafirë"
@@ -467,10 +467,10 @@ export const translations = {
     events: {
       title: "Events & Celebrations",
       subtitle: "Create Lasting Memories",
-      text1: "Ullishtja Agriturizem offers beautiful spaces and warm atmosphere for all your special occasions. From traditional Albanian weddings to corporate retreats and family celebrations, we ensure every moment is unforgettable.",
+      text1: "Ullishtja Agriturizem offers beautiful spaces and warm atmosphere for all your special occasions. From traditional Albanian engagements to corporate retreats and family celebrations, we ensure every moment is unforgettable.",
       text2: "Our dedicated staff works with you to plan every detail, from personalized menus featuring local specialties to décor and complete event coordination.",
       features: {
-        weddings: "Traditional Weddings",
+        weddings: "Traditional Engagements",
         corporate: "Corporate Events",
         family: "Family Celebrations", 
         capacity: "Up to 120 guests"
@@ -886,10 +886,10 @@ export const translations = {
     events: {
       title: "Eventi e Celebrazioni",
       subtitle: "Creare Ricordi Indimenticabili",
-      text1: "Ullishtja Agriturizem offre spazi bellissimi e un'atmosfera calorosa per tutte le vostre occasioni speciali. Dai matrimoni tradizionali albanesi ai ritiri aziendali e alle celebrazioni familiari, assicuriamo che ogni momento sia indimenticabile.",
+      text1: "Ullishtja Agriturizem offre spazi bellissimi e un'atmosfera calorosa per tutte le vostre occasioni speciali. Dai fidanzamenti tradizionali albanesi ai ritiri aziendali e alle celebrazioni familiari, assicuriamo che ogni momento sia indimenticabile.",
       text2: "Il nostro staff dedicato lavora con voi per pianificare ogni dettaglio, dai menu personalizzati con specialità locali alla decorazione e al coordinamento completo dell'evento.",
       features: {
-        weddings: "Matrimoni Tradizionali",
+        weddings: "Fidanzamenti Tradizionali",
         corporate: "Eventi Aziendali",
         family: "Celebrazioni Familiari",
         capacity: "Fino a 120 ospiti"
