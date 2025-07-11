@@ -701,6 +701,182 @@ h2::after {
   margin-right: auto;
 }
 
+/* Events Section */
+.events-section {
+  padding: 100px 0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* A la Carte Section */
+.alacarte-section {
+  padding: 100px 0;
+  background: white;
+}
+
+/* Shared Section Grid Layout */
+.section-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  min-height: 500px;
+}
+
+.section-grid.reverse {
+  direction: rtl;
+}
+
+.section-grid.reverse > * {
+  direction: ltr;
+}
+
+/* Section Content */
+.section-content {
+  padding: 2rem 0;
+}
+
+.section-content h2 {
+  font-size: 2.8rem;
+  color: var(--primary-forest);
+  margin-bottom: 1rem;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.section-content h2::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--olive-green), var(--accent-gold));
+  margin: 15px 0 25px 0;
+}
+
+.section-subtitle {
+  font-size: 1.4rem;
+  color: var(--olive-green);
+  margin-bottom: 2rem;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.section-text {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.8;
+  margin-bottom: 1.5rem;
+}
+
+/* Features List */
+.features-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem;
+  background: rgba(143, 188, 143, 0.1);
+  border-radius: 12px;
+  border-left: 4px solid var(--olive-green);
+  transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+  background: rgba(143, 188, 143, 0.2);
+  transform: translateX(5px);
+}
+
+.feature-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.feature-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary-forest);
+}
+
+/* Section Image */
+.section-image {
+  position: relative;
+  height: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.section-image:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+}
+
+.section-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.section-image:hover .section-img {
+  transform: scale(1.05);
+}
+
+/* Image Overlay */
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(45, 74, 54, 0.7) 0%,
+    rgba(143, 188, 143, 0.6) 50%,
+    rgba(212, 175, 55, 0.7) 100%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.section-image:hover .image-overlay {
+  opacity: 1;
+}
+
+.overlay-content {
+  text-align: center;
+  color: white;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.section-image:hover .overlay-content {
+  transform: translateY(0);
+}
+
+.overlay-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.5rem;
+  animation: bounce 2s infinite;
+}
+
+.overlay-text {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
 
 
 /* Menu Section */
@@ -1516,6 +1692,75 @@ h2::after {
   .menu-grid {
     grid-template-columns: 1fr;
     gap: 2.5rem;
+  }
+
+  /* Events & A la Carte Sections - Mobile Enhanced */
+  .events-section,
+  .alacarte-section {
+    padding: 4rem 0;
+  }
+
+  .section-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    min-height: auto;
+  }
+
+  .section-grid.reverse {
+    direction: ltr;
+  }
+
+  .section-content {
+    padding: 1rem 0;
+    text-align: center;
+  }
+
+  .section-content h2 {
+    font-size: 2.2rem;
+    text-align: center;
+  }
+
+  .section-content h2::after {
+    margin: 15px auto 25px auto;
+  }
+
+  .section-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-text {
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .features-list {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+  }
+
+  .feature-item {
+    padding: 0.8rem;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .feature-item:hover {
+    transform: translateY(-2px);
+  }
+
+  .section-image {
+    height: 300px;
+    margin: 0 15px;
+  }
+
+  .overlay-icon {
+    font-size: 2.5rem;
+  }
+
+  .overlay-text {
+    font-size: 1.2rem;
   }
 
   .menu-category {

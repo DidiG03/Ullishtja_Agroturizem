@@ -6,6 +6,7 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
   const [reviewsData, setReviewsData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(3);
+  const [expandedReviews, setExpandedReviews] = useState(new Set());
 
   useEffect(() => {
     const loadReviews = async () => {
@@ -29,6 +30,31 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
 
   const handleShowLess = () => {
     setDisplayCount(3);
+  };
+
+  const toggleReviewExpansion = (reviewId) => {
+    setExpandedReviews(prev => {
+      const newExpanded = new Set(prev);
+      if (newExpanded.has(reviewId)) {
+        newExpanded.delete(reviewId);
+      } else {
+        newExpanded.add(reviewId);
+      }
+      return newExpanded;
+    });
+  };
+
+  const isReviewExpanded = (reviewId) => {
+    return expandedReviews.has(reviewId);
+  };
+
+  const shouldShowExpandButton = (text) => {
+    return text.length > 150; // Show expand button if text is longer than 150 characters
+  };
+
+  const getTruncatedText = (text) => {
+    if (text.length <= 150) return text;
+    return text.substring(0, 150) + '...';
   };
 
   if (loading) {
@@ -68,7 +94,7 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
               </div>
             </div>
             <a 
-              href="https://www.google.com/search?q=Ullishtja+Agroturizem+reviews" 
+              href={googleReviewsService.getReviewsUrl()} 
               target="_blank" 
               rel="noopener noreferrer"
               className="google-link"
@@ -89,12 +115,18 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
                       src={review.authorPhotoUrl} 
                       alt={review.authorName} 
                       className="reviewer-photo"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
                     />
-                  ) : (
-                    <div className="reviewer-photo-placeholder">
-                      {review.authorName.charAt(0)}
-                    </div>
-                  )}
+                  ) : null}
+                  <div 
+                    className="reviewer-photo-placeholder"
+                    style={{ display: review.authorPhotoUrl ? 'none' : 'flex' }}
+                  >
+                    {review.authorName.charAt(0).toUpperCase()}
+                  </div>
                   <div className="reviewer-details">
                     <h4 className="reviewer-name">{review.authorName}</h4>
                     <span className="review-time">{review.relativeTimeDescription}</span>
@@ -111,7 +143,22 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
                   ))}
                 </div>
               </div>
-              <p className="review-text">{review.text}</p>
+              <div className="review-text-container">
+                <p className="review-text">
+                  {isReviewExpanded(review.id) ? review.text : getTruncatedText(review.text)}
+                </p>
+                {shouldShowExpandButton(review.text) && (
+                  <button 
+                    className="expand-review-btn"
+                    onClick={() => toggleReviewExpansion(review.id)}
+                  >
+                    {isReviewExpanded(review.id) ? 
+                      (translations.googleReviews.showLess || 'Show Less') : 
+                      (translations.googleReviews.seeMore || 'See More')
+                    }
+                  </button>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -135,7 +182,7 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
             {translations.googleReviews.disclaimer}
           </p>
           <a 
-            href="https://www.google.com/search?q=Ullishtja+Agroturizem+write+review" 
+            href={googleReviewsService.getWriteReviewUrl()} 
             target="_blank" 
             rel="noopener noreferrer"
             className="write-review-btn"

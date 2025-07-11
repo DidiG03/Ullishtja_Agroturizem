@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const menuRoutes = require('./api/menu');
 const reservationRoutes = require('./api/reservations');
+const googleReviewsRoutes = require('./api/googleReviews');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/menu', menuRoutes);
 app.use('/api/reservations', reservationRoutes);
+app.use('/api/google-reviews', googleReviewsRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

@@ -11,7 +11,7 @@ export const translations = {
     // Hero Section
     hero: {
       title: "Mirë se vini tek 'Ullishtja Agriturizem'",
-      subtitle: "Përvojë Autentike Të Agroturizmit Shqiptar",
+      badge: "Përvojë Autentike Shqiptare",
       description: "Zbuloni shijen e traditës në zemrën e Shqipërisë. Përbërës të freskët, receta të vjetra dhe mikpritje e ngrohtë që nga viti 2021.",
       cta: "Rezervoni Tavolinën Tuaj",
       viewMenu: "Shiko Menunë",
@@ -42,6 +42,32 @@ export const translations = {
           title: "👨‍🍳 Receta Tradicionale",
           desc: "Ushqime autentike të trashëguara brez pas brezi"
         }
+      }
+    },
+    // Events Section
+    events: {
+      title: "Eventet dhe Festimet",
+      subtitle: "Krijoni Kujtrime të Përhershme",
+      text1: "Ullishtja Agriturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga dasmat tradicionale shqiptare te ndjekat e punës dhe festimet familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
+      text2: "Stafi ynë i dedikuar bashkëpunon me ju për të planifikuar çdo detaj, nga menuja e personalizuar me specialitete lokale te dekorimi dhe koordinimi i plotë i ngjarjes.",
+      features: {
+        weddings: "Dasma Tradicionale",
+        corporate: "Evente Korporative", 
+        family: "Festa Familjare",
+        capacity: "Deri në 120 mysafirë"
+      }
+    },
+    // A la Carte Section
+    alacarte: {
+      title: "Menuja A la Carte",
+      subtitle: "Përjetoni Shijen e Vërtetë Shqiptare",
+      text1: "Zbuloni pasurirë shijesh në menunë tonë të plotë a la carte, ku çdo pjatë tregon një histori të trashëgimisë kulinare shqiptare. Përbërësit tanë të freskët vijnë direkt nga fermat lokale dhe kopshtet tona.",
+      text2: "Nga antipastat tradicionale me djathë të bardhë dhe ullinje, te pjatat kryesore si Tavë Kosi dhe Qofte të Fërguara, çdo vakt përgatitet me kujdesin dhe dashurinë e traditës familjare.",
+      features: {
+        fresh: "Përbërës të Freskët Çdo Ditë",
+        traditional: "Receta të Trashëguara",
+        seasonal: "Specialitete Sezonale",
+        wine: "Vere Lokale të Përzgjedhura"
       }
     },
     // Menu Section
@@ -384,6 +410,8 @@ export const translations = {
       showMoreReviews: "Trego Më Shumë Recensione",
       remaining: "të mbetura",
       showLessReviews: "Trego Më Pak Recensione",
+      seeMore: "Shiko Më Shumë",
+      showLess: "Shiko Më Pak",
       disclaimer: "* Tregojmë vetëm recensionet 4 dhe 5 yje. Të gjitha recensionet janë recensione të verifikuara nga Google.",
       writeReview: "Shkruaj një Recensione në Google",
       loadingReviews: "Duke ngarkuar recensionet...",
@@ -402,7 +430,7 @@ export const translations = {
     // Hero Section
     hero: {
       title: "Welcome to 'Ullishtja Agriturizem'",
-      subtitle: "Authentic Albanian Agritourism Experience",
+      badge: "Authentic Albanian Experience",
       description: "Discover the taste of tradition in the heart of Albania. Fresh ingredients, time-honored recipes, and warm hospitality since 2021.",
       cta: "Reserve Your Table",
       viewMenu: "View Menu",
@@ -433,6 +461,32 @@ export const translations = {
           title: "👨‍🍳 Traditional Recipes",
           desc: "Authentic dishes passed down through generations"
         }
+      }
+    },
+    // Events Section
+    events: {
+      title: "Events & Celebrations",
+      subtitle: "Create Lasting Memories",
+      text1: "Ullishtja Agriturizem offers beautiful spaces and warm atmosphere for all your special occasions. From traditional Albanian weddings to corporate retreats and family celebrations, we ensure every moment is unforgettable.",
+      text2: "Our dedicated staff works with you to plan every detail, from personalized menus featuring local specialties to décor and complete event coordination.",
+      features: {
+        weddings: "Traditional Weddings",
+        corporate: "Corporate Events",
+        family: "Family Celebrations", 
+        capacity: "Up to 120 guests"
+      }
+    },
+    // A la Carte Section
+    alacarte: {
+      title: "A la Carte Menu",
+      subtitle: "Experience Authentic Albanian Flavors",
+      text1: "Discover a wealth of flavors in our complete a la carte menu, where every dish tells a story of Albanian culinary heritage. Our fresh ingredients come directly from local farms and our own gardens.",
+      text2: "From traditional appetizers with white cheese and olives, to main courses like Tavë Kosi and Qofte të Fërguara, every meal is prepared with the care and love of family tradition.",
+      features: {
+        fresh: "Fresh Ingredients Daily",
+        traditional: "Heritage Recipes",
+        seasonal: "Seasonal Specialties",
+        wine: "Selected Local Wines"
       }
     },
     // Menu Section
@@ -775,6 +829,8 @@ export const translations = {
       showMoreReviews: "Show More Reviews",
       remaining: "remaining",
       showLessReviews: "Show Less Reviews",
+      seeMore: "See More",
+      showLess: "Show Less",
       disclaimer: "* We only show reviews with 4 and 5 stars. All reviews are verified by Google.",
       writeReview: "Write a Review on Google",
       loadingReviews: "Loading reviews...",
@@ -793,7 +849,7 @@ export const translations = {
     // Hero Section
     hero: {
       title: "Benvenuti a 'Ullishtja Agriturizem'",
-      subtitle: "Autentica Esperienza di Agriturismo Albanese",
+      badge: "Autentica Esperienza Albanese",
       description: "Scoprite il sapore della tradizione nel cuore dell'Albania. Ingredienti freschi, ricette antiche e calorosa ospitalità dal 2021.",
       cta: "Prenota il Tuo Tavolo",
       viewMenu: "Vedi Menu",
@@ -824,6 +880,32 @@ export const translations = {
           title: "👨‍🍳 Ricette Tradizionali",
           desc: "Piatti autentici tramandati di generazione in generazione"
         }
+      }
+    },
+    // Events Section
+    events: {
+      title: "Eventi e Celebrazioni",
+      subtitle: "Creare Ricordi Indimenticabili",
+      text1: "Ullishtja Agriturizem offre spazi bellissimi e un'atmosfera calorosa per tutte le vostre occasioni speciali. Dai matrimoni tradizionali albanesi ai ritiri aziendali e alle celebrazioni familiari, assicuriamo che ogni momento sia indimenticabile.",
+      text2: "Il nostro staff dedicato lavora con voi per pianificare ogni dettaglio, dai menu personalizzati con specialità locali alla decorazione e al coordinamento completo dell'evento.",
+      features: {
+        weddings: "Matrimoni Tradizionali",
+        corporate: "Eventi Aziendali",
+        family: "Celebrazioni Familiari",
+        capacity: "Fino a 120 ospiti"
+      }
+    },
+    // A la Carte Section
+    alacarte: {
+      title: "Menu A la Carte",
+      subtitle: "Scoprite i Sapori Autentici Albanesi",
+      text1: "Scoprite una ricchezza di sapori nel nostro menu completo a la carte, dove ogni piatto racconta una storia del patrimonio culinario albanese. I nostri ingredienti freschi provengono direttamente dalle fattorie locali e dai nostri orti.",
+      text2: "Dagli antipasti tradizionali con formaggio bianco e olive, ai piatti principali come Tavë Kosi e Qofte të Fërguara, ogni pasto è preparato con la cura e l'amore della tradizione familiare.",
+      features: {
+        fresh: "Ingredienti Freschi Ogni Giorno",
+        traditional: "Ricette Tradizionali",
+        seasonal: "Specialità Stagionali",
+        wine: "Vini Locali Selezionati"
       }
     },
     // Menu Section
@@ -879,6 +961,7 @@ export const translations = {
       olives: "Uliveti",
       kitchen: "La Nostra Cucina"
     },
+
     // Contact Section
     contact: {
       title: "Visitateci",
@@ -1166,6 +1249,8 @@ export const translations = {
       showMoreReviews: "Mostra più recensioni",
       remaining: "rimanenti",
       showLessReviews: "Mostra meno recensioni",
+      seeMore: "Vedi di Più",
+      showLess: "Mostra Meno",
       disclaimer: "* Mostriamo solo recensioni con 4 e 5 stelle. Tutte le recensioni sono verificate da Google.",
       writeReview: "Scrivi una recensione su Google",
       loadingReviews: "Caricamento recensioni...",

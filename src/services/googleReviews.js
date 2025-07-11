@@ -4,17 +4,17 @@
 
 class GoogleReviewsService {
   constructor() {
-    // In production, you would use Google Places API
-    // For now, using realistic mock data structure
-    this.placeId = "ChIJ..." // Your actual Google Places ID
-    this.apiKey = process.env.REACT_APP_GOOGLE_PLACES_API_KEY
+    // Your actual Google Place ID and API Key
+    this.placeId = process.env.REACT_APP_GOOGLE_PLACE_ID || "ChIJ_6oztHnbTxMRmn95pUlRg40"
+    this.apiKey = process.env.REACT_APP_GOOGLE_PLACES_API_KEY || "AIzaSyBVqtCAyNk4YFM_rn3tOII_uJ8-a5WgCHY"
+    this.useRealData = process.env.REACT_APP_USE_REAL_REVIEWS === 'true' || true // Enable by default
   }
 
-  // Mock data structure - replace with real Google Places API call
+  // Mock data structure - updated to match actual business rating
   getMockReviewsData() {
     return {
-      averageRating: 4.8,
-      totalReviews: 127,
+      averageRating: 4.6,
+      totalReviews: 387,
       reviews: [
         {
           id: "1",
@@ -74,15 +74,31 @@ class GoogleReviewsService {
     };
   }
 
-  // Future method for real Google Places API integration
+  // Fetch real Google Reviews or return mock data
   async fetchGoogleReviews() {
     try {
-      // In production, implement actual Google Places API call:
-      // const response = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${this.placeId}&fields=name,rating,reviews,user_ratings_total&key=${this.apiKey}`)
-      // const data = await response.json()
-      // return this.processGoogleReviewsData(data.result)
+      // Use real Google Places API if configured
+      if (this.useRealData && this.apiKey && this.placeId && this.placeId !== "ChIJ...") {
+        console.log('Fetching real Google Reviews for Place ID:', this.placeId);
+        
+        // Call our backend API to avoid CORS issues
+        const response = await fetch('http://localhost:3001/api/google-reviews');
+        const result = await response.json();
+        
+        if (result.success && result.data) {
+          console.log('Successfully fetched real Google Reviews');
+          return result.data;
+        } else if (result.fallback) {
+          console.warn('API error, falling back to mock data:', result.error);
+          return this.getMockReviewsData(); // Fallback to mock data
+        } else {
+          console.warn('Unexpected API response:', result);
+          return this.getMockReviewsData(); // Fallback to mock data
+        }
+      }
       
-      // For now, return mock data
+      // Return mock data if real API is not configured
+      console.log('Using mock review data');
       return this.getMockReviewsData();
     } catch (error) {
       console.error('Error fetching Google reviews:', error);
@@ -129,6 +145,18 @@ class GoogleReviewsService {
     return '★'.repeat(fullStars) + 
            (hasHalfStar ? '☆' : '') + 
            '☆'.repeat(emptyStars);
+  }
+
+  // Generate URL to view reviews
+  getReviewsUrl() {
+    // Always use the Place ID for Ullishtja Agroturizem
+    return `https://search.google.com/local/reviews?placeid=${this.placeId}`;
+  }
+
+  // Generate URL to write a review
+  getWriteReviewUrl() {
+    // Always use the Place ID for Ullishtja Agroturizem
+    return `https://search.google.com/local/writereview?placeid=${this.placeId}`;
   }
 }
 

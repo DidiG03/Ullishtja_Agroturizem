@@ -274,7 +274,7 @@ function App() {
           <div className="hero-content">
             <div className="hero-badge">
               <span className="badge-icon">⭐</span>
-              <span className="badge-text">Authentic Albanian Experience</span>
+              <span className="badge-text">{t.hero.badge}</span>
               <span className="badge-icon">⭐</span>
             </div>
             
@@ -282,8 +282,6 @@ function App() {
               <span className="title-line title-main">{t.hero.title}</span>
               <span className="title-line title-accent">Agriturizem</span>
             </h1>
-            
-            <p className="hero-subtitle">{t.hero.subtitle}</p>
             
             <div className="hero-highlights">
               <div className="highlight-item">
@@ -375,6 +373,104 @@ function App() {
                 {t.about.text2}
               </p>
 
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Events Section */}
+      <section id="events" className="events-section">
+        <div className="container">
+          <div className="section-grid">
+            <div className="section-content">
+              <h2>{t.events.title}</h2>
+              <h3 className="section-subtitle">{t.events.subtitle}</h3>
+              <p className="section-text">
+                {t.events.text1}
+              </p>
+              <p className="section-text">
+                {t.events.text2}
+              </p>
+              <div className="features-list">
+                <div className="feature-item">
+                  <span className="feature-icon">💒</span>
+                  <span className="feature-text">{t.events.features.weddings}</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">🏢</span>
+                  <span className="feature-text">{t.events.features.corporate}</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">🎉</span>
+                  <span className="feature-text">{t.events.features.family}</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">👥</span>
+                  <span className="feature-text">{t.events.features.capacity}</span>
+                </div>
+              </div>
+            </div>
+            <div className="section-image">
+              <img 
+                src="https://images.unsplash.com/photo-1519167758481-83f29c8a6c4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" 
+                alt="Events and Celebrations"
+                className="section-img"
+              />
+              <div className="image-overlay">
+                <div className="overlay-content">
+                  <span className="overlay-icon">🎊</span>
+                  <span className="overlay-text">Special Events</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* A la Carte Section */}
+      <section id="alacarte" className="alacarte-section">
+        <div className="container">
+          <div className="section-grid reverse">
+            <div className="section-image">
+              <img 
+                src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" 
+                alt="A la Carte Menu"
+                className="section-img"
+              />
+              <div className="image-overlay">
+                <div className="overlay-content">
+                  <span className="overlay-icon">🍽️</span>
+                  <span className="overlay-text">A la Carte</span>
+                </div>
+              </div>
+            </div>
+            <div className="section-content">
+              <h2>{t.alacarte.title}</h2>
+              <h3 className="section-subtitle">{t.alacarte.subtitle}</h3>
+              <p className="section-text">
+                {t.alacarte.text1}
+              </p>
+              <p className="section-text">
+                {t.alacarte.text2}
+              </p>
+              <div className="features-list">
+                <div className="feature-item">
+                  <span className="feature-icon">🌱</span>
+                  <span className="feature-text">{t.alacarte.features.fresh}</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">📜</span>
+                  <span className="feature-text">{t.alacarte.features.traditional}</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">🍂</span>
+                  <span className="feature-text">{t.alacarte.features.seasonal}</span>
+                </div>
+                <div className="feature-item">
+                  <span className="feature-icon">🍷</span>
+                  <span className="feature-text">{t.alacarte.features.wine}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
