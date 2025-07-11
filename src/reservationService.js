@@ -15,7 +15,7 @@ const RESTAURANT_CONFIG = {
 };
 
 // API Base URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '';
 
 // Initialize EmailJS
 emailjs.init(EMAILJS_CONFIG.publicKey);

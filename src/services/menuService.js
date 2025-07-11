@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '';
 
 // Add a delay to ensure server is ready
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));

@@ -77,33 +77,24 @@ class GoogleReviewsService {
   // Fetch real Google Reviews or return mock data
   async fetchGoogleReviews() {
     try {
-      // Use real Google Places API if configured
-      if (this.useRealData && this.apiKey && this.placeId && this.placeId !== "ChIJ...") {
-        console.log('Fetching real Google Reviews for Place ID:', this.placeId);
-        
-        // Call our backend API to avoid CORS issues - use relative path for Vercel compatibility
-        const apiUrl = process.env.REACT_APP_API_URL 
-          ? `${process.env.REACT_APP_API_URL}/api/google-reviews`
-          : '/api/google-reviews';
-        
-        const response = await fetch(apiUrl);
-        const result = await response.json();
-        
-        if (result.success && result.data) {
-          console.log('Successfully fetched real Google Reviews');
-          return result.data;
-        } else if (result.fallback) {
-          console.warn('API error, falling back to mock data:', result.error);
-          return this.getMockReviewsData(); // Fallback to mock data
-        } else {
-          console.warn('Unexpected API response:', result);
-          return this.getMockReviewsData(); // Fallback to mock data
-        }
-      }
+      // Always try to fetch real reviews from our backend API first
+      console.log('Attempting to fetch real Google Reviews...');
       
-      // Return mock data if real API is not configured
-      console.log('Using mock review data');
-      return this.getMockReviewsData();
+      // Use relative path for Vercel compatibility
+      const apiUrl = process.env.REACT_APP_API_URL 
+        ? `${process.env.REACT_APP_API_URL}/api/google-reviews`
+        : '/api/google-reviews';
+      
+      const response = await fetch(apiUrl);
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        console.log('Successfully fetched real Google Reviews');
+        return result.data;
+      } else {
+        console.warn('API response indicates failure or no data, using mock data:', result.error || 'Unknown error');
+        return this.getMockReviewsData(); // Fallback to mock data
+      }
     } catch (error) {
       console.error('Error fetching Google reviews:', error);
       return this.getMockReviewsData(); // Fallback to mock data
