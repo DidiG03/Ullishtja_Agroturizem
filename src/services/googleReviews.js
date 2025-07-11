@@ -81,8 +81,12 @@ class GoogleReviewsService {
       if (this.useRealData && this.apiKey && this.placeId && this.placeId !== "ChIJ...") {
         console.log('Fetching real Google Reviews for Place ID:', this.placeId);
         
-        // Call our backend API to avoid CORS issues
-        const response = await fetch('http://localhost:3001/api/google-reviews');
+        // Call our backend API to avoid CORS issues - use relative path for Vercel compatibility
+        const apiUrl = process.env.REACT_APP_API_URL 
+          ? `${process.env.REACT_APP_API_URL}/api/google-reviews`
+          : '/api/google-reviews';
+        
+        const response = await fetch(apiUrl);
         const result = await response.json();
         
         if (result.success && result.data) {
