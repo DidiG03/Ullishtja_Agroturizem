@@ -12,19 +12,19 @@ class MenuService {
     try {
       // Add a small delay to ensure server is ready
       await delay(100);
-      const response = await fetch(`${API_BASE_URL}/api/menu-management?action=categories`);
+      const response = await fetch(`${API_BASE_URL}/api/menu/categories`);
       if (!response.ok) throw new Error('Failed to fetch categories');
-      return await response.json();
+      const categories = await response.json();
+      return { success: true, data: categories };
     } catch (error) {
       console.error('Error fetching categories:', error);
-      // Return empty array as fallback
-      return [];
+      return { success: false, error: error.message };
     }
   }
 
   async createCategory(categoryData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-management?action=categories`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu/categories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,16 +32,17 @@ class MenuService {
         body: JSON.stringify(categoryData),
       });
       if (!response.ok) throw new Error('Failed to create category');
-      return await response.json();
+      const category = await response.json();
+      return { success: true, data: category };
     } catch (error) {
       console.error('Error creating category:', error);
-      throw error;
+      return { success: false, error: error.message };
     }
   }
 
   async updateCategory(id, categoryData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-management?action=category&id=${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu/categories/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -49,23 +50,24 @@ class MenuService {
         body: JSON.stringify(categoryData),
       });
       if (!response.ok) throw new Error('Failed to update category');
-      return await response.json();
+      const category = await response.json();
+      return { success: true, data: category };
     } catch (error) {
       console.error('Error updating category:', error);
-      throw error;
+      return { success: false, error: error.message };
     }
   }
 
   async deleteCategory(id) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-management?action=category&id=${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu/categories/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete category');
-      return await response.json();
+      return { success: true };
     } catch (error) {
       console.error('Error deleting category:', error);
-      throw error;
+      return { success: false, error: error.message };
     }
   }
 
@@ -73,20 +75,21 @@ class MenuService {
   async getMenuItems(categoryId = null) {
     try {
       const url = categoryId 
-        ? `${API_BASE_URL}/api/menu-management?action=items&categoryId=${categoryId}`
-        : `${API_BASE_URL}/api/menu-management?action=items`;
+        ? `${API_BASE_URL}/api/menu/items?categoryId=${categoryId}`
+        : `${API_BASE_URL}/api/menu/items`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch menu items');
-      return await response.json();
+      const items = await response.json();
+      return { success: true, data: items };
     } catch (error) {
       console.error('Error fetching menu items:', error);
-      throw error;
+      return { success: false, error: error.message };
     }
   }
 
   async createMenuItem(itemData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-management?action=items`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu/items`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,16 +97,17 @@ class MenuService {
         body: JSON.stringify(itemData),
       });
       if (!response.ok) throw new Error('Failed to create menu item');
-      return await response.json();
+      const item = await response.json();
+      return { success: true, data: item };
     } catch (error) {
       console.error('Error creating menu item:', error);
-      throw error;
+      return { success: false, error: error.message };
     }
   }
 
   async updateMenuItem(id, itemData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-management?action=item&id=${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu/items/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -111,23 +115,24 @@ class MenuService {
         body: JSON.stringify(itemData),
       });
       if (!response.ok) throw new Error('Failed to update menu item');
-      return await response.json();
+      const item = await response.json();
+      return { success: true, data: item };
     } catch (error) {
       console.error('Error updating menu item:', error);
-      throw error;
+      return { success: false, error: error.message };
     }
   }
 
   async deleteMenuItem(id) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-management?action=item&id=${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu/items/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete menu item');
-      return await response.json();
+      return { success: true };
     } catch (error) {
       console.error('Error deleting menu item:', error);
-      throw error;
+      return { success: false, error: error.message };
     }
   }
 
@@ -136,49 +141,25 @@ class MenuService {
     try {
       // Add a small delay to ensure server is ready
       await delay(100);
-      const response = await fetch(`${API_BASE_URL}/api/menu-management?action=complete`);
+      const response = await fetch(`${API_BASE_URL}/api/menu/complete`);
       if (!response.ok) throw new Error('Failed to fetch complete menu');
-      return await response.json();
+      const categories = await response.json();
+      return { success: true, data: categories };
     } catch (error) {
       console.error('Error fetching complete menu:', error);
-      // Return empty array as fallback
-      return [];
+      return { success: false, error: error.message };
     }
   }
 
-  // Bulk operations
+  // Note: The server API doesn't have reorder endpoints, so these are disabled for now
   async reorderCategories(categoryOrders) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-management?action=category-reorder`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ categories: categoryOrders }),
-      });
-      if (!response.ok) throw new Error('Failed to reorder categories');
-      return await response.json();
-    } catch (error) {
-      console.error('Error reordering categories:', error);
-      throw error;
-    }
+    console.warn('Category reordering not implemented on server');
+    return { success: false, error: 'Feature not implemented' };
   }
 
   async reorderMenuItems(itemOrders) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-management?action=item-reorder`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ items: itemOrders }),
-      });
-      if (!response.ok) throw new Error('Failed to reorder menu items');
-      return await response.json();
-    } catch (error) {
-      console.error('Error reordering menu items:', error);
-      throw error;
-    }
+    console.warn('Menu item reordering not implemented on server');
+    return { success: false, error: 'Feature not implemented' };
   }
 }
 

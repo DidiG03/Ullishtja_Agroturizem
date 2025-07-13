@@ -35,12 +35,36 @@ function App() {
   
   const t = translations[currentLanguage];
 
+  // Add localization helpers
+  const getLocalizedName = (item, field = 'name') => {
+    switch (currentLanguage) {
+      case 'al':
+        return item[`${field}AL`];
+      case 'en':
+        return item[`${field}EN`];
+      case 'it':
+        return item[`${field}IT`];
+      default:
+        return item[`${field}AL`];
+    }
+  };
+
+  const getLocalizedText = (item, field) => {
+    const text = getLocalizedName(item, field);
+    return text || '';
+  };
+
   // Load dynamic menu data
   useEffect(() => {
     const loadMenu = async () => {
       try {
-        const data = await MenuService.getCompleteMenu();
-        setMenuCategories(data);
+        const response = await MenuService.getCompleteMenu();
+        if (response.success) {
+          setMenuCategories(response.data || []);
+        } else {
+          console.error('Failed to load menu:', response.error);
+          setMenuCategories([]);
+        }
       } catch (error) {
         console.error('Error loading menu:', error);
       }
@@ -551,68 +575,101 @@ function App() {
       <section id="menu" className="menu">
         <div className="container">
           <h2>{t.menu.title}</h2>
-          <div className="menu-grid">
-            <div className="menu-category">
-              <h3>{t.menu.appetizers.title}</h3>
-              <div className="menu-item">
-                <h4>{t.menu.appetizers.byrek.name}</h4>
-                <p>{t.menu.appetizers.byrek.desc}</p>
-                <span className="price">800 ALL</span>
-              </div>
-              <div className="menu-item">
-                <h4>{t.menu.appetizers.turshi.name}</h4>
-                <p>{t.menu.appetizers.turshi.desc}</p>
-                <span className="price">600 ALL</span>
-              </div>
-              <div className="menu-item">
-                <h4>{t.menu.appetizers.cheese.name}</h4>
-                <p>{t.menu.appetizers.cheese.desc}</p>
-                <span className="price">700 ALL</span>
-              </div>
-            </div>
 
-            <div className="menu-category">
-              <h3>{t.menu.mains.title}</h3>
-              <div className="menu-item">
-                <h4>{t.menu.mains.tave.name}</h4>
-                <p>{t.menu.mains.tave.desc}</p>
-                <span className="price">1500 ALL</span>
-              </div>
-              <div className="menu-item">
-                <h4>{t.menu.mains.qofte.name}</h4>
-                <p>{t.menu.mains.qofte.desc}</p>
-                <span className="price">1200 ALL</span>
-              </div>
-              <div className="menu-item">
-                <h4>{t.menu.mains.fish.name}</h4>
-                <p>{t.menu.mains.fish.desc}</p>
-                <span className="price">1800 ALL</span>
-              </div>
-            </div>
+          {menuCategories.length === 0 ? (
+            ( /* Fallback to translations while menu loads */
+              <div className="menu-grid">
+                <div className="menu-category">
+                  <h3>{t.menu.appetizers.title}</h3>
+                  <div className="menu-item">
+                    <h4>{t.menu.appetizers.byrek.name}</h4>
+                    <p>{t.menu.appetizers.byrek.desc}</p>
+                    <span className="price">800 ALL</span>
+                  </div>
+                  <div className="menu-item">
+                    <h4>{t.menu.appetizers.turshi.name}</h4>
+                    <p>{t.menu.appetizers.turshi.desc}</p>
+                    <span className="price">600 ALL</span>
+                  </div>
+                  <div className="menu-item">
+                    <h4>{t.menu.appetizers.cheese.name}</h4>
+                    <p>{t.menu.appetizers.cheese.desc}</p>
+                    <span className="price">700 ALL</span>
+                  </div>
+                </div>
 
-            <div className="menu-category">
-              <h3>{t.menu.salads.title}</h3>
-              <div className="menu-item">
-                <h4>{t.menu.salads.village.name}</h4>
-                <p>{t.menu.salads.village.desc}</p>
-                <span className="price">800 ALL</span>
+                <div className="menu-category">
+                  <h3>{t.menu.mains.title}</h3>
+                  <div className="menu-item">
+                    <h4>{t.menu.mains.tave.name}</h4>
+                    <p>{t.menu.mains.tave.desc}</p>
+                    <span className="price">1500 ALL</span>
+                  </div>
+                  <div className="menu-item">
+                    <h4>{t.menu.mains.qofte.name}</h4>
+                    <p>{t.menu.mains.qofte.desc}</p>
+                    <span className="price">1200 ALL</span>
+                  </div>
+                  <div className="menu-item">
+                    <h4>{t.menu.mains.fish.name}</h4>
+                    <p>{t.menu.mains.fish.desc}</p>
+                    <span className="price">1800 ALL</span>
+                  </div>
+                </div>
+
+                <div className="menu-category">
+                  <h3>{t.menu.salads.title}</h3>
+                  <div className="menu-item">
+                    <h4>{t.menu.salads.village.name}</h4>
+                    <p>{t.menu.salads.village.desc}</p>
+                    <span className="price">800 ALL</span>
+                  </div>
+                  <div className="menu-item">
+                    <h4>{t.menu.salads.olive.name}</h4>
+                    <p>{t.menu.salads.olive.desc}</p>
+                    <span className="price">900 ALL</span>
+                  </div>
+                </div>
               </div>
-              <div className="menu-item">
-                <h4>{t.menu.salads.olive.name}</h4>
-                <p>{t.menu.salads.olive.desc}</p>
-                <span className="price">900 ALL</span>
-              </div>
+            )
+          ) : (
+            <div className="menu-grid">
+              {menuCategories
+                .sort((a, b) => a.displayOrder - b.displayOrder)
+                .slice(0, 3) // Show first 3 categories
+                .map((category) => (
+                  <div key={category.id} className="menu-category">
+                    <h3>{getLocalizedName(category)}</h3>
+                    {(category.menuItems || [])
+                      .sort((a, b) => a.displayOrder - b.displayOrder)
+                      .slice(0, 3) // Show first 3 items per category
+                      .map((item) => (
+                        <div key={item.id} className="menu-item">
+                          <h4>{getLocalizedName(item)}</h4>
+                          {getLocalizedText(item, 'description') && (
+                            <p>{getLocalizedText(item, 'description')}</p>
+                          )}
+                          <span className="price">
+                            {item.price} {item.currency}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                ))}
             </div>
-          </div>
+          )}
+
           <div className="menu-cta-container">
             <button className="full-menu-btn" onClick={openFullMenu}>
               {t.fullMenu.viewFullMenu}
             </button>
             <button className="pdf-export-btn" onClick={handlePDFExport}>
               <span className="btn-icon">📄</span>
-              {currentLanguage === 'al' ? 'Shiko PDF' : 
-               currentLanguage === 'en' ? 'View PDF' : 
-               'Visualizza PDF'}
+              {currentLanguage === 'al'
+                ? 'Shiko PDF'
+                : currentLanguage === 'en'
+                ? 'View PDF'
+                : 'Visualizza PDF'}
             </button>
           </div>
         </div>

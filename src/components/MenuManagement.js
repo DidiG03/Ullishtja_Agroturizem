@@ -44,8 +44,12 @@ function MenuManagement() {
 
   const loadMenuItems = useCallback(async (categoryId = selectedCategory) => {
     try {
-      const data = await MenuService.getMenuItems(categoryId);
-      setMenuItems(data);
+      const result = await MenuService.getMenuItems(categoryId);
+      if (result.success) {
+        setMenuItems(result.data || []);
+      } else {
+        setError(result.error || 'Failed to load menu items');
+      }
     } catch (error) {
       setError('Failed to load menu items');
       console.error(error);
@@ -55,11 +59,16 @@ function MenuManagement() {
   const loadCategories = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await MenuService.getCategories();
-      setCategories(data);
-      if (data.length > 0 && !selectedCategory) {
-        setSelectedCategory(data[0].id);
-        loadMenuItems(data[0].id);
+      const result = await MenuService.getCategories();
+      if (result.success) {
+        const categoriesData = result.data || [];
+        setCategories(categoriesData);
+        if (categoriesData.length > 0 && !selectedCategory) {
+          setSelectedCategory(categoriesData[0].id);
+          loadMenuItems(categoriesData[0].id);
+        }
+      } else {
+        setError(result.error || 'Failed to load categories');
       }
     } catch (error) {
       setError('Failed to load categories');

@@ -1580,7 +1580,7 @@ h2::after {
   }
 
   .hero-visual {
-    order: 1;
+    display: none;
   }
 
   .hero-badge {

@@ -16,9 +16,13 @@ function DynamicMenu({ currentLanguage, onClose }) {
     try {
       setLoading(true);
       const data = await MenuService.getCompleteMenu();
-      setCategories(data);
-      if (data.length > 0) {
-        setActiveCategory(data[0].id);
+      if (data.success) {
+        setCategories(data.data || []);
+        if (data.data && data.data.length > 0) {
+          setActiveCategory(data.data[0].id);
+        }
+      } else {
+        throw new Error(data.error || 'Failed to load menu');
       }
     } catch (error) {
       console.error('Error loading menu:', error);

@@ -1,6 +1,10 @@
 class RestaurantSettingsService {
   constructor() {
-    this.baseUrl = '/api/restaurant-settings';
+    // Use relative paths in production (Vercel functions)
+    const API_BASE_URL = process.env.NODE_ENV === 'production'
+      ? ''
+      : process.env.REACT_APP_API_URL || 'http://localhost:3001';
+    this.baseUrl = `${API_BASE_URL}/api/restaurant-settings`;
   }
 
   async getSettings() {
