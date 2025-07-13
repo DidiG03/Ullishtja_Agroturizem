@@ -67,7 +67,6 @@ function App() {
         }
       } catch (error) {
         console.error('Error loading menu:', error);
-        setMenuCategories([]);
       }
     };
 
@@ -635,7 +634,7 @@ function App() {
             )
           ) : (
             <div className="menu-grid">
-              {(Array.isArray(menuCategories) ? menuCategories : [])
+              {menuCategories
                 .sort((a, b) => a.displayOrder - b.displayOrder)
                 .slice(0, 3) // Show first 3 categories
                 .map((category) => (
