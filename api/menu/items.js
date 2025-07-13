@@ -21,7 +21,7 @@ export default async function handler(req, res) {
       if (categoryId) {
         where.categoryId = categoryId;
       }
-
+      
       const items = await prisma.menuItem.findMany({
         where,
         orderBy: { displayOrder: 'asc' },
@@ -29,7 +29,8 @@ export default async function handler(req, res) {
           category: true
         }
       });
-      res.json({ success: true, data: items });
+      res.status(200).json({ success: true, data: items });
+      
     } else if (req.method === 'POST') {
       const item = await prisma.menuItem.create({
         data: req.body,
@@ -37,14 +38,20 @@ export default async function handler(req, res) {
           category: true
         }
       });
-      res.json(item);
+      res.status(201).json({ success: true, data: item });
+      
     } else {
-      res.status(405).json({ error: 'Method not allowed' });
+      res.status(405).json({ 
+        success: false, 
+        error: 'Method not allowed' 
+      });
     }
   } catch (error) {
-    console.error('Error with menu items:', error);
-    res.status(500).json({ error: 'Failed to handle menu items request' });
-  } finally {
-    await prisma.$disconnect();
+    console.error('Error in items API:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Internal server error',
+      details: error.message 
+    });
   }
 } 

@@ -13,25 +13,21 @@ export default async function handler(req, res) {
     return;
   }
 
+  const { id } = req.query;
+
   try {
-    if (req.method === 'GET') {
-      const categories = await prisma.menuCategory.findMany({
-        where: { isActive: true },
-        orderBy: { displayOrder: 'asc' },
-        include: {
-          menuItems: {
-            where: { isActive: true },
-            orderBy: { displayOrder: 'asc' }
-          }
-        }
-      });
-      res.status(200).json({ success: true, data: categories });
-      
-    } else if (req.method === 'POST') {
-      const category = await prisma.menuCategory.create({
+    if (req.method === 'PUT') {
+      const category = await prisma.menuCategory.update({
+        where: { id },
         data: req.body
       });
-      res.status(201).json({ success: true, data: category });
+      res.status(200).json({ success: true, data: category });
+      
+    } else if (req.method === 'DELETE') {
+      await prisma.menuCategory.delete({
+        where: { id }
+      });
+      res.status(200).json({ success: true });
       
     } else {
       res.status(405).json({ 
@@ -40,7 +36,7 @@ export default async function handler(req, res) {
       });
     }
   } catch (error) {
-    console.error('Error in categories API:', error);
+    console.error('Error in category [id] API:', error);
     res.status(500).json({ 
       success: false, 
       error: 'Internal server error',
