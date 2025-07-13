@@ -80,10 +80,11 @@ class GoogleReviewsService {
       // Always try to fetch real reviews from our backend API first
       console.log('Attempting to fetch real Google Reviews...');
       
-      // Use relative path for Vercel compatibility
-      const apiUrl = process.env.REACT_APP_API_URL 
-        ? `${process.env.REACT_APP_API_URL}/api/google-reviews`
-        : '/api/google-reviews';
+      // Use relative path for production, localhost for development
+      const apiBaseUrl = process.env.NODE_ENV === 'production' 
+        ? '' 
+        : process.env.REACT_APP_API_URL || 'http://localhost:3001';
+      const apiUrl = `${apiBaseUrl}/api/google-reviews`;
       
       const response = await fetch(apiUrl);
       const result = await response.json();
