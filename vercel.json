@@ -1,7 +1,7 @@
 {
   "version": 2,
   "framework": "create-react-app",
-  "buildCommand": "npm run build",
+  "buildCommand": "NODE_ENV=production npm run build",
   "outputDirectory": "build",
   "installCommand": "npm install",
   "rewrites": [
@@ -16,6 +16,11 @@
     "NODE_ENV": "production",
     "PRISMA_CLI_QUERY_ENGINE_TYPE": "binary",
     "PRISMA_CLI_BINARY_TARGETS": "rhel-openssl-1.0.x"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
   },
   "headers": [
     {
