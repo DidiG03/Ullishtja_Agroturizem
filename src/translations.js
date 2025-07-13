@@ -10,7 +10,7 @@ export const translations = {
     },
     // Hero Section
     hero: {
-      title: "Mirë se vini tek 'Ullishtja Agriturizem'",
+      title: "Mirë se vini tek Ullishtja Agriturizem",
       badge: "Përvojë Autentike Shqiptare",
       description: "Zbuloni shijen e traditës në zemrën e Shqipërisë. Përbërës të freskët, receta të vjetra dhe mikpritje e ngrohtë që nga viti 2021.",
       cta: "Rezervoni Tavolinën Tuaj",
@@ -18,7 +18,7 @@ export const translations = {
       highlights: {
         farmFresh: "Përbërës të Freskët",
         traditionalRecipes: "Receta Tradicionale",
-        mountainViews: "Pamje Malesh"
+        mountainViews: "Pamje 360°"
       },
       openDaily: "Hapur Çdo Ditë",
       googleReviews: "Recensione Google",
@@ -35,8 +35,8 @@ export const translations = {
           desc: "Të marrë lokalisht nga ferma jonë dhe partnerët e besuar"
         },
         views: {
-          title: "🏔️ Pamje Malesh",
-          desc: "Pamje mahnitëse të kodrave shqiptare dhe kopshteve"
+          title: "🏔️ 360°",
+          desc: "Pamje mahnitëse të kodrave shqiptare dhe qytetit të Durrësit"
         },
         recipes: {
           title: "👨‍🍳 Receta Tradicionale",
@@ -119,7 +119,7 @@ export const translations = {
     gallery: {
       title: "Përvojeni Ullishtjen",
       dining: "Ngrënia Tradicionale",
-      views: "Pamje Malesh",
+      views: "360°",
       olives: "Ullishtat",
       kitchen: "Kuzhina Jonë"
     },
@@ -412,7 +412,7 @@ export const translations = {
       showLessReviews: "Trego Më Pak Recensione",
       seeMore: "Shiko Më Shumë",
       showLess: "Shiko Më Pak",
-      disclaimer: "* Tregojmë vetëm recensionet 4 dhe 5 yje. Të gjitha recensionet janë recensione të verifikuara nga Google.",
+      disclaimer: "* Tregojmë vetëm recensionet 4 dhe 5 yje. Recensionet ndryshojnë çdo ditë për të treguar më shumë përvojë. Të gjitha recensionet janë të verifikuara nga Google.",
       writeReview: "Shkruaj një Recensione në Google",
       loadingReviews: "Duke ngarkuar recensionet...",
       unableToLoad: "Nuk mund të ngarkojmë recensionet në këtë moment."
@@ -429,7 +429,7 @@ export const translations = {
     },
     // Hero Section
     hero: {
-      title: "Welcome to 'Ullishtja Agriturizem'",
+      title: "Welcome to Ullishtja Agriturizem",
       badge: "Authentic Albanian Experience",
       description: "Discover the taste of tradition in the heart of Albania. Fresh ingredients, time-honored recipes, and warm hospitality since 2021.",
       cta: "Reserve Your Table",
@@ -437,7 +437,7 @@ export const translations = {
       highlights: {
         farmFresh: "Fresh Ingredients",
         traditionalRecipes: "Traditional Recipes",
-        mountainViews: "Mountain Views"
+        mountainViews: "360° Views"
       },
       openDaily: "Open Daily",
       googleReviews: "Google Reviews",
@@ -454,7 +454,7 @@ export const translations = {
           desc: "Locally sourced from our farm and trusted partners"
         },
         views: {
-          title: "🏔️ Mountain Views",
+          title: "🏔️ 360° Views",
           desc: "Dine with breathtaking views of Albanian mountains"
         },
         recipes: {
@@ -538,7 +538,7 @@ export const translations = {
     gallery: {
       title: "Experience Ullishtja",
       dining: "Traditional Dining",
-      views: "Mountain Views",
+      views: "360° Views",
       olives: "Olive Groves",
       kitchen: "Our Kitchen"
     },
@@ -831,7 +831,7 @@ export const translations = {
       showLessReviews: "Show Less Reviews",
       seeMore: "See More",
       showLess: "Show Less",
-      disclaimer: "* We only show reviews with 4 and 5 stars. All reviews are verified by Google.",
+      disclaimer: "* We only show reviews with 4 and 5 stars. Reviews change daily to showcase more experiences. All reviews are verified by Google.",
       writeReview: "Write a Review on Google",
       loadingReviews: "Loading reviews...",
       unableToLoad: "Unable to load reviews at this moment."
@@ -848,7 +848,7 @@ export const translations = {
     },
     // Hero Section
     hero: {
-      title: "Benvenuti a 'Ullishtja Agriturizem'",
+      title: "Benvenuti a Ullishtja Agriturizem",
       badge: "Autentica Esperienza Albanese",
       description: "Scoprite il sapore della tradizione nel cuore dell'Albania. Ingredienti freschi, ricette antiche e calorosa ospitalità dal 2021.",
       cta: "Prenota il Tuo Tavolo",
@@ -856,7 +856,7 @@ export const translations = {
       highlights: {
         farmFresh: "Ingredienti Freschi",
         traditionalRecipes: "Ricette Tradizionali",
-        mountainViews: "Vista Montagna"
+        mountainViews: "Vista 360°"
       },
       openDaily: "Aperto ogni giorno",
       googleReviews: "Recensioni Google",
@@ -873,7 +873,7 @@ export const translations = {
           desc: "Di origine locale dalla nostra fattoria e partner fidati"
         },
         views: {
-          title: "🏔️ Vista Montagna",
+          title: "🏔️ Vista 360°",
           desc: "Cenate con viste mozzafiato delle montagne albanesi"
         },
         recipes: {
@@ -957,7 +957,7 @@ export const translations = {
     gallery: {
       title: "Esperienza Ullishtja",
       dining: "Pranzo Tradizionale",
-      views: "Vista Montagna",
+      views: "Vista 360°",
       olives: "Uliveti",
       kitchen: "La Nostra Cucina"
     },
@@ -1251,7 +1251,7 @@ export const translations = {
       showLessReviews: "Mostra meno recensioni",
       seeMore: "Vedi di Più",
       showLess: "Mostra Meno",
-      disclaimer: "* Mostriamo solo recensioni con 4 e 5 stelle. Tutte le recensioni sono verificate da Google.",
+      disclaimer: "* Mostriamo solo recensioni con 4 e 5 stelle. Le recensioni cambiano ogni giorno per mostrare più esperienze. Tutte le recensioni sono verificate da Google.",
       writeReview: "Scrivi una recensione su Google",
       loadingReviews: "Caricamento recensioni...",
       unableToLoad: "Impossibile caricare le recensioni in questo momento."

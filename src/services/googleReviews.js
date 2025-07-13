@@ -10,6 +10,103 @@ class GoogleReviewsService {
     this.useRealData = process.env.REACT_APP_USE_REAL_REVIEWS === 'true' || true // Enable by default
   }
 
+  // Get today's date as a string (YYYY-MM-DD)
+  getTodaysDate() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  // Simple seeded random number generator
+  seededRandom(seed) {
+    const x = Math.sin(seed) * 10000;
+    return x - Math.floor(x);
+  }
+
+  // Generate a seed from today's date
+  getDateSeed() {
+    const dateStr = this.getTodaysDate();
+    let seed = 0;
+    for (let i = 0; i < dateStr.length; i++) {
+      seed += dateStr.charCodeAt(i) * (i + 1);
+    }
+    return seed;
+  }
+
+  // Shuffle array using seeded random (Fisher-Yates algorithm)
+  shuffleWithSeed(array, seed) {
+    const shuffled = [...array];
+    let currentIndex = shuffled.length;
+    let randomIndex;
+    
+    // Create a seeded random function
+    let seedValue = seed;
+    const random = () => {
+      seedValue = (seedValue * 9301 + 49297) % 233280;
+      return seedValue / 233280;
+    };
+
+    while (currentIndex !== 0) {
+      randomIndex = Math.floor(random() * currentIndex);
+      currentIndex--;
+      [shuffled[currentIndex], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[currentIndex]];
+    }
+
+    return shuffled;
+  }
+
+  // Get daily shuffled reviews that cycle through all 4-5 star reviews
+  getDailyShuffledReviews(reviewsData, displayCount = 3) {
+    const highRatingReviews = reviewsData.reviews.filter(review => review.rating >= 4);
+    
+    if (highRatingReviews.length === 0) {
+      return {
+        ...reviewsData,
+        reviews: []
+      };
+    }
+
+    // Get today's date seed
+    const dateSeed = this.getDateSeed();
+    
+    // If we have fewer high rating reviews than display count, show all
+    if (highRatingReviews.length <= displayCount) {
+      return {
+        ...reviewsData,
+        reviews: this.shuffleWithSeed(highRatingReviews, dateSeed)
+      };
+    }
+
+    // Calculate which "batch" of reviews to show today
+    const totalReviews = highRatingReviews.length;
+    const batchSize = displayCount;
+    const totalBatches = Math.ceil(totalReviews / batchSize);
+    
+    // Use date to determine which batch to show (cycles through all batches)
+    const today = new Date();
+    const daysSinceEpoch = Math.floor(today.getTime() / (1000 * 60 * 60 * 24));
+    const currentBatch = daysSinceEpoch % totalBatches;
+    
+    // Shuffle all reviews first with today's seed
+    const shuffledReviews = this.shuffleWithSeed(highRatingReviews, dateSeed);
+    
+    // Get the batch for today
+    const startIndex = currentBatch * batchSize;
+    const endIndex = Math.min(startIndex + batchSize, totalReviews);
+    const todaysReviews = shuffledReviews.slice(startIndex, endIndex);
+    
+    // If we don't have enough reviews in this batch, fill from the beginning
+    if (todaysReviews.length < batchSize && totalReviews >= batchSize) {
+      const remaining = batchSize - todaysReviews.length;
+      const additionalReviews = shuffledReviews.slice(0, remaining);
+      todaysReviews.push(...additionalReviews);
+    }
+
+    return {
+      ...reviewsData,
+      reviews: todaysReviews,
+      allHighRatingReviews: shuffledReviews // Keep all reviews for "show more" functionality
+    };
+  }
+
   // Mock data structure - updated to match actual business rating
   getMockReviewsData() {
     return {
@@ -54,21 +151,39 @@ class GoogleReviewsService {
         },
         {
           id: "5",
-          authorName: "Anna Kowalski",
+          authorName: "Sophie Laurent",
           authorPhotoUrl: null,
           rating: 4,
-          text: "Great traditional Albanian food and beautiful scenery. The tave kosi was amazing! The atmosphere is very peaceful and relaxing. Perfect for a weekend getaway.",
+          text: "Wonderful traditional Albanian food in a beautiful mountain setting. The staff was friendly and the atmosphere was cozy. Great value for money!",
           time: "2024-01-02",
           relativeTimeDescription: "1 month ago"
         },
         {
           id: "6",
-          authorName: "David Wilson",
+          authorName: "Marco Gentile",
           authorPhotoUrl: null,
           rating: 5,
-          text: "Outstanding agritourism destination! The combination of delicious food, beautiful views, and warm hospitality made our visit unforgettable. The wine selection was excellent too.",
+          text: "Incredible experience! The food was outstanding, especially the lamb dishes. The view from the terrace is spectacular. Highly recommended for authentic Albanian cuisine.",
           time: "2023-12-28",
           relativeTimeDescription: "1 month ago"
+        },
+        {
+          id: "7",
+          authorName: "Anna Kowalski",
+          authorPhotoUrl: null,
+          rating: 4,
+          text: "Great location with amazing mountain views. The food is authentic and delicious. Service was good, though we had to wait a bit longer during peak hours.",
+          time: "2023-12-20",
+          relativeTimeDescription: "1 month ago"
+        },
+        {
+          id: "8",
+          authorName: "David Johnson",
+          authorPhotoUrl: null,
+          rating: 5,
+          text: "Perfect place for a traditional Albanian meal. The ingredients are fresh and local. The staff is very welcoming and the atmosphere is authentic. Will come back!",
+          time: "2023-12-15",
+          relativeTimeDescription: "2 months ago"
         }
       ]
     };
@@ -119,7 +234,7 @@ class GoogleReviewsService {
     };
   }
 
-  // Filter reviews to get only 4 and 5 star reviews
+  // Filter reviews to get only 4 and 5 star reviews (DEPRECATED - use getDailyShuffledReviews instead)
   getHighRatingReviews(reviewsData) {
     return {
       ...reviewsData,
@@ -129,7 +244,7 @@ class GoogleReviewsService {
 
   // Format rating for display
   formatRating(rating) {
-    return parseFloat(rating).toFixed(1);
+    return rating.toFixed(1);
   }
 
   // Generate star display

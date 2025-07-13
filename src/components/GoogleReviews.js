@@ -7,13 +7,16 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
   const [loading, setLoading] = useState(true);
   const [displayCount, setDisplayCount] = useState(3);
   const [expandedReviews, setExpandedReviews] = useState(new Set());
+  const [allHighRatingReviews, setAllHighRatingReviews] = useState([]);
 
   useEffect(() => {
     const loadReviews = async () => {
       try {
         const data = await googleReviewsService.fetchGoogleReviews();
-        const highRatingReviews = googleReviewsService.getHighRatingReviews(data);
-        setReviewsData(highRatingReviews);
+        // Use new daily shuffle method instead of getHighRatingReviews
+        const dailyShuffledReviews = googleReviewsService.getDailyShuffledReviews(data, 3);
+        setReviewsData(dailyShuffledReviews);
+        setAllHighRatingReviews(dailyShuffledReviews.allHighRatingReviews || dailyShuffledReviews.reviews);
       } catch (error) {
         console.error('Error loading reviews:', error);
       } finally {
@@ -25,12 +28,26 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
   }, []);
 
   const handleShowMore = () => {
-    setDisplayCount(prev => Math.min(prev + 3, reviewsData.reviews.length));
+    setDisplayCount(prev => {
+      const newCount = Math.min(prev + 3, allHighRatingReviews.length);
+      return newCount;
+    });
   };
 
   const handleShowLess = () => {
     setDisplayCount(3);
   };
+
+  // Update displayed reviews when count changes
+  useEffect(() => {
+    if (allHighRatingReviews.length > 0) {
+      const currentReviews = allHighRatingReviews.slice(0, displayCount);
+      setReviewsData(prev => ({
+        ...prev,
+        reviews: currentReviews
+      }));
+    }
+  }, [displayCount, allHighRatingReviews]);
 
   const toggleReviewExpansion = (reviewId) => {
     setExpandedReviews(prev => {
@@ -106,7 +123,7 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
         </div>
 
         <div className="reviews-grid">
-          {reviewsData.reviews.slice(0, displayCount).map((review) => (
+          {reviewsData.reviews.map((review) => (
             <div key={review.id} className="review-card">
               <div className="review-header">
                 <div className="reviewer-info">
@@ -163,11 +180,11 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
           ))}
         </div>
 
-        {reviewsData.reviews.length > 3 && (
+        {allHighRatingReviews.length > 3 && (
           <div className="reviews-actions">
-            {displayCount < reviewsData.reviews.length ? (
+            {displayCount < allHighRatingReviews.length ? (
               <button className="show-more-btn" onClick={handleShowMore}>
-                {translations.googleReviews.showMoreReviews} ({reviewsData.reviews.length - displayCount} {translations.googleReviews.remaining})
+                {translations.googleReviews.showMoreReviews} ({allHighRatingReviews.length - displayCount} {translations.googleReviews.remaining})
               </button>
             ) : (
               <button className="show-less-btn" onClick={handleShowLess}>

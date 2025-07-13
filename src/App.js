@@ -280,7 +280,6 @@ function App() {
             
             <h1 className="hero-title">
               <span className="title-line title-main">{t.hero.title}</span>
-              <span className="title-line title-accent">Agriturizem</span>
             </h1>
             
             <div className="hero-highlights">

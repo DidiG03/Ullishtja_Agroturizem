@@ -5,102 +5,127 @@ class PDFExportService {
   constructor() {
     this.pdf = null;
     this.currentY = 0;
-    this.pageHeight = 0;
     this.margins = {
       top: 20,
-      left: 20,
-      right: 20,
-      bottom: 20
+      right: 25,
+      bottom: 20,
+      left: 25
     };
+  }
+
+  // Load image and convert to base64
+  async loadImageAsBase64(imagePath) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = img.width;
+        canvas.height = img.height;
+        
+        ctx.drawImage(img, 0, 0);
+        
+        try {
+          const base64 = canvas.toDataURL('image/jpeg', 0.8);
+          resolve(base64);
+        } catch (error) {
+          console.warn('Could not convert image to base64, using fallback');
+          resolve(null);
+        }
+      };
+      
+      img.onerror = () => {
+        console.warn('Could not load logo image, using fallback');
+        resolve(null);
+      };
+      
+      // Try to load the image from the public folder
+      img.src = `${process.env.PUBLIC_URL || ''}/images/ullishtja_logo.jpeg`;
+    });
   }
 
   // Initialize PDF document
   initializePDF() {
-    this.pdf = new jsPDF('p', 'mm', 'a4');
+    this.pdf = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+      compress: true
+    });
     this.pageHeight = this.pdf.internal.pageSize.height;
     this.currentY = this.margins.top;
   }
 
   // Check if we need a new page
   checkPageBreak(requiredHeight = 15) {
-    if (this.currentY + requiredHeight > this.pageHeight - this.margins.bottom) {
+    const pageHeight = 297; // A4 height in mm
+    const availableHeight = pageHeight - this.margins.bottom - this.currentY;
+    
+    if (requiredHeight > availableHeight) {
       this.pdf.addPage();
       this.currentY = this.margins.top;
-      
-      // Add vintage styling to new page
-      this.addVintageBackground();
-      this.addVintageBorder();
-      this.pdf.setTextColor(101, 67, 33); // Reset text color
-      this.currentY = this.margins.top + 15; // Leave space for border
+      return true;
     }
+    return false;
   }
 
   // Add vintage decorative border
   addVintageBorder() {
-    const pageWidth = 210;
-    const pageHeight = this.pageHeight;
-    
-    // Outer border
+    // Outer border with vintage styling
     this.pdf.setLineWidth(2);
-    this.pdf.setDrawColor(101, 67, 33); // Dark brown
-    this.pdf.rect(8, 8, pageWidth - 16, pageHeight - 16);
+    this.pdf.setDrawColor(139, 115, 85); // Vintage brown
+    this.pdf.rect(10, 10, 190, 277);
     
     // Inner decorative border
     this.pdf.setLineWidth(0.5);
-    this.pdf.setDrawColor(139, 115, 85); // Lighter brown
-    this.pdf.rect(12, 12, pageWidth - 24, pageHeight - 24);
+    this.pdf.rect(15, 15, 180, 267);
     
-    // Corner decorations
+    // Corner decorative elements
+    const cornerSize = 8;
     this.pdf.setLineWidth(1);
-    const cornerSize = 6;
     
     // Top-left corner
-    this.pdf.line(15, 15, 15 + cornerSize, 15);
-    this.pdf.line(15, 15, 15, 15 + cornerSize);
-    this.pdf.line(15 + cornerSize, 15, 15 + cornerSize/2, 15 + cornerSize/2);
-    this.pdf.line(15, 15 + cornerSize, 15 + cornerSize/2, 15 + cornerSize/2);
+    this.pdf.line(15, 15 + cornerSize, 15 + cornerSize, 15 + cornerSize);
+    this.pdf.line(15 + cornerSize, 15, 15 + cornerSize, 15 + cornerSize);
     
     // Top-right corner
-    this.pdf.line(pageWidth - 15, 15, pageWidth - 15 - cornerSize, 15);
-    this.pdf.line(pageWidth - 15, 15, pageWidth - 15, 15 + cornerSize);
-    this.pdf.line(pageWidth - 15 - cornerSize, 15, pageWidth - 15 - cornerSize/2, 15 + cornerSize/2);
-    this.pdf.line(pageWidth - 15, 15 + cornerSize, pageWidth - 15 - cornerSize/2, 15 + cornerSize/2);
+    this.pdf.line(195 - cornerSize, 15, 195 - cornerSize, 15 + cornerSize);
+    this.pdf.line(195 - cornerSize, 15 + cornerSize, 195, 15 + cornerSize);
     
     // Bottom-left corner
-    this.pdf.line(15, pageHeight - 15, 15 + cornerSize, pageHeight - 15);
-    this.pdf.line(15, pageHeight - 15, 15, pageHeight - 15 - cornerSize);
-    this.pdf.line(15 + cornerSize, pageHeight - 15, 15 + cornerSize/2, pageHeight - 15 - cornerSize/2);
-    this.pdf.line(15, pageHeight - 15 - cornerSize, 15 + cornerSize/2, pageHeight - 15 - cornerSize/2);
+    this.pdf.line(15, 282 - cornerSize, 15 + cornerSize, 282 - cornerSize);
+    this.pdf.line(15 + cornerSize, 282 - cornerSize, 15 + cornerSize, 282);
     
     // Bottom-right corner
-    this.pdf.line(pageWidth - 15, pageHeight - 15, pageWidth - 15 - cornerSize, pageHeight - 15);
-    this.pdf.line(pageWidth - 15, pageHeight - 15, pageWidth - 15, pageHeight - 15 - cornerSize);
-    this.pdf.line(pageWidth - 15 - cornerSize, pageHeight - 15, pageWidth - 15 - cornerSize/2, pageHeight - 15 - cornerSize/2);
-    this.pdf.line(pageWidth - 15, pageHeight - 15 - cornerSize, pageWidth - 15 - cornerSize/2, pageHeight - 15 - cornerSize/2);
+    this.pdf.line(195 - cornerSize, 282 - cornerSize, 195, 282 - cornerSize);
+    this.pdf.line(195 - cornerSize, 282 - cornerSize, 195 - cornerSize, 282);
   }
 
   // Add vintage background texture
   addVintageBackground() {
-    // Light parchment background color
-    this.pdf.setFillColor(252, 248, 227); // Cream/parchment color
-    this.pdf.rect(0, 0, 210, this.pageHeight, 'F');
+    // Add subtle vintage texture using overlapping shapes
+    this.pdf.setFillColor(250, 248, 240); // Vintage cream background
+    this.pdf.rect(0, 0, 210, 297, 'F');
     
-    // Add subtle texture lines for aged paper effect
-    this.pdf.setDrawColor(240, 235, 200);
-    this.pdf.setLineWidth(0.1);
+    // Add subtle texture with very light brown dots
+    this.pdf.setFillColor(245, 240, 235);
+    this.pdf.setDrawColor(245, 240, 235);
     
-    // Random texture lines to simulate paper aging
-    for (let i = 0; i < 20; i++) {
-      const x1 = Math.random() * 210;
-      const y1 = Math.random() * this.pageHeight;
-      const x2 = x1 + (Math.random() - 0.5) * 30;
-      const y2 = y1 + (Math.random() - 0.5) * 5;
-      this.pdf.line(x1, y1, x2, y2);
+    // Create a subtle pattern
+    for (let x = 20; x < 190; x += 15) {
+      for (let y = 20; y < 280; y += 15) {
+        if (Math.random() > 0.7) {
+          this.pdf.circle(x, y, 0.5, 'F');
+        }
+      }
     }
   }
 
   // Add header with restaurant logo and vintage styling
-  addHeader(language = 'al') {
+  async addHeader(language = 'al') {
     const t = translations[language];
     
     // Add vintage background first
@@ -112,29 +137,26 @@ class PDFExportService {
     // Reset text color to dark brown for vintage look
     this.pdf.setTextColor(101, 67, 33);
     
-    // Add logo placeholder (centered)
-    const logoSize = 25;
-    const logoX = (210 - logoSize) / 2;
-    const logoY = this.currentY;
+    // Try to load and add the actual logo
+    const logoBase64 = await this.loadImageAsBase64('/images/ullishtja_logo.jpeg');
     
-    // Logo border/frame
-    this.pdf.setLineWidth(1.5);
-    this.pdf.setDrawColor(139, 115, 85);
-    this.pdf.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/2);
-    
-    // Logo text (since we can't easily add image, we'll use decorative text)
-    this.pdf.setFontSize(12);
-    this.pdf.setFont(undefined, 'bold');
-    const logoText = 'ULLISHTJA';
-    const logoTextWidth = this.pdf.getTextWidth(logoText);
-    this.pdf.text(logoText, logoX + (logoSize - logoTextWidth)/2, logoY + logoSize/2 - 2);
-    
-    const logoSubText = 'AGROTURIZEM';
-    this.pdf.setFontSize(8);
-    const logoSubTextWidth = this.pdf.getTextWidth(logoSubText);
-    this.pdf.text(logoSubText, logoX + (logoSize - logoSubTextWidth)/2, logoY + logoSize/2 + 3);
-    
-    this.currentY += logoSize + 10;
+    if (logoBase64) {
+      // Add the actual logo image
+      const logoSize = 25;
+      const logoX = (210 - logoSize) / 2;
+      const logoY = this.currentY;
+      
+      try {
+        this.pdf.addImage(logoBase64, 'JPEG', logoX, logoY, logoSize, logoSize);
+        this.currentY += logoSize + 10;
+      } catch (error) {
+        console.warn('Could not add logo image, using fallback');
+        this.addFallbackLogo();
+      }
+    } else {
+      // Fallback to text-based logo if image fails to load
+      this.addFallbackLogo();
+    }
 
     // Decorative separator
     this.pdf.setLineWidth(1);
@@ -202,13 +224,33 @@ class PDFExportService {
     this.pdf.setDrawColor(139, 115, 85);
     this.pdf.line(this.margins.left, this.currentY, 210 - this.margins.right, this.currentY);
     
-    // Add small decorative dots
-    for (let i = 0; i < 5; i++) {
-      const dotX = this.margins.left + (i * (170 / 4));
-      this.pdf.circle(dotX, this.currentY, 0.8, 'F');
-    }
-    
     this.currentY += 12;
+  }
+
+  // Fallback method for text-based logo when image fails
+  addFallbackLogo() {
+    const logoSize = 25;
+    const logoX = (210 - logoSize) / 2;
+    const logoY = this.currentY;
+    
+    // Logo border/frame
+    this.pdf.setLineWidth(1.5);
+    this.pdf.setDrawColor(139, 115, 85);
+    this.pdf.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/2);
+    
+    // Logo text
+    this.pdf.setFontSize(12);
+    this.pdf.setFont(undefined, 'bold');
+    const logoText = 'ULLISHTJA';
+    const logoTextWidth = this.pdf.getTextWidth(logoText);
+    this.pdf.text(logoText, logoX + (logoSize - logoTextWidth)/2, logoY + logoSize/2 - 2);
+    
+    const logoSubText = 'AGROTURIZEM';
+    this.pdf.setFontSize(8);
+    const logoSubTextWidth = this.pdf.getTextWidth(logoSubText);
+    this.pdf.text(logoSubText, logoX + (logoSize - logoSubTextWidth)/2, logoY + logoSize/2 + 3);
+    
+    this.currentY += logoSize + 10;
   }
 
   // Add category section with vintage styling
@@ -237,8 +279,8 @@ class PDFExportService {
     
     // Add decorative elements before and after category name
     this.pdf.setFontSize(16);
-    this.pdf.text('◆', categoryX - 12, this.currentY);
-    this.pdf.text('◆', categoryX + categoryNameWidth + 8, this.currentY);
+    this.pdf.text('•', categoryX - 12, this.currentY);
+    this.pdf.text('•', categoryX + categoryNameWidth + 8, this.currentY);
     
     // Category name
     this.pdf.setFontSize(20);
@@ -335,7 +377,7 @@ class PDFExportService {
         this.pdf.setFont(undefined, 'normal');
         this.pdf.setFontSize(10);
         this.pdf.setTextColor(139, 115, 85); // Lighter brown for dots
-        const dots = ' · '.repeat(Math.floor(dotsWidth / 8));
+        const dots = ' . '.repeat(Math.floor(dotsWidth / 8));
         this.pdf.text(dots, this.margins.left + nameWidth + 12, this.currentY);
       }
     }
@@ -434,8 +476,8 @@ class PDFExportService {
     try {
       this.initializePDF();
       
-      // Add header
-      this.addHeader(language);
+      // Add header with logo
+      await this.addHeader(language);
 
       // Add categories and items
       if (menuData && menuData.length > 0) {
@@ -466,9 +508,9 @@ class PDFExportService {
   }
 
   // Download PDF file
-  downloadPDF(menuData, language = 'al', filename = null) {
+  async downloadPDF(menuData, language = 'al', filename = null) {
     try {
-      const pdf = this.generateMenuPDF(menuData, language);
+      const pdf = await this.generateMenuPDF(menuData, language);
       const defaultFilename = `Ullishtja_Menu_${new Date().toISOString().split('T')[0]}.pdf`;
       pdf.save(filename || defaultFilename);
     } catch (error) {
