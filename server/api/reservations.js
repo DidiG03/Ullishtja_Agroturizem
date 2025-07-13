@@ -53,6 +53,23 @@ router.post('/', async (req, res) => {
   try {
     const reservationData = req.body;
     
+    // Import time slot service for validation
+    const { timeSlotService } = require('../../src/services/timeSlotService.js');
+    
+    // Validate time slot capacity
+    const validation = await timeSlotService.validateReservation(
+      reservationData.date,
+      reservationData.time,
+      reservationData.guests
+    );
+    
+    if (!validation.isValid) {
+      return res.status(400).json({
+        success: false,
+        error: validation.error || 'Time slot is not available'
+      });
+    }
+    
     const reservation = await prisma.reservation.create({
       data: {
         ...reservationData,

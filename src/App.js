@@ -27,6 +27,12 @@ function App() {
   // Google Reviews state
   const [reviewsData, setReviewsData] = useState(null);
   
+  // Time slots state
+  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedGuests, setSelectedGuests] = useState(1);
+  const [loadingTimeSlots, setLoadingTimeSlots] = useState(false);
+  
   const t = translations[currentLanguage];
 
   // Load dynamic menu data
@@ -75,6 +81,7 @@ function App() {
   const handleGuestCountChange = (e) => {
     const guestCount = e.target.value;
     setIsLargeGroup(guestCount === '9+');
+    setSelectedGuests(guestCount === '9+' ? 9 : parseInt(guestCount));
     
     // Clear any existing reservation status when guest count changes
     if (guestCount === '9+') {
@@ -85,6 +92,38 @@ function App() {
         message: ''
       });
     }
+  };
+
+  // Fetch available time slots for a specific date
+  const fetchAvailableTimeSlots = async (date) => {
+    if (!date) {
+      setAvailableTimeSlots([]);
+      return;
+    }
+
+    try {
+      setLoadingTimeSlots(true);
+      const response = await fetch(`/api/timeslots?action=available&date=${date}`);
+      const result = await response.json();
+      
+      if (result.success) {
+        setAvailableTimeSlots(result.data);
+      } else {
+        console.error('Failed to fetch available time slots:', result.error);
+        setAvailableTimeSlots([]);
+      }
+    } catch (error) {
+      console.error('Error fetching available time slots:', error);
+      setAvailableTimeSlots([]);
+    } finally {
+      setLoadingTimeSlots(false);
+    }
+  };
+
+  const handleDateChange = (e) => {
+    const date = e.target.value;
+    setSelectedDate(date);
+    fetchAvailableTimeSlots(date);
   };
 
   const openFullMenu = () => {
@@ -140,6 +179,35 @@ function App() {
       return;
     }
 
+    // Validate time slot capacity
+    const date = formData.get('date');
+    const time = formData.get('time');
+    const guests = parseInt(formData.get('guests'));
+    
+    try {
+      const capacityResponse = await fetch(`/api/timeslots?action=validate&date=${date}&time=${time}&guests=${guests}`);
+      const capacityResult = await capacityResponse.json();
+      
+      if (!capacityResult.isValid) {
+        setReservationStatus({
+          loading: false,
+          success: false,
+          error: capacityResult.error || 'Time slot is not available',
+          message: ''
+        });
+        return;
+      }
+    } catch (error) {
+      console.error('Error validating time slot:', error);
+      setReservationStatus({
+        loading: false,
+        success: false,
+        error: 'Error validating time slot availability',
+        message: ''
+      });
+      return;
+    }
+
     try {
       // Handle reservation - send email notification to restaurant
       const result = await handleReservation(formData, 'email');
@@ -152,6 +220,10 @@ function App() {
           message: t.contact.reservation.confirmationMessage
         });
         e.target.reset(); // Clear form
+        setSelectedDate('');
+        setAvailableTimeSlots([]);
+        setSelectedGuests(1);
+        setIsLargeGroup(false);
       } else {
         setReservationStatus({
           loading: false,
@@ -687,6 +759,8 @@ function App() {
                   <input 
                     type="date" 
                     name="date"
+                    value={selectedDate}
+                    onChange={handleDateChange}
                     required 
                     min={new Date().toISOString().split('T')[0]}
                     disabled={reservationStatus.loading}
@@ -698,14 +772,34 @@ function App() {
                     <span className="label-icon">🕐</span>
                     Time
                   </label>
-                  <input 
-                    type="time" 
-                    name="time"
-                    required 
-                    min="10:00"
-                    max="22:00"
-                    disabled={reservationStatus.loading}
-                  />
+                  {loadingTimeSlots ? (
+                    <div className="loading-slots">Loading available times...</div>
+                  ) : !selectedDate ? (
+                    <div className="select-date-first">Please select a date first</div>
+                  ) : availableTimeSlots.length === 0 ? (
+                    <div className="no-slots">No available time slots for this date</div>
+                  ) : (
+                    <select 
+                      name="time"
+                      required 
+                      disabled={reservationStatus.loading}
+                    >
+                      <option value="">Select time</option>
+                      {availableTimeSlots.map(slot => {
+                        const [hours, minutes] = slot.time.split(':');
+                        const hour = parseInt(hours);
+                        const ampm = hour >= 12 ? 'PM' : 'AM';
+                        const displayHour = hour % 12 || 12;
+                        const displayTime = `${displayHour}:${minutes} ${ampm}`;
+                        
+                        return (
+                          <option key={slot.id} value={slot.time}>
+                            {displayTime} (Available: {slot.availableCapacity} guests)
+                          </option>
+                        );
+                      })}
+                    </select>
+                  )}
                 </div>
 
                 <div className="form-field">

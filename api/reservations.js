@@ -53,6 +53,23 @@ export default async function handler(req, res) {
       // Create a new reservation
       const reservationData = req.body;
       
+      // Import time slot service for validation
+      const { timeSlotService } = await import('../src/services/timeSlotService.js');
+      
+      // Validate time slot capacity
+      const validation = await timeSlotService.validateReservation(
+        reservationData.date,
+        reservationData.time,
+        reservationData.guests
+      );
+      
+      if (!validation.isValid) {
+        return res.status(400).json({
+          success: false,
+          error: validation.error || 'Time slot is not available'
+        });
+      }
+      
       const reservation = await prisma.reservation.create({
         data: {
           ...reservationData,

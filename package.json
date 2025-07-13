@@ -34,6 +34,7 @@
     "dev": "concurrently \"npm run server\" \"npm start\"",
     "seed-menu": "node scripts/seed-menu.js",
     "clear-reservations": "node scripts/clear-test-reservations.js",
+    "init-settings": "node scripts/init-restaurant-settings.js",
     "postinstall": "prisma generate"
   },
   "eslintConfig": {
