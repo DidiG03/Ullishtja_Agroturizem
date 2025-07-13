@@ -17,7 +17,7 @@ router.get('/categories', async (req, res) => {
         }
       }
     });
-    res.json(categories);
+    res.json({ success: true, data: categories });
   } catch (error) {
     console.error('Error fetching categories:', error);
     res.status(500).json({ error: 'Failed to fetch categories' });
@@ -82,7 +82,7 @@ router.get('/items', async (req, res) => {
         category: true
       }
     });
-    res.json(items);
+    res.json({ success: true, data: items });
   } catch (error) {
     console.error('Error fetching menu items:', error);
     res.status(500).json({ error: 'Failed to fetch menu items' });
@@ -150,10 +150,10 @@ router.get('/complete', async (req, res) => {
         }
       }
     });
-    res.json(categories);
+    res.json({ success: true, data: categories });
   } catch (error) {
     console.error('Error fetching complete menu:', error);
-    res.status(500).json({ error: 'Failed to fetch complete menu' });
+    res.status(500).json({ success: false, error: 'Failed to fetch complete menu' });
   }
 });
 
