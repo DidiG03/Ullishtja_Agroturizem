@@ -23,9 +23,9 @@ const API_BASE = VERCEL_URL.startsWith('http') ? VERCEL_URL : `https://${VERCEL_
 // Test endpoints
 const endpoints = [
   { path: '/api/health', method: 'GET', description: 'Health check' },
-  { path: '/api/menu/complete', method: 'GET', description: 'Complete menu data' },
-  { path: '/api/menu/categories', method: 'GET', description: 'Menu categories' },
-  { path: '/api/menu/items', method: 'GET', description: 'Menu items' },
+      { path: '/api/menu-management?action=complete', method: 'GET', description: 'Complete menu data' },
+    { path: '/api/menu-management?action=categories', method: 'GET', description: 'Menu categories' },
+    { path: '/api/menu-management?action=items', method: 'GET', description: 'Menu items' },
 ];
 
 // Make HTTP request
@@ -75,7 +75,7 @@ async function validateEndpoint(endpoint) {
         const jsonData = JSON.parse(response.data);
         if (endpoint.path === '/api/health') {
           console.log(`   Status: ${jsonData.status}, Environment: ${jsonData.environment || 'unknown'}`);
-        } else if (endpoint.path === '/api/menu/complete') {
+        } else if (endpoint.path === '/api/menu-management?action=complete') {
           console.log(`   Found ${jsonData.length || 0} menu categories`);
         }
       } catch (e) {
