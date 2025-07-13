@@ -59,14 +59,19 @@ function App() {
     const loadMenu = async () => {
       try {
         const response = await MenuService.getCompleteMenu();
-        if (response.success) {
-          setMenuCategories(response.data || []);
+        console.log('Menu API response:', response); // Debug log
+        
+        if (response && response.success) {
+          const categories = response.data || [];
+          console.log('Setting menu categories:', categories); // Debug log
+          setMenuCategories(Array.isArray(categories) ? categories : []);
         } else {
-          console.error('Failed to load menu:', response.error);
+          console.error('Failed to load menu:', response?.error || 'Unknown error');
           setMenuCategories([]);
         }
       } catch (error) {
         console.error('Error loading menu:', error);
+        setMenuCategories([]);
       }
     };
 
@@ -634,13 +639,13 @@ function App() {
             )
           ) : (
             <div className="menu-grid">
-              {menuCategories
+              {(Array.isArray(menuCategories) ? menuCategories : [])
                 .sort((a, b) => a.displayOrder - b.displayOrder)
                 .slice(0, 3) // Show first 3 categories
                 .map((category) => (
                   <div key={category.id} className="menu-category">
                     <h3>{getLocalizedName(category)}</h3>
-                    {(category.menuItems || [])
+                    {(Array.isArray(category.menuItems) ? category.menuItems : [])
                       .sort((a, b) => a.displayOrder - b.displayOrder)
                       .slice(0, 3) // Show first 3 items per category
                       .map((item) => (
