@@ -16,17 +16,22 @@ function DynamicMenu({ currentLanguage, onClose }) {
     try {
       setLoading(true);
       const data = await MenuService.getCompleteMenu();
-      if (data.success) {
-        setCategories(data.data || []);
-        if (data.data && data.data.length > 0) {
-          setActiveCategory(data.data[0].id);
+      console.log('DynamicMenu API response:', data); // Debug log
+      
+      if (data && data.success) {
+        const categories = data.data || [];
+        console.log('DynamicMenu setting categories:', categories); // Debug log
+        setCategories(Array.isArray(categories) ? categories : []);
+        if (Array.isArray(categories) && categories.length > 0) {
+          setActiveCategory(categories[0].id);
         }
       } else {
-        throw new Error(data.error || 'Failed to load menu');
+        throw new Error(data?.error || 'Failed to load menu');
       }
     } catch (error) {
       console.error('Error loading menu:', error);
       setError('Failed to load menu');
+      setCategories([]); // Ensure it's always an array
     } finally {
       setLoading(false);
     }
@@ -51,7 +56,7 @@ function DynamicMenu({ currentLanguage, onClose }) {
   };
 
   const getCurrentCategory = () => {
-    return categories.find(cat => cat.id === activeCategory);
+    return Array.isArray(categories) ? categories.find(cat => cat.id === activeCategory) : undefined;
   };
 
   const getCurrentItems = () => {
@@ -95,7 +100,7 @@ function DynamicMenu({ currentLanguage, onClose }) {
         <div className="menu-content">
           {/* Category Navigation */}
           <div className="category-nav">
-            {categories.map(category => (
+            {(Array.isArray(categories) ? categories : []).map(category => (
               <button
                 key={category.id}
                 className={`category-btn ${activeCategory === category.id ? 'active' : ''}`}
