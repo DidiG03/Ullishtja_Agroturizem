@@ -19,14 +19,14 @@ function DynamicMenu({ currentLanguage, onClose }) {
       console.log('DynamicMenu API response:', data); // Debug log
       
       if (data && data.success) {
-        const categories = data.data || [];
-        console.log('DynamicMenu setting categories:', categories); // Debug log
-        setCategories(Array.isArray(categories) ? categories : []);
-        if (Array.isArray(categories) && categories.length > 0) {
-          console.log('Setting activeCategory to:', categories[0].id);
-          setActiveCategory(categories[0].id);
+        const categoriesData = data.data || [];
+        console.log('DynamicMenu setting categories:', categoriesData); // Debug log
+        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+        if (Array.isArray(categoriesData) && categoriesData.length > 0) {
+          console.log('Setting activeCategory to:', categoriesData[0].id);
+          setActiveCategory(categoriesData[0].id);
         } else {
-          console.log('No categories to set as active:', categories);
+          console.log('No categories to set as active:', categoriesData);
         }
       } else {
         throw new Error(data?.error || 'Failed to load menu');
