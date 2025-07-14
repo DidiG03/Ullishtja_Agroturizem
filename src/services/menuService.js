@@ -14,8 +14,9 @@ class MenuService {
       await delay(100);
       const response = await fetch(`${API_BASE_URL}/api/menu/categories`);
       if (!response.ok) throw new Error('Failed to fetch categories');
-      const categories = await response.json();
-      return { success: true, data: categories };
+      const result = await response.json();
+      // API already returns {success: true, data: categories}, so return as-is
+      return result;
     } catch (error) {
       console.error('Error fetching categories:', error);
       return { success: false, error: error.message };
@@ -79,8 +80,9 @@ class MenuService {
         : `${API_BASE_URL}/api/menu/items`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch menu items');
-      const items = await response.json();
-      return { success: true, data: items };
+      const result = await response.json();
+      // API already returns {success: true, data: items}, so return as-is
+      return result;
     } catch (error) {
       console.error('Error fetching menu items:', error);
       return { success: false, error: error.message };
@@ -143,8 +145,9 @@ class MenuService {
       await delay(100);
       const response = await fetch(`${API_BASE_URL}/api/menu/complete`);
       if (!response.ok) throw new Error('Failed to fetch complete menu');
-      const categories = await response.json();
-      return { success: true, data: categories };
+      const result = await response.json();
+      // API already returns {success: true, data: categories}, so return as-is
+      return result;
     } catch (error) {
       console.error('Error fetching complete menu:', error);
       return { success: false, error: error.message };
