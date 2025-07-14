@@ -23,7 +23,10 @@ function DynamicMenu({ currentLanguage, onClose }) {
         console.log('DynamicMenu setting categories:', categories); // Debug log
         setCategories(Array.isArray(categories) ? categories : []);
         if (Array.isArray(categories) && categories.length > 0) {
+          console.log('Setting activeCategory to:', categories[0].id);
           setActiveCategory(categories[0].id);
+        } else {
+          console.log('No categories to set as active:', categories);
         }
       } else {
         throw new Error(data?.error || 'Failed to load menu');
@@ -61,7 +64,12 @@ function DynamicMenu({ currentLanguage, onClose }) {
 
   const getCurrentItems = () => {
     const category = getCurrentCategory();
-    return category ? category.menuItems || [] : [];
+    console.log('getCurrentItems - activeCategory:', activeCategory);
+    console.log('getCurrentItems - category:', category);
+    console.log('getCurrentItems - category.menuItems:', category?.menuItems);
+    const items = category ? category.menuItems || [] : [];
+    console.log('getCurrentItems - returning items:', items);
+    return items;
   };
 
   if (loading) {
@@ -116,7 +124,10 @@ function DynamicMenu({ currentLanguage, onClose }) {
             <div className="menu-category-section">
               <h2>{getCurrentCategory() ? getLocalizedName(getCurrentCategory()) : ''}</h2>
               <div className="menu-items-grid">
-                {getCurrentItems().map((item, index) => (
+                {(() => {
+                  const items = getCurrentItems();
+                  console.log('Rendering items:', items.length, 'items');
+                  return items.map((item, index) => (
                   <div key={item.id} className="menu-item-card">
                     <div className="item-header">
                       <h3>{getLocalizedName(item)}</h3>
@@ -156,7 +167,8 @@ function DynamicMenu({ currentLanguage, onClose }) {
                       )}
                     </div>
                   </div>
-                ))}
+                  ));
+                })()}
               </div>
             </div>
           </div>
