@@ -579,7 +579,7 @@ function App() {
                 className="section-img"
                 style={{ transform: 'rotate(180deg)' }}
                 autoPlay
-                muted
+                muted 
                 loop
                 playsInline
               />
