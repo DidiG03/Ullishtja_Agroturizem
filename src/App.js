@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, useCallback, useMemo } from 'react';
 import './App.css';
 import { translations } from './translations';
-import DynamicMenu from './components/DynamicMenu';
-import GoogleReviews from './components/GoogleReviews';
 import MenuService from './services/menuService';
 import googleReviewsService from './services/googleReviews';
 import pdfExportService from './services/pdfExportService';
 import { handleReservation, validateReservationForm } from './reservationService';
+
+// Lazy load components for better performance
+const DynamicMenu = React.lazy(() => import('./components/DynamicMenu'));
+const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
+const Gallery = React.lazy(() => import('./components/Gallery'));
 
 function App() {
   const [currentLanguage, setCurrentLanguage] = useState('al');
@@ -33,10 +36,11 @@ function App() {
   const [selectedGuests, setSelectedGuests] = useState(1);
   const [loadingTimeSlots, setLoadingTimeSlots] = useState(false);
   
-  const t = translations[currentLanguage];
+  // Memoize translations to avoid recalculating on every render
+  const t = useMemo(() => translations[currentLanguage], [currentLanguage]);
 
-  // Add localization helpers
-  const getLocalizedName = (item, field = 'name') => {
+  // Memoize localization helpers
+  const getLocalizedName = useCallback((item, field = 'name') => {
     switch (currentLanguage) {
       case 'al':
         return item[`${field}AL`];
@@ -47,12 +51,12 @@ function App() {
       default:
         return item[`${field}AL`];
     }
-  };
+  }, [currentLanguage]);
 
-  const getLocalizedText = (item, field) => {
+  const getLocalizedText = useCallback((item, field) => {
     const text = getLocalizedName(item, field);
     return text || '';
-  };
+  }, [getLocalizedName]);
 
   // Load dynamic menu data
   useEffect(() => {
@@ -92,22 +96,21 @@ function App() {
     loadReviews();
   }, []);
 
-
-
-  const toggleMobileMenu = () => {
+  // Memoize event handlers with useCallback
+  const toggleMobileMenu = useCallback(() => {
     setMobileMenuOpen(!mobileMenuOpen);
-  };
+  }, [mobileMenuOpen]);
 
-  const closeMobileMenu = () => {
+  const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false);
-  };
+  }, []);
 
-  const changeLanguage = (lang) => {
+  const changeLanguage = useCallback((lang) => {
     setCurrentLanguage(lang);
     closeMobileMenu(); // Close mobile menu when language changes
-  };
+  }, [closeMobileMenu]);
 
-  const handleGuestCountChange = (e) => {
+  const handleGuestCountChange = useCallback((e) => {
     const guestCount = e.target.value;
     setIsLargeGroup(guestCount === '9+');
     setSelectedGuests(guestCount === '9+' ? 9 : parseInt(guestCount));
@@ -121,10 +124,10 @@ function App() {
         message: ''
       });
     }
-  };
+  }, []);
 
   // Fetch available time slots for a specific date
-  const fetchAvailableTimeSlots = async (date) => {
+  const fetchAvailableTimeSlots = useCallback(async (date) => {
     if (!date) {
       setAvailableTimeSlots([]);
       return;
@@ -147,23 +150,23 @@ function App() {
     } finally {
       setLoadingTimeSlots(false);
     }
-  };
+  }, []);
 
-  const handleDateChange = (e) => {
+  const handleDateChange = useCallback((e) => {
     const date = e.target.value;
     setSelectedDate(date);
     fetchAvailableTimeSlots(date);
-  };
+  }, [fetchAvailableTimeSlots]);
 
-  const openFullMenu = () => {
+  const openFullMenu = useCallback(() => {
     setShowFullMenu(true);
-  };
+  }, []);
 
-  const closeFullMenu = () => {
+  const closeFullMenu = useCallback(() => {
     setShowFullMenu(false);
-  };
+  }, []);
 
-  const handlePDFExport = async () => {
+  const handlePDFExport = useCallback(async () => {
     try {
       // Use the dynamic menu data if available, otherwise fallback to static menu
       const menuDataForPDF = menuCategories.length > 0 ? menuCategories : [];
@@ -176,9 +179,9 @@ function App() {
             currentLanguage === 'en' ? 'Error exporting PDF' : 
             'Errore durante l\'esportazione PDF');
     }
-  };
+  }, [menuCategories, currentLanguage]);
 
-  const handleReservationSubmit = async (e) => {
+  const handleReservationSubmit = useCallback(async (e) => {
     e.preventDefault();
     
     // Check if it's a large group
@@ -248,28 +251,56 @@ function App() {
           error: null,
           message: t.contact.reservation.confirmationMessage
         });
+
+        // Clear form
         e.target.reset(); // Clear form
         setSelectedDate('');
         setAvailableTimeSlots([]);
         setSelectedGuests(1);
         setIsLargeGroup(false);
       } else {
-        setReservationStatus({
-          loading: false,
-          success: false,
-          error: t.contact.reservation.error,
-          message: ''
-        });
+        throw new Error(result.error || 'Reservation failed');
       }
     } catch (error) {
+      console.error('Reservation error:', error);
       setReservationStatus({
         loading: false,
         success: false,
-        error: t.contact.reservation.error,
+        error: error.message || t.contact.reservation.errorMessage,
         message: ''
       });
     }
-  };
+  }, [isLargeGroup, t.contact.reservation.largeGroupError, t.contact.reservation.confirmationMessage, t.contact.reservation.errorMessage]);
+
+  // Memoize complex computations
+  const formattedTimeSlots = useMemo(() => {
+    return availableTimeSlots.map(slot => {
+      const [hours, minutes] = slot.time.split(':');
+      const hour = parseInt(hours);
+      const ampm = hour >= 12 ? 'PM' : 'AM';
+      const displayHour = hour % 12 || 12;
+      const displayTime = `${displayHour}:${minutes} ${ampm}`;
+      
+      return {
+        ...slot,
+        displayTime
+      };
+    });
+  }, [availableTimeSlots]);
+
+  // Memoize review display components
+  const reviewsDisplay = useMemo(() => {
+    if (!reviewsData) return { stars: '⭐⭐⭐⭐⭐', rating: '0.0', count: '0' };
+    
+    return {
+      stars: googleReviewsService.generateStarDisplay(reviewsData.averageRating),
+      rating: googleReviewsService.formatRating(reviewsData.averageRating),
+      count: reviewsData.totalReviews
+    };
+  }, [reviewsData]);
+
+  // Memoize minimum date for date input
+  const minDate = useMemo(() => new Date().toISOString().split('T')[0], []);
 
   return (
     <div className="App">
@@ -285,6 +316,7 @@ function App() {
             <a href="#home" className="nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
             <a href="#about" className="nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
             <a href="#menu" className="nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
+            <a href="#gallery" className="nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a>
             <a href="#contact" className="nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
           </nav>
 
@@ -298,6 +330,7 @@ function App() {
                           <a href="#home" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
             <a href="#about" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
             <a href="#menu" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
+            <a href="#gallery" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a>
             <a href="#contact" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
             </nav>
             <div className="mobile-language-selector">
@@ -418,10 +451,14 @@ function App() {
           <div className="hero-visual">
             <div className="hero-image-container">
               <div className="hero-main-image">
-                <img 
-                  src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
-                  alt="Ullishtja Restaurant Interior"
+                <video 
+                  src="/images/wetransfer_ullishtja/DJI_20240806130609_0022_D.mov" 
+                  alt="Ullishtja Restaurant"
                   className="main-img"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
                 />
                 <div className="image-decoration decoration-1"></div>
                 <div className="image-decoration decoration-2"></div>
@@ -439,13 +476,13 @@ function App() {
 
               <div className="floating-rating">
                 <div className="rating-stars">
-                  {reviewsData ? googleReviewsService.generateStarDisplay(reviewsData.averageRating) : '⭐⭐⭐⭐⭐'}
+                  {reviewsDisplay.stars}
                 </div>
                 <div className="rating-text">
                   {reviewsData ? (
                     <>
-                      <div className="rating-number">{googleReviewsService.formatRating(reviewsData.averageRating)}</div>
-                      <div className="rating-count">{reviewsData.totalReviews} {t.hero.googleReviews}</div>
+                      <div className="rating-number">{reviewsDisplay.rating}</div>
+                      <div className="rating-count">{reviewsDisplay.count} {t.hero.googleReviews}</div>
                     </>
                   ) : (
                     t.hero.loadingReviews
@@ -511,10 +548,14 @@ function App() {
               </div>
             </div>
             <div className="section-image">
-              <img 
-                src="https://images.unsplash.com/photo-1519167758481-83f29c8a6c4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80" 
+              <video 
+                src="/images/wetransfer_ullishtja/DJI_20240806124740_0003_D.mov" 
                 alt="Events and Celebrations"
                 className="section-img"
+                autoPlay
+                muted
+                loop
+                playsInline
               />
               <div className="image-overlay">
                 <div className="overlay-content">
@@ -532,10 +573,15 @@ function App() {
         <div className="container">
           <div className="section-grid reverse">
             <div className="section-image">
-              <img 
-                src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80" 
+              <video 
+                src="/images/wetransfer_ullishtja/IMG_4999.mov" 
                 alt="A la Carte Menu"
                 className="section-img"
+                style={{ transform: 'rotate(180deg)' }}
+                autoPlay
+                muted
+                loop
+                playsInline
               />
               <div className="image-overlay">
                 <div className="overlay-content">
@@ -680,10 +726,15 @@ function App() {
         </div>
       </section>
 
-      
+      {/* Gallery Section */}
+      <Suspense fallback={<div className="loading-section">Loading gallery...</div>}>
+        <Gallery currentLanguage={currentLanguage} translations={t} />
+      </Suspense>
 
       {/* Google Reviews Section */}
-      <GoogleReviews currentLanguage={currentLanguage} translations={t} />
+      <Suspense fallback={<div className="loading-section">Loading reviews...</div>}>
+        <GoogleReviews currentLanguage={currentLanguage} translations={t} />
+      </Suspense>
 
       {/* Contact Section */}
       <section id="contact" className="contact">
@@ -824,7 +875,7 @@ function App() {
                     value={selectedDate}
                     onChange={handleDateChange}
                     required 
-                    min={new Date().toISOString().split('T')[0]}
+                    min={minDate}
                     disabled={reservationStatus.loading}
                   />
                 </div>
@@ -847,16 +898,10 @@ function App() {
                       disabled={reservationStatus.loading}
                     >
                       <option value="">Select time</option>
-                      {availableTimeSlots.map(slot => {
-                        const [hours, minutes] = slot.time.split(':');
-                        const hour = parseInt(hours);
-                        const ampm = hour >= 12 ? 'PM' : 'AM';
-                        const displayHour = hour % 12 || 12;
-                        const displayTime = `${displayHour}:${minutes} ${ampm}`;
-                        
+                      {formattedTimeSlots.map(slot => {
                         return (
                           <option key={slot.id} value={slot.time}>
-                            {displayTime} (Available: {slot.availableCapacity} guests)
+                            {slot.displayTime} (Available: {slot.availableCapacity} guests)
                           </option>
                         );
                       })}
@@ -874,6 +919,7 @@ function App() {
                     required 
                     disabled={reservationStatus.loading}
                     onChange={handleGuestCountChange}
+                    value={selectedGuests === 9 ? '9+' : selectedGuests}
                   >
                     <option value="">{t.contact.reservation.guests}</option>
                     <option value="1">1 {t.contact.reservation.guest}</option>
@@ -941,10 +987,12 @@ function App() {
 
             {/* Full Menu Modal */}
       {showFullMenu && (
-        <DynamicMenu 
-          currentLanguage={currentLanguage}
-          onClose={closeFullMenu}
-        />
+        <Suspense fallback={<div className="loading-section">Loading menu...</div>}>
+          <DynamicMenu 
+            currentLanguage={currentLanguage}
+            onClose={closeFullMenu}
+          />
+        </Suspense>
       )}
     </div>
   );

@@ -1580,7 +1580,9 @@ h2::after {
   }
 
   .hero-visual {
-    display: none;
+    order: 1;
+    display: block;
+    margin-bottom: 2rem;
   }
 
   .hero-badge {
@@ -1630,11 +1632,11 @@ h2::after {
   }
 
   .hero-image-container {
-    height: 400px;
+    height: 300px;
   }
 
   .hero-main-image {
-    height: 350px;
+    height: 300px;
   }
 
   .floating-card {
@@ -1651,7 +1653,26 @@ h2::after {
 
   .decoration-1,
   .decoration-2 {
-    display: none;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    opacity: 0.7;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+  }
+  
+  .decoration-1 {
+    top: 20px;
+    right: 20px;
+  }
+  
+  .decoration-2 {
+    bottom: 20px;
+    left: 20px;
   }
 
 
@@ -2053,7 +2074,7 @@ h2::after {
   }
 
   .hero-image-container {
-    height: 300px;
+    height: 250px;
   }
 
   .hero-main-image {
@@ -2670,4 +2691,16 @@ html {
 .no-slots {
   background-color: #ffebee;
   color: #d32f2f;
+}
+
+/* Loading sections for lazy-loaded components */
+.loading-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: var(--cream);
+  color: var(--primary-forest);
+  font-size: 1.1rem;
+  text-align: center;
 }

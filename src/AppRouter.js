@@ -1,10 +1,41 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ClerkProvider } from '@clerk/clerk-react';
 import App from './App';
-import AdminLogin from './components/AdminLogin';
-import Dashboard from './components/Dashboard';
-import ProtectedRoute from './components/ProtectedRoute';
+
+// Lazy load admin components for better performance
+const AdminLogin = React.lazy(() => import('./components/AdminLogin'));
+const Dashboard = React.lazy(() => import('./components/Dashboard'));
+const ProtectedRoute = React.lazy(() => import('./components/ProtectedRoute'));
+
+// Loading component for Suspense fallback
+const LoadingSpinner = () => (
+  <div style={{
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: '100vh',
+    background: 'var(--cream, #fafafa)',
+    color: 'var(--primary-forest, #2d4a36)'
+  }}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: '1rem'
+    }}>
+      <div style={{
+        width: '40px',
+        height: '40px',
+        border: '3px solid var(--light-green, #8fbc8f)',
+        borderTop: '3px solid var(--primary-forest, #2d4a36)',
+        borderRadius: '50%',
+        animation: 'spin 1s linear infinite'
+      }}></div>
+      <span>Loading...</span>
+    </div>
+  </div>
+);
 
 // Get the publishable key from environment variables
 const clerkPubKey = process.env.REACT_APP_CLERK_PUBLISHABLE_KEY;
@@ -17,26 +48,37 @@ const AppRouter = () => {
   return (
     <ClerkProvider publishableKey={clerkPubKey || 'pk_test_placeholder'}>
       <Router>
-        <Routes>
-          {/* Main website route */}
-          <Route path="/" element={<App />} />
-          
-          {/* Admin login route */}
-          <Route path="/admin-login" element={<AdminLogin />} />
-          
-          {/* Protected dashboard route - admin only */}
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute adminOnly={true}>
-                <Dashboard />
-              </ProtectedRoute>
-            } 
-          />
-          
-          {/* Fallback route - redirect to home */}
-          <Route path="*" element={<App />} />
-        </Routes>
+        <Suspense fallback={<LoadingSpinner />}>
+          <Routes>
+            {/* Main website route */}
+            <Route path="/" element={<App />} />
+            
+            {/* Admin login route - lazy loaded */}
+            <Route 
+              path="/admin-login" 
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <AdminLogin />
+                </Suspense>
+              } 
+            />
+            
+            {/* Protected dashboard route - admin only, lazy loaded */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <Suspense fallback={<LoadingSpinner />}>
+                  <ProtectedRoute adminOnly={true}>
+                    <Dashboard />
+                  </ProtectedRoute>
+                </Suspense>
+              } 
+            />
+            
+            {/* Fallback route - redirect to home */}
+            <Route path="*" element={<App />} />
+          </Routes>
+        </Suspense>
       </Router>
     </ClerkProvider>
   );
