@@ -21,6 +21,35 @@ body {
   line-height: 1.6;
   color: var(--primary-forest);
   background-color: var(--cream);
+  
+  /* Mobile performance optimizations */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  
+  /* Prevent overscroll bounce on iOS */
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Mobile device optimizations */
+.mobile-device * {
+  /* Hardware acceleration for smoother animations */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+}
+
+/* Optimize scrolling performance */
+.is-scrolling * {
+  pointer-events: none !important;
+}
+
+.is-scrolling .scroll-controlled-video-section video {
+  will-change: auto;
 }
 
 .container {
@@ -138,14 +167,29 @@ h2::after {
   border-color: var(--accent-gold);
 }
 
-/* Hero Section - Modern & Dynamic */
+/* Hero Section - Modern & Dynamic - Mobile First */
 .hero {
   min-height: 100vh;
+  min-height: calc(var(--vh, 1vh) * 100);
   position: relative;
   overflow: hidden;
-  padding-top: 100px;
+  padding-top: 80px; /* Smaller padding on mobile */
   display: flex;
   align-items: center;
+  
+  /* Mobile performance optimizations */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: scroll-position;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+/* Desktop adjustments */
+@media (min-width: 769px) {
+  .hero {
+    padding-top: 100px;
+  }
 }
 
 /* Animated Background */
@@ -502,6 +546,10 @@ h2::after {
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
   animation: imageFloat 6s ease-in-out infinite;
+  /* Optimize for smooth scrolling */
+  will-change: transform;
+  transform: translateZ(0);
+  contain: layout style paint;
 }
 
 @keyframes imageFloat {
@@ -513,7 +561,10 @@ h2::after {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Removed transition for better performance */
+  /* Optimize for smooth scrolling */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* Removed hover effect for better performance */
@@ -703,12 +754,20 @@ h2::after {
 .events-section {
   padding: 100px 0;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  /* Performance optimization */
+  will-change: transform;
+  transform: translateZ(0);
+  contain: layout style paint;
 }
 
 /* A la Carte Section */
 .alacarte-section {
   padding: 100px 0;
   background: white;
+  /* Performance optimization */
+  will-change: transform;
+  transform: translateZ(0);
+  contain: layout style paint;
 }
 
 /* Shared Section Grid Layout */
@@ -810,13 +869,25 @@ h2::after {
   /* Removed transition for better performance */
 }
 
+/* Ensure section images maintain proper sizing on mobile */
+@media (max-width: 768px) {
+  .section-image {
+    height: 300px; /* Consistent with hero video height */
+    width: 100%;
+    margin: 0; /* Remove any margin that could cause shrinking */
+  }
+}
+
 /* Removed hover effect for better performance */
 
 .section-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Removed transition for better performance */
+  /* Performance optimization */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* Removed hover effect for better performance */
@@ -1397,12 +1468,15 @@ h2::after {
   right: -100%;
   width: 300px;
   height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
   box-shadow: -5px 0 20px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   transition: right 0.3s ease;
   padding: 2rem;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 }
 
 .mobile-nav.active {
@@ -1525,9 +1599,15 @@ h2::after {
   left: 0;
   width: 100%;
   height: 100%;
+  height: calc(var(--vh, 1vh) * 100);
   background: rgba(0, 0, 0, 0.5);
   z-index: 999;
   backdrop-filter: blur(2px);
+  
+  /* Prevent overscroll and interaction with background */
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: none;
 }
 
 .desktop-nav, .desktop-lang {
@@ -1718,6 +1798,19 @@ h2::after {
 
   .section-grid.reverse {
     direction: ltr;
+    /* On mobile, reverse the order so video goes to bottom */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .section-grid.reverse .section-image {
+    order: 2; /* Video goes to bottom */
+    width: 100%; /* Ensure full width */
+  }
+  
+  .section-grid.reverse .section-content {
+    order: 1; /* Content goes to top */
+    width: 100%; /* Ensure full width */
   }
 
   .section-content {
@@ -1762,7 +1855,8 @@ h2::after {
 
   .section-image {
     height: 300px;
-    margin: 0 15px;
+    margin: 0; /* Remove margins to prevent shrinking */
+    width: 100%; /* Ensure full width */
   }
 
   .overlay-icon {
@@ -2149,6 +2243,22 @@ h2::after {
     border-radius: 15px;
   }
 
+  /* Section Grid - Small Mobile */
+  .section-grid.reverse {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .section-grid.reverse .section-image {
+    order: 2; /* Video goes to bottom on small mobile too */
+    width: 100%; /* Ensure full width */
+  }
+  
+  .section-grid.reverse .section-content {
+    order: 1; /* Content goes to top on small mobile too */
+    width: 100%; /* Ensure full width */
+  }
+
   /* Form Labels Small Mobile */
   .form-label {
     font-size: 0.95rem;
@@ -2272,9 +2382,31 @@ h2::after {
   /* Removed hover effects for better performance */
 }
 
-/* Smooth scrolling */
+/* Enhanced smooth scrolling */
 html {
   scroll-behavior: smooth;
+  /* Better scroll performance */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Optimize scrolling performance */
+body {
+  /* Hardware acceleration for smooth scrolling */
+  will-change: scroll-position;
+  /* Improve scroll performance */
+  overscroll-behavior-y: contain;
+}
+
+/* Video sections optimization */
+.hero,
+.events-section,
+.alacarte-section {
+  /* Hardware acceleration */
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  /* Contain layout to prevent reflows */
+  contain: layout style paint;
 }
 
 /* Mobile-First Animations and Interactions */
@@ -2375,21 +2507,35 @@ html {
   .cta-button:active,
   .full-menu-btn:active,
   .submit-btn:active {
-    transform: scale(0.98);
+    transform: scale(0.98) translateZ(0);
     transition: transform 0.1s ease;
   }
 
   .mobile-nav-link:active {
     background: rgba(143, 188, 143, 0.2);
-    transform: translateX(15px) scale(0.98);
+    transform: translateX(15px) scale(0.98) translateZ(0);
   }
 
   .carousel-nav:active {
-    transform: translateY(-50%) scale(0.9);
+    transform: translateY(-50%) scale(0.9) translateZ(0);
   }
 
   .carousel-dot:active {
-    transform: scale(0.8);
+    transform: scale(0.8) translateZ(0);
+  }
+  
+  /* Optimize video sections for mobile scrolling */
+  .hero-visual,
+  .section-image {
+    will-change: transform;
+    transform: translateZ(0);
+    contain: layout style paint;
+  }
+  
+  /* Ensure section images are full width on mobile */
+  .section-image {
+    width: 100%;
+    margin: 0;
   }
 }
 

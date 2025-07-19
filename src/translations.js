@@ -44,6 +44,12 @@ export const translations = {
         }
       }
     },
+    // Scroll Video Experience Section
+    experience: {
+      title: "Përjetoni Natyrën",
+      subtitle: "Lëvizni për të Eksploruar",
+      description: "Zhytuni në bukurinë mahnitëse të vendndodhjes sonë agroturistike. Nga kodrat e butë deri tek pamjet panoramike të maleve, zbuloni parajsën natyrore që rrethon restorantin tonë tradicional shqiptar.\n\nShihni si peizazhi zbulohet përpara jush, duke zbuluar mjedisin e paprekur ku rriten përbërësit tanë dhe ku lindin historitë tona.",
+    },
     // Events Section
     events: {
       title: "Eventet dhe Festimet",
@@ -448,6 +454,12 @@ export const translations = {
       title: "Our Story",
       text1: "Nestled in the beautiful Albanian countryside, Ullishtja Agriturizem offers an authentic farm-to-table dining experience. Our restaurant celebrates the rich culinary traditions of Albania, using fresh ingredients from our own gardens and local farms.",
       text2: "Founded in 2021, we pride ourselves on serving traditional Albanian dishes prepared with love and care, just like our ancestors did. Every meal tells a story of our heritage and connection to the land.",
+    },
+    // Scroll Video Experience Section
+    experience: {
+      title: "Experience Nature",
+      subtitle: "Scroll to Explore",
+      description: "Immerse yourself in the breathtaking beauty of our agrotourism location. From rolling hills to panoramic mountain views, discover the natural paradise that surrounds our traditional Albanian restaurant.\n\nWatch as the landscape unfolds before you, revealing the pristine environment where our ingredients are grown and our stories are born.",
       features: {
         fresh: {
           title: "🫒 Fresh Ingredients",
@@ -881,6 +893,12 @@ export const translations = {
           desc: "Piatti autentici tramandati di generazione in generazione"
         }
       }
+    },
+    // Scroll Video Experience Section
+    experience: {
+      title: "Vivi la Natura",
+      subtitle: "Scorri per Esplorare",
+      description: "Immergiti nella bellezza mozzafiato della nostra location agrituristica. Dalle dolci colline alle viste panoramiche delle montagne, scopri il paradiso naturale che circonda il nostro ristorante tradizionale albanese.\n\nGuarda come il paesaggio si svela davanti a te, rivelando l'ambiente incontaminato dove crescono i nostri ingredienti e nascono le nostre storie.",
     },
     // Events Section
     events: {

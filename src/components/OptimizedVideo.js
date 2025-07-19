@@ -16,36 +16,78 @@ const OptimizedVideo = ({
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isVisible, setIsVisible] = useState(!lazy);
+  const [isInView, setIsInView] = useState(false);
   const [hasError, setHasError] = useState(false);
   const videoRef = useRef(null);
+  const observerRef = useRef(null);
 
-  // Intersection Observer for lazy loading
+  // Intersection Observer for lazy loading and viewport management
   useEffect(() => {
-    if (!lazy) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        const isCurrentlyInView = entry.isIntersecting;
+        setIsInView(isCurrentlyInView);
+        
+        // For lazy loading
+        if (lazy && isCurrentlyInView && !isVisible) {
           setIsVisible(true);
-          observer.disconnect();
+        }
+        
+        // Video playback management based on viewport
+        if (videoRef.current && isLoaded) {
+          const isMobile = window.innerWidth <= 768;
+          
+          if (isCurrentlyInView) {
+            // Video is in view, play it
+            if (autoPlay && videoRef.current.paused) {
+              // Add small delay on mobile for smoother performance
+              const delay = isMobile ? 100 : 0;
+              setTimeout(() => {
+                if (videoRef.current) {
+                  const playPromise = videoRef.current.play();
+                  if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                      console.log('Auto-play prevented:', error);
+                    });
+                  }
+                }
+              }, delay);
+            }
+          } else {
+            // Video is out of view, pause it for better performance
+            if (!videoRef.current.paused) {
+              videoRef.current.pause();
+            }
+            
+            // On mobile, also reset video position for memory optimization
+            if (isMobile && videoRef.current.currentTime > 5) {
+              videoRef.current.currentTime = 0;
+            }
+          }
         }
       },
       { 
-        threshold: 0.1,
-        rootMargin: '50px 0px' // Start loading 50px before it comes into view
+        threshold: window.innerWidth <= 768 ? [0.3] : [0, 0.1, 0.5], // Simpler thresholds on mobile
+        rootMargin: window.innerWidth <= 768 ? '50px 0px' : '20px 0px' // Larger margin on mobile for smoother experience
       }
     );
+
+    observerRef.current = observer;
 
     if (videoRef.current) {
       observer.observe(videoRef.current);
     }
 
-    return () => observer.disconnect();
-  }, [lazy]);
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [lazy, isLoaded, autoPlay]);
 
   // Auto-play when video becomes visible and loaded
   useEffect(() => {
-    if (isLoaded && videoRef.current && autoPlay) {
+    if (isLoaded && videoRef.current && autoPlay && isInView) {
       const playPromise = videoRef.current.play();
       if (playPromise !== undefined) {
         playPromise.catch(error => {
@@ -54,7 +96,7 @@ const OptimizedVideo = ({
         });
       }
     }
-  }, [isLoaded, autoPlay]);
+  }, [isLoaded, autoPlay, isInView]);
 
   const handleVideoLoad = () => {
     setIsLoaded(true);
@@ -103,11 +145,11 @@ const OptimizedVideo = ({
           src={src}
           poster={poster}
           className={`optimized-video ${isLoaded ? 'loaded' : 'loading'}`}
-          autoPlay={autoPlay}
+          autoPlay={false} // Controlled by intersection observer
           muted={muted}
           loop={loop}
           playsInline={playsInline}
-          preload="auto" // Load the entire video for immediate playback
+          preload="metadata" // Balanced approach - load metadata, then auto when in view
           onCanPlay={handleVideoLoad} // Trigger when video can start playing
           onError={handleVideoError}
           style={style}

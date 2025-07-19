@@ -5,16 +5,26 @@ import MenuService from './services/menuService';
 import googleReviewsService from './services/googleReviews';
 import pdfExportService from './services/pdfExportService';
 import { handleReservation, validateReservationForm } from './reservationService';
+import useScrollOptimization from './hooks/useScrollOptimization';
+import useMobileOptimizations from './hooks/useMobileOptimizations';
 
 // Lazy load components for better performance
 const DynamicMenu = React.lazy(() => import('./components/DynamicMenu'));
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 const Gallery = React.lazy(() => import('./components/Gallery'));
 const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
+const ScrollControlledVideo = React.lazy(() => import('./components/ScrollControlledVideo'));
+const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
 
 function App() {
   const [currentLanguage, setCurrentLanguage] = useState('al');
   const [showFullMenu, setShowFullMenu] = useState(false);
+  
+  // Initialize scroll optimization
+  useScrollOptimization();
+  
+  // Initialize mobile optimizations
+  const { preventBodyScroll, enableBodyScroll } = useMobileOptimizations();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLargeGroup, setIsLargeGroup] = useState(false);
@@ -99,12 +109,21 @@ function App() {
 
   // Memoize event handlers with useCallback
   const toggleMobileMenu = useCallback(() => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  }, [mobileMenuOpen]);
+    const newState = !mobileMenuOpen;
+    setMobileMenuOpen(newState);
+    
+    // Prevent body scroll when menu is open
+    if (newState) {
+      preventBodyScroll();
+    } else {
+      enableBodyScroll();
+    }
+  }, [mobileMenuOpen, preventBodyScroll, enableBodyScroll]);
 
   const closeMobileMenu = useCallback(() => {
     setMobileMenuOpen(false);
-  }, []);
+    enableBodyScroll();
+  }, [enableBodyScroll]);
 
   const changeLanguage = useCallback((lang) => {
     setCurrentLanguage(lang);
@@ -305,6 +324,11 @@ function App() {
 
   return (
     <div className="App">
+      {/* Mobile Loading Optimizer */}
+      <Suspense fallback={null}>
+        <MobileLoadingOptimizer />
+      </Suspense>
+      
       {/* Navigation Header */}
       <header className="navbar">
         <div className="nav-container">
@@ -520,6 +544,17 @@ function App() {
           </div>
         </div>
       </section>
+
+      {/* Scroll Controlled Video Experience */}
+      <Suspense fallback={<div style={{ height: '100vh', background: '#1a1a1a' }} />}>
+        <ScrollControlledVideo
+          src="/videos/dji-20240806130059-0020-d-desktop.mp4"
+          poster="/videos/dji-20240806130059-0020-d-poster.jpg"
+          title={t.experience.title}
+          subtitle={t.experience.subtitle}
+          description={t.experience.description}
+        />
+      </Suspense>
 
       {/* Events Section */}
       <section id="events" className="events-section">
