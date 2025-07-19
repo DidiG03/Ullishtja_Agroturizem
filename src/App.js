@@ -10,6 +10,7 @@ import { handleReservation, validateReservationForm } from './reservationService
 const DynamicMenu = React.lazy(() => import('./components/DynamicMenu'));
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 const Gallery = React.lazy(() => import('./components/Gallery'));
+const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
 
 function App() {
   const [currentLanguage, setCurrentLanguage] = useState('al');
@@ -451,15 +452,20 @@ function App() {
           <div className="hero-visual">
             <div className="hero-image-container">
               <div className="hero-main-image">
-                <video 
-                  src="/images/wetransfer_ullishtja/DJI_20240806130609_0022_D.mov" 
-                  alt="Ullishtja Restaurant"
-                  className="main-img"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                />
+                <Suspense fallback={<img src="/images/panorama.jpeg" alt="Ullishtja Restaurant" className="main-img" />}>
+                  <OptimizedVideo
+                    src="/images/wetransfer_ullishtja/DJI_20240806130609_0022_D.mov"
+                    poster="/images/posters/hero-poster.jpg"
+                    fallbackImage="/images/panorama.jpeg"
+                    alt="Ullishtja Restaurant"
+                    className="main-img"
+                    autoPlay={true}
+                    muted={true}
+                    loop={true}
+                    playsInline={true}
+                    lazy={true}
+                  />
+                </Suspense>
                 <div className="image-decoration decoration-1"></div>
                 <div className="image-decoration decoration-2"></div>
               </div>
@@ -548,15 +554,20 @@ function App() {
               </div>
             </div>
             <div className="section-image">
-              <video 
-                src="/images/wetransfer_ullishtja/DJI_20240806124740_0003_D.mov" 
-                alt="Events and Celebrations"
-                className="section-img"
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
+              <Suspense fallback={<img src="/images/food.jpeg" alt="Events and Celebrations" className="section-img" />}>
+                <OptimizedVideo
+                  src="/images/wetransfer_ullishtja/DJI_20240806124740_0003_D.mov"
+                  poster="/images/posters/events-poster.jpg"
+                  fallbackImage="/images/food.jpeg"
+                  alt="Events and Celebrations"
+                  className="section-img"
+                  autoPlay={true}
+                  muted={true}
+                  loop={true}
+                  playsInline={true}
+                  lazy={true}
+                />
+              </Suspense>
               <div className="image-overlay">
                 <div className="overlay-content">
                   <span className="overlay-icon">🎊</span>
@@ -573,16 +584,21 @@ function App() {
         <div className="container">
           <div className="section-grid reverse">
             <div className="section-image">
-              <video 
-                src="/images/wetransfer_ullishtja/IMG_4999.mov" 
-                alt="A la Carte Menu"
-                className="section-img"
-                style={{ transform: 'rotate(180deg)' }}
-                autoPlay
-                muted 
-                loop
-                playsInline
-              />
+              <Suspense fallback={<img src="/images/food.jpeg" alt="A la Carte Menu" className="section-img" style={{ transform: 'rotate(180deg)' }} />}>
+                <OptimizedVideo
+                  src="/images/wetransfer_ullishtja/IMG_4999.mov"
+                  poster="/images/posters/alacarte-poster.jpg"
+                  fallbackImage="/images/food.jpeg"
+                  alt="A la Carte Menu"
+                  className="section-img"
+                  style={{ transform: 'rotate(180deg)' }}
+                  autoPlay={true}
+                  muted={true}
+                  loop={true}
+                  playsInline={true}
+                  lazy={true}
+                />
+              </Suspense>
               <div className="image-overlay">
                 <div className="overlay-content">
                   <span className="overlay-icon">🍽️</span>
