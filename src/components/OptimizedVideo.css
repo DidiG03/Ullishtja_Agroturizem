@@ -26,10 +26,22 @@
 
 .optimized-video.loaded {
   opacity: 1;
+  z-index: 3;
 }
 
 .optimized-video.loading {
   opacity: 0;
+  z-index: 1;
+}
+
+/* Hide poster smoothly when video loads */
+.optimized-video-container .video-poster {
+  transition: opacity 0.5s ease;
+}
+
+.optimized-video.loaded ~ .video-poster {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Poster image styling */
@@ -40,6 +52,7 @@
   width: 100%;
   height: 100%;
   z-index: 2;
+  transition: opacity 0.3s ease;
 }
 
 .poster-image {
@@ -47,45 +60,10 @@
   height: 100%;
   object-fit: cover;
   border-radius: inherit;
+  display: block;
 }
 
-/* Loading overlay */
-.video-loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 3;
-  border-radius: inherit;
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid #ffffff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-text {
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
+/* Removed loading overlay - using poster image only for seamless experience */
 
 /* Fallback image styling */
 .video-fallback-image {

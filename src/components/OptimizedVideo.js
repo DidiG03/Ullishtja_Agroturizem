@@ -122,7 +122,7 @@ const OptimizedVideo = ({
 
   return (
     <div ref={videoRef} className={`optimized-video-container ${className}`} style={style}>
-      {/* Poster/loading state */}
+      {/* Poster image - no loading spinner */}
       {!isLoaded && poster && (
         <div className="video-poster">
           <img
@@ -131,10 +131,6 @@ const OptimizedVideo = ({
             className="poster-image"
             loading="lazy"
           />
-          <div className="video-loading-overlay">
-            <div className="loading-spinner"></div>
-            <span className="loading-text">Loading video...</span>
-          </div>
         </div>
       )}
 

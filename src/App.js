@@ -187,17 +187,112 @@ function App() {
   }, []);
 
   const handlePDFExport = useCallback(async () => {
+    console.log('PDF Export button clicked!', { 
+      currentLanguage, 
+      menuCategoriesLength: menuCategories.length,
+      isMobile: window.innerWidth <= 768,
+      userAgent: navigator.userAgent 
+    });
+    
     try {
-      // Use the dynamic menu data if available, otherwise fallback to static menu
+      // Check if we have menu data
       const menuDataForPDF = menuCategories.length > 0 ? menuCategories : [];
+      console.log('Menu data for PDF:', menuDataForPDF);
       
-      // Open PDF in new window
+      // Show loading state for user feedback
+      const isMobile = window.innerWidth <= 768;
+      const loadingMessage = currentLanguage === 'al' 
+        ? 'Duke përgatitur PDF-në...' 
+        : currentLanguage === 'en' 
+        ? 'Preparing PDF...' 
+        : 'Preparazione PDF...';
+      
+      console.log('Creating loading indicator for mobile:', isMobile);
+      
+      // Create temporary loading indicator
+      let loadingElement = null;
+      if (isMobile) {
+        loadingElement = document.createElement('div');
+        loadingElement.style.cssText = `
+          position: fixed;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #2196F3;
+          color: white;
+          padding: 12px 24px;
+          border-radius: 25px;
+          font-size: 14px;
+          font-weight: 600;
+          z-index: 10000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        `;
+        loadingElement.textContent = loadingMessage;
+        document.body.appendChild(loadingElement);
+        console.log('Loading indicator added to DOM');
+      }
+      
+      console.log('Calling PDF service...');
+      // Generate and open/download PDF
       await pdfExportService.openPDFInNewWindow(menuDataForPDF, currentLanguage);
+      console.log('PDF service completed successfully');
+      
+      // Remove loading indicator
+      if (loadingElement && loadingElement.parentNode) {
+        loadingElement.parentNode.removeChild(loadingElement);
+        console.log('Loading indicator removed');
+      }
+      
     } catch (error) {
       console.error('Error exporting PDF:', error);
-      alert(currentLanguage === 'al' ? 'Gabim gjatë eksportimit të PDF-së' : 
-            currentLanguage === 'en' ? 'Error exporting PDF' : 
-            'Errore durante l\'esportazione PDF');
+      console.error('Error stack:', error.stack);
+      
+      // Remove loading indicator on error
+      const loadingElement = document.querySelector('[style*="background: #2196F3"]');
+      if (loadingElement && loadingElement.parentNode) {
+        loadingElement.parentNode.removeChild(loadingElement);
+      }
+      
+      // Show user-friendly error message
+      const isMobile = window.innerWidth <= 768;
+      const errorMessage = currentLanguage === 'al' 
+        ? 'Gabim gjatë krijimit të PDF-së. Provoni përsëri.' 
+        : currentLanguage === 'en' 
+        ? 'Error creating PDF. Please try again.' 
+        : 'Errore durante la creazione del PDF. Riprovare.';
+      
+      console.log('Showing error message:', errorMessage);
+      
+      if (isMobile) {
+        // Create mobile-friendly error notification
+        const errorElement = document.createElement('div');
+        errorElement.style.cssText = `
+          position: fixed;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #f44336;
+          color: white;
+          padding: 12px 24px;
+          border-radius: 25px;
+          font-size: 14px;
+          font-weight: 600;
+          z-index: 10000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        `;
+        errorElement.textContent = errorMessage;
+        document.body.appendChild(errorElement);
+        
+        // Remove error notification after delay
+        setTimeout(() => {
+          if (errorElement.parentNode) {
+            errorElement.parentNode.removeChild(errorElement);
+          }
+        }, 4000);
+      } else {
+        // Desktop: use alert as fallback
+        alert(errorMessage);
+      }
     }
   }, [menuCategories, currentLanguage]);
 

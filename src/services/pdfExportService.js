@@ -474,6 +474,8 @@ class PDFExportService {
   // Main method to generate PDF from menu data
   async generateMenuPDF(menuData, language = 'al', options = {}) {
     try {
+      console.log('Generating PDF with:', { menuDataLength: menuData?.length, language });
+      
       this.initializePDF();
       
       // Add header with logo
@@ -481,12 +483,16 @@ class PDFExportService {
 
       // Add categories and items
       if (menuData && menuData.length > 0) {
-        menuData.forEach(category => {
+        console.log('Adding menu categories:', menuData.length);
+        menuData.forEach((category, index) => {
+          console.log(`Adding category ${index + 1}:`, category.nameAL || category.nameEN || category.name);
           this.addCategory(category, language);
         });
       } else {
+        console.log('No menu data available, adding fallback message');
         // Fallback message if no menu data
         this.pdf.setFontSize(14);
+        this.pdf.setTextColor(101, 67, 33);
         this.pdf.text(
           language === 'al' ? 'Menu në përgatitje...' : 
           language === 'en' ? 'Menu in preparation...' : 
@@ -494,15 +500,28 @@ class PDFExportService {
           this.margins.left, 
           this.currentY
         );
+        this.currentY += 20;
+        
+        // Add some example items to show PDF is working
+        this.pdf.setFontSize(12);
+        this.pdf.text(
+          language === 'al' ? 'Për menu të plotë, ju lutemi kontaktoni restorantin.' : 
+          language === 'en' ? 'For complete menu, please contact the restaurant.' : 
+          'Per il menu completo, contattare il ristorante.',
+          this.margins.left,
+          this.currentY
+        );
       }
 
       // Add footer on last page
       this.addFooter(language);
 
+      console.log('PDF generation completed successfully');
       // Return the PDF for download or preview
       return this.pdf;
     } catch (error) {
       console.error('Error generating PDF:', error);
+      console.error('Error details:', error.message, error.stack);
       throw error;
     }
   }
@@ -519,22 +538,105 @@ class PDFExportService {
     }
   }
 
-  // Open PDF in new window
+  // Detect if user is on mobile device
+  isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
+  }
+
+  // Open PDF with mobile-friendly approach
   async openPDFInNewWindow(menuData, language = 'al') {
     try {
       const pdf = await this.generateMenuPDF(menuData, language);
-      const pdfBlob = pdf.output('blob');
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      window.open(pdfUrl, '_blank');
+      const isMobile = this.isMobileDevice();
       
-      // Clean up the URL after a delay
-      setTimeout(() => {
-        URL.revokeObjectURL(pdfUrl);
-      }, 1000);
+      if (isMobile) {
+        // On mobile: directly download the PDF instead of opening in new window
+        const filename = `Ullishtja_Menu_${language.toUpperCase()}_${new Date().toISOString().split('T')[0]}.pdf`;
+        pdf.save(filename);
+        
+        // Show user feedback
+        const message = language === 'al' 
+          ? 'PDF-ja u shkarkua në pajisjen tuaj'
+          : language === 'en'
+          ? 'PDF downloaded to your device'
+          : 'PDF scaricato sul tuo dispositivo';
+        
+        // Create temporary notification
+        this.showMobileNotification(message);
+      } else {
+        // On desktop: try to open in new window, fallback to download
+        try {
+          const pdfBlob = pdf.output('blob');
+          const pdfUrl = URL.createObjectURL(pdfBlob);
+          
+          // Try to open in new window
+          const newWindow = window.open(pdfUrl, '_blank');
+          
+          // Check if pop-up was blocked
+          if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+            // Pop-up blocked, fallback to download
+            console.log('Pop-up blocked, falling back to download');
+            const filename = `Ullishtja_Menu_${language.toUpperCase()}_${new Date().toISOString().split('T')[0]}.pdf`;
+            pdf.save(filename);
+          } else {
+            // Success - clean up URL after delay
+            setTimeout(() => {
+              URL.revokeObjectURL(pdfUrl);
+            }, 5000); // Longer delay for slower loading
+          }
+        } catch (windowError) {
+          console.log('Window.open failed, falling back to download:', windowError);
+          // Fallback to download
+          const filename = `Ullishtja_Menu_${language.toUpperCase()}_${new Date().toISOString().split('T')[0]}.pdf`;
+          pdf.save(filename);
+        }
+      }
     } catch (error) {
       console.error('Error opening PDF:', error);
       throw error;
     }
+  }
+
+  // Show mobile notification
+  showMobileNotification(message) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #4CAF50;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 10000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+    `;
+    notification.textContent = message;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+      notification.style.opacity = '1';
+      notification.style.transform = 'translateX(-50%) translateY(0)';
+    }, 10);
+    
+    // Remove after delay
+    setTimeout(() => {
+      notification.style.opacity = '0';
+      notification.style.transform = 'translateX(-50%) translateY(-20px)';
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 300);
+    }, 3000);
   }
 
   // Get PDF as base64 string
@@ -544,6 +646,65 @@ class PDFExportService {
       return pdf.output('datauristring');
     } catch (error) {
       console.error('Error generating PDF base64:', error);
+      throw error;
+    }
+  }
+
+  // Test PDF generation with minimal data
+  async testPDFGeneration(language = 'al') {
+    console.log('Testing PDF generation...');
+    try {
+      // Create minimal test data
+      const testMenuData = [
+        {
+          id: 1,
+          nameAL: 'Pjata Kryesore',
+          nameEN: 'Main Dishes',
+          nameIT: 'Piatti Principali',
+          items: [
+            {
+              id: 1,
+              nameAL: 'Tavë Kosi',
+              nameEN: 'Baked Lamb with Yogurt',
+              nameIT: 'Agnello al Forno con Yogurt',
+              price: 1200,
+              currency: 'ALL'
+            },
+            {
+              id: 2,
+              nameAL: 'Byrek me Spinaq',
+              nameEN: 'Spinach Pie',
+              nameIT: 'Torta di Spinaci',
+              price: 400,
+              currency: 'ALL'
+            }
+          ]
+        }
+      ];
+
+      console.log('Generating test PDF with data:', testMenuData);
+      const pdf = await this.generateMenuPDF(testMenuData, language);
+      
+      if (this.isMobileDevice()) {
+        console.log('Mobile device detected - downloading test PDF');
+        pdf.save(`Test_Menu_${language.toUpperCase()}.pdf`);
+        this.showMobileNotification('Test PDF downloaded successfully!');
+      } else {
+        console.log('Desktop device - opening test PDF in new window');
+        const pdfBlob = pdf.output('blob');
+        const pdfUrl = URL.createObjectURL(pdfBlob);
+        const newWindow = window.open(pdfUrl, '_blank');
+        
+        if (!newWindow) {
+          console.log('Pop-up blocked - downloading instead');
+          pdf.save(`Test_Menu_${language.toUpperCase()}.pdf`);
+        }
+      }
+      
+      console.log('Test PDF generation completed successfully');
+      return true;
+    } catch (error) {
+      console.error('Test PDF generation failed:', error);
       throw error;
     }
   }

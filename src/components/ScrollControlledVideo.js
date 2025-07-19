@@ -168,14 +168,6 @@ const ScrollControlledVideo = ({
               <source src={src} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
-            
-            {/* Loading overlay */}
-            {!isVideoLoaded && (
-              <div className="scroll-video-loading">
-                <div className="loading-spinner"></div>
-                <p>Loading video...</p>
-              </div>
-            )}
           </div>
         </div>
       </div>
