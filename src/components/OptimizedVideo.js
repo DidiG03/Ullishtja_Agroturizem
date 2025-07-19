@@ -17,9 +17,7 @@ const OptimizedVideo = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [isVisible, setIsVisible] = useState(!lazy);
   const [hasError, setHasError] = useState(false);
-  const [showFallback, setShowFallback] = useState(false);
   const videoRef = useRef(null);
-  const timeoutRef = useRef(null);
 
   // Intersection Observer for lazy loading
   useEffect(() => {
@@ -45,38 +43,29 @@ const OptimizedVideo = ({
     return () => observer.disconnect();
   }, [lazy]);
 
-  // Timeout fallback - if video doesn't load within 5 seconds, show fallback
+  // Auto-play when video becomes visible and loaded
   useEffect(() => {
-    if (isVisible && !isLoaded) {
-      timeoutRef.current = setTimeout(() => {
-        setShowFallback(true);
-      }, 5000); // 5 second timeout
-    }
-
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+    if (isLoaded && videoRef.current && autoPlay) {
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          // Auto-play was prevented, but that's okay
+          console.log('Auto-play prevented:', error);
+        });
       }
-    };
-  }, [isVisible, isLoaded]);
+    }
+  }, [isLoaded, autoPlay]);
 
   const handleVideoLoad = () => {
     setIsLoaded(true);
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
   };
 
   const handleVideoError = () => {
     setHasError(true);
-    setShowFallback(true);
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
   };
 
-  // If there's an error or we should show fallback, render the fallback image
-  if (hasError || showFallback) {
+  // If there's an error, render the fallback image (no play button)
+  if (hasError) {
     return (
       <div ref={videoRef} className={`optimized-video-container ${className}`} style={style}>
         <img
@@ -85,9 +74,6 @@ const OptimizedVideo = ({
           className="video-fallback-image"
           loading="lazy"
         />
-        <div className="video-fallback-overlay">
-          <div className="play-icon">▶</div>
-        </div>
       </div>
     );
   }
@@ -121,8 +107,8 @@ const OptimizedVideo = ({
           muted={muted}
           loop={loop}
           playsInline={playsInline}
-          preload="metadata" // Only load metadata initially
-          onLoadedData={handleVideoLoad}
+          preload="auto" // Load the entire video for immediate playback
+          onCanPlay={handleVideoLoad} // Trigger when video can start playing
           onError={handleVideoError}
           style={style}
         >
