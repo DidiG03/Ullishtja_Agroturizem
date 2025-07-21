@@ -714,14 +714,13 @@ function App() {
         <div className="container">
           <div className="section-grid reverse">
             <div className="section-image">
-              <Suspense fallback={<img src="/images/food.jpeg" alt="A la Carte Menu" className="section-img" style={{ transform: 'rotate(180deg)' }} />}>
+              <Suspense fallback={<img src="/images/food.jpeg" alt="A la Carte Menu" className="section-img" />}>
                 <OptimizedVideo
                   src="/images/wetransfer_ullishtja/IMG_4999.mov"
                   poster="/images/posters/alacarte-poster.jpg"
                   fallbackImage="/images/food.jpeg"
                   alt="A la Carte Menu"
                   className="section-img"
-                  style={{ transform: 'rotate(180deg)' }}
                   autoPlay={true}
                   muted={true}
                   loop={true}

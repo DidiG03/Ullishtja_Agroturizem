@@ -1,13 +1,16 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import intelligentVideoPreloader from '../services/intelligentVideoPreloader';
 import './ScrollControlledVideo.css';
 
 const ScrollControlledVideo = ({ 
   src, 
+  videoId, // New prop for intelligent loading
   poster, 
   title, 
   subtitle, 
   description,
   className = '',
+  priority = 'high', // Higher priority for scroll-controlled videos
   ...props 
 }) => {
   const videoRef = useRef(null);
@@ -15,11 +18,42 @@ const ScrollControlledVideo = ({
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [videoProgress, setVideoProgress] = useState(0);
   const [isInView, setIsInView] = useState(false);
+  const [videoSources, setVideoSources] = useState([]);
+  const [preloadedVideo, setPreloadedVideo] = useState(null);
+
+  // Initialize video sources and check for preloaded videos
+  useEffect(() => {
+    if (videoId) {
+      // Check if video is already preloaded
+      const preloaded = intelligentVideoPreloader.getPreloadedVideo(videoId);
+      if (preloaded) {
+        setPreloadedVideo(preloaded);
+        setVideoSources([preloaded.source]);
+      } else {
+        // Generate adaptive sources
+        const optimalSource = intelligentVideoPreloader.getOptimalVideoSource(videoId, priority);
+        setVideoSources([optimalSource]);
+        
+        // Preload immediately for scroll-controlled videos (they're important)
+        intelligentVideoPreloader.preloadVideo(videoId, priority);
+      }
+    } else if (src) {
+      // Fallback to traditional src prop
+      setVideoSources([{ src, format: 'mp4', quality: 'unknown' }]);
+    }
+  }, [videoId, src, priority]);
 
   // Handle video load
   const handleVideoLoad = useCallback(() => {
     setIsVideoLoaded(true);
-  }, []);
+    
+    // Track successful video load
+    if (videoId) {
+      intelligentVideoPreloader.trackUserInteraction('scroll_video_loaded', videoId, {
+        loadTime: Date.now()
+      });
+    }
+  }, [videoId]);
 
   // Calculate scroll progress and update video
   const updateVideoProgress = useCallback(() => {
@@ -158,14 +192,21 @@ const ScrollControlledVideo = ({
             <video
               ref={videoRef}
               poster={poster}
-              preload="metadata"
+              preload={preloadedVideo ? "auto" : "metadata"}
               muted
               playsInline
               onLoadedData={handleVideoLoad}
               onLoadedMetadata={handleVideoLoad}
               className="scroll-video"
             >
-              <source src={src} type="video/mp4" />
+              {/* Multiple sources for progressive enhancement */}
+              {videoSources.map((source, index) => (
+                <source
+                  key={index}
+                  src={source.src}
+                  type={source.type || `video/${source.format}`}
+                />
+              ))}
               Your browser does not support the video tag.
             </video>
           </div>

@@ -17,3 +17,232 @@ code {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Enhanced mobile video optimizations */
+
+/* Low memory device optimizations */
+.low-memory-device video {
+  /* Reduce video memory usage */
+  will-change: auto;
+  transform: none;
+  -webkit-transform: none;
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+
+.low-memory-device .adaptive-video-container,
+.low-memory-device .optimized-video-container {
+  /* Disable hardware acceleration on low-memory devices */
+  will-change: auto;
+  transform: none;
+  -webkit-transform: none;
+  perspective: none;
+  -webkit-perspective: none;
+}
+
+.low-memory-device .video-poster {
+  /* Faster transitions for low-memory devices */
+  transition: opacity 0.1s ease;
+}
+
+/* Battery saver mode optimizations */
+.battery-saver-mode video {
+  /* Reduce video processing */
+  filter: none;
+  -webkit-filter: none;
+}
+
+.battery-saver-mode .adaptive-video,
+.battery-saver-mode .optimized-video {
+  /* Disable smooth transitions to save battery */
+  transition: none;
+}
+
+.battery-saver-mode .loading-spinner {
+  /* Disable animations in battery saver mode */
+  animation: none;
+  border: 3px solid #ccc;
+  border-top: 3px solid #666;
+}
+
+/* Mobile-first video container optimizations */
+@media (max-width: 768px) {
+  /* Global mobile video optimizations */
+  video {
+    /* Optimize video decoding on mobile */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    
+    /* Enable hardware decoding */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    
+    /* Optimize for mobile processors */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  
+  /* Poster image optimizations for mobile */
+  .video-poster img,
+  .poster-image {
+    /* Faster image decoding */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    decoding: async;
+    
+    /* Prevent layout shifts */
+    contain: layout style paint;
+  }
+  
+  /* Container optimizations for mobile scrolling */
+  .adaptive-video-container,
+  .optimized-video-container,
+  .scroll-video-container {
+    /* Optimize for smooth scrolling */
+    -webkit-overflow-scrolling: touch;
+    contain: layout style paint;
+    
+    /* GPU layer promotion for smooth scrolling */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  
+  /* Reduce motion blur during scrolling */
+  .is-scrolling video {
+    will-change: auto;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+/* Portrait orientation optimizations */
+@media (max-width: 768px) and (orientation: portrait) {
+  .hero-video-container,
+  .scroll-video-container {
+    /* Optimize for portrait viewing */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  
+  video {
+    /* Better object fit for portrait */
+    object-fit: cover;
+    object-position: center center;
+  }
+}
+
+/* Landscape orientation optimizations */
+@media (max-width: 768px) and (orientation: landscape) {
+  .hero-video-container,
+  .scroll-video-container {
+    /* Full GPU utilization in landscape */
+    -webkit-transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+  }
+}
+
+/* Very small screens (older phones) */
+@media (max-width: 480px) {
+  video {
+    /* Conservative optimizations for older devices */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: auto;
+  }
+  
+  .adaptive-video,
+  .optimized-video {
+    /* Faster transitions for older phones */
+    transition: opacity 0.2s ease-out;
+  }
+}
+
+/* High DPI mobile displays */
+@media (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+  .poster-image,
+  .video-poster img {
+    /* Better image sharpening for retina mobile displays */
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Network-aware optimizations */
+@supports (connection: slow-2g) {
+  .slow-connection video {
+    /* Reduce quality for slow connections */
+    filter: contrast(0.9) brightness(0.9);
+    -webkit-filter: contrast(0.9) brightness(0.9);
+  }
+  
+  .slow-connection .loading-spinner {
+    /* Slower animation for slow connections */
+    animation-duration: 2s;
+  }
+}
+
+/* Prefetch optimizations */
+.mobile-device video {
+  /* Enable prefetch for mobile devices */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Touch interaction optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .adaptive-video-container,
+  .optimized-video-container {
+    /* Optimize for touch interactions */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  video {
+    /* Prevent context menu on long touch */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+/* Accessibility optimizations */
+@media (prefers-reduced-motion: reduce) {
+  .low-memory-device video,
+  .battery-saver-mode video {
+    /* Disable all animations and transitions */
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Safe area optimizations for modern mobile devices */
+@supports (padding-top: env(safe-area-inset-top)) {
+  .hero-video-section {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Memory management for older devices */
+@media (max-width: 768px) {
+  /* Limit concurrent video processing */
+  .video-out-of-view {
+    /* Reduce memory usage for out-of-view videos */
+    will-change: auto;
+    transform: none;
+    -webkit-transform: none;
+  }
+  
+  /* Aggressive cleanup for very old devices */
+  .very-old-device video {
+    /* Minimal hardware acceleration */
+    will-change: auto;
+    transform: none;
+    -webkit-transform: none;
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+  }
+}
