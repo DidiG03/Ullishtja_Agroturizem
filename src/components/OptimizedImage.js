@@ -15,6 +15,19 @@ const OptimizedImage = ({
 
   // Extract filename without extension for WebP/JPEG variants
   const getImageVariants = (originalSrc) => {
+    // Check if this is an external URL (starts with http/https)
+    const isExternalUrl = originalSrc.startsWith('http://') || originalSrc.startsWith('https://');
+    
+    if (isExternalUrl) {
+      // For external URLs, just use the original source without optimization
+      return {
+        webp: originalSrc,
+        jpeg: originalSrc,
+        fallback: originalSrc
+      };
+    }
+    
+    // For local images, use the original optimization logic
     const fileName = originalSrc.split('/').pop().split('.')[0];
     const basePath = originalSrc.substring(0, originalSrc.lastIndexOf('/'));
     
@@ -64,7 +77,15 @@ const OptimizedImage = ({
   const getOptimalSrc = () => {
     if (hasError) return imageVariants.fallback;
     
-    // If image hasn't been processed yet, use original
+    // Check if this is an external URL
+    const isExternalUrl = src.startsWith('http://') || src.startsWith('https://');
+    
+    if (isExternalUrl) {
+      // For external URLs, just return the original URL
+      return src;
+    }
+    
+    // If image hasn't been processed yet, use original (for local images)
     if (src.includes('/images/') && !src.includes('/gallery/')) {
       return src;
     }

@@ -1656,13 +1656,14 @@ h2::after {
   }
 
   .hero-content {
-    order: 2;
+    order: 1; /* Content with action buttons comes first on mobile */
   }
 
   .hero-visual {
-    order: 1;
+    order: 2; /* Video goes below action buttons on mobile */
     display: block;
-    margin-bottom: 2rem;
+    margin-top: 2rem; /* Add space above video */
+    margin-bottom: 1rem; /* Reduce bottom margin */
   }
 
   .hero-badge {
@@ -1697,6 +1698,7 @@ h2::after {
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    margin-bottom: 2rem; /* Add bottom margin to separate from video */
   }
 
   .cta-button {
@@ -1712,11 +1714,12 @@ h2::after {
   }
 
   .hero-image-container {
-    height: 300px;
+    height: 280px; /* Slightly smaller on mobile for better proportion */
   }
 
   .hero-main-image {
-    height: 300px;
+    height: 280px; /* Slightly smaller on mobile for better proportion */
+    margin-top: 1rem; /* Add top margin for better visual separation */
   }
 
   .floating-card {
@@ -2168,11 +2171,12 @@ h2::after {
   }
 
   .hero-image-container {
-    height: 250px;
+    height: 220px; /* Optimized for small screens */
   }
 
   .hero-main-image {
-    height: 250px;
+    height: 220px; /* Optimized for small screens */
+    margin-top: 0.5rem; /* Smaller margin on very small screens */
   }
 
   .floating-card,
@@ -2241,6 +2245,18 @@ h2::after {
   .contact-info, .reservation-form {
     padding: 1.5rem;
     border-radius: 15px;
+  }
+
+  /* Hero Section - Small Mobile - Ensure content comes first */
+  .hero-content {
+    order: 1; /* Action buttons come first on small mobile */
+    margin-bottom: 1.5rem; /* Add space below buttons */
+  }
+
+  .hero-visual {
+    order: 2; /* Video below buttons on small mobile */
+    margin-top: 1rem; /* Reduced top margin for better spacing */
+    margin-bottom: 0; /* Remove bottom margin */
   }
 
   /* Section Grid - Small Mobile */
@@ -2849,4 +2865,46 @@ body {
   color: var(--primary-forest);
   font-size: 1.1rem;
   text-align: center;
+}
+
+/* Additional mobile optimizations for video below action buttons */
+@media (max-width: 768px) {
+  /* Ensure consistent spacing between action buttons and video */
+  .hero-content + .hero-visual {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 2rem;
+    margin-top: 2rem;
+  }
+  
+  /* Optimize hero section height on mobile */
+  .hero {
+    min-height: 95vh; /* Slightly taller to accommodate new layout */
+  }
+  
+  /* Ensure video doesn't dominate the screen */
+  .hero-visual .hero-main-image {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Softer shadow on mobile */
+    border-radius: 20px; /* Smaller border radius on mobile */
+  }
+  
+  /* Better visual hierarchy */
+  .hero-badge {
+    margin-bottom: 2rem; /* More space below badge */
+  }
+  
+  .hero-description {
+    margin-bottom: 2.5rem; /* More space before action buttons */
+  }
+}
+
+/* Ultra-small screens - further optimize */
+@media (max-width: 400px) {
+  .hero-content + .hero-visual {
+    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  .hero-actions {
+    margin-bottom: 1.5rem; /* Reduce spacing on very small screens */
+  }
 }

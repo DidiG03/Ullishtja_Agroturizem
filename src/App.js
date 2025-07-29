@@ -13,7 +13,7 @@ const DynamicMenu = React.lazy(() => import('./components/DynamicMenu'));
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 const Gallery = React.lazy(() => import('./components/Gallery'));
 const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
-const ScrollControlledVideo = React.lazy(() => import('./components/ScrollControlledVideo'));
+
 const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
 
 function App() {
@@ -68,6 +68,15 @@ function App() {
     const text = getLocalizedName(item, field);
     return text || '';
   }, [getLocalizedName]);
+
+  // Cleanup effect for modal state
+  useEffect(() => {
+    return () => {
+      // Cleanup: ensure modal-open class is removed on unmount
+      document.body.classList.remove('modal-open');
+      enableBodyScroll();
+    };
+  }, [enableBodyScroll]);
 
   // Load dynamic menu data
   useEffect(() => {
@@ -180,11 +189,21 @@ function App() {
 
   const openFullMenu = useCallback(() => {
     setShowFullMenu(true);
-  }, []);
+    // Prevent body scrolling when menu is open
+    preventBodyScroll();
+    // Add CSS class for additional scroll prevention
+    document.body.classList.add('modal-open');
+    // Scroll to top of the page so modal appears in viewport
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [preventBodyScroll]);
 
   const closeFullMenu = useCallback(() => {
     setShowFullMenu(false);
-  }, []);
+    // Re-enable body scrolling when menu is closed
+    enableBodyScroll();
+    // Remove CSS class
+    document.body.classList.remove('modal-open');
+  }, [enableBodyScroll]);
 
   const handlePDFExport = useCallback(async () => {
     console.log('PDF Export button clicked!', { 
@@ -640,16 +659,7 @@ function App() {
         </div>
       </section>
 
-      {/* Scroll Controlled Video Experience */}
-      <Suspense fallback={<div style={{ height: '100vh', background: '#1a1a1a' }} />}>
-        <ScrollControlledVideo
-          src="/videos/dji-20240806130059-0020-d-desktop.mp4"
-          poster="/videos/dji-20240806130059-0020-d-poster.jpg"
-          title={t.experience.title}
-          subtitle={t.experience.subtitle}
-          description={t.experience.description}
-        />
-      </Suspense>
+
 
       {/* Events Section */}
       <section id="events" className="events-section">

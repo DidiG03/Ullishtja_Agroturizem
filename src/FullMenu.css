@@ -1,10 +1,18 @@
+/* Prevent body scroll when modal is open */
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
 /* Full Menu Overlay */
 .full-menu-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(5px);
   z-index: 2000;
@@ -12,6 +20,8 @@
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.3s ease;
+  /* Prevent scrolling */
+  overflow: hidden;
 }
 
 @keyframes fadeIn {
@@ -22,15 +32,18 @@
 /* Full Menu Container */
 .full-menu-container {
   background: white;
-  width: 95%;
+  width: 95vw;
   max-width: 1200px;
   height: 90vh;
+  max-height: 90vh;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   animation: slideUp 0.4s ease;
+  /* Ensure it's always in viewport */
+  position: relative;
 }
 
 @keyframes slideUp {
@@ -91,19 +104,21 @@
 /* Category Navigation */
 .category-nav {
   background: #f8f9fa;
-  width: 250px;
+  width: 280px; /* Increased width for longer names */
+  min-width: 280px; /* Ensure minimum width */
   padding: 2rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.8rem; /* Increased gap between buttons */
   border-right: 1px solid #eee;
   overflow-y: auto;
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 .category-btn {
   background: transparent;
   border: none;
-  padding: 1rem 1.5rem;
+  padding: 1.2rem 1.5rem; /* Increased padding */
   text-align: left;
   border-radius: 12px;
   font-size: 1rem;
@@ -112,17 +127,35 @@
   cursor: pointer;
   transition: all 0.3s ease;
   position: relative;
+  /* Fix text overflow */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  /* Ensure proper text display */
+  line-height: 1.4;
+  min-height: 48px; /* Minimum touch target */
+  display: flex;
+  align-items: center;
 }
 
 .category-btn:hover {
   background: rgba(107, 142, 35, 0.1);
   transform: translateX(5px);
+  /* Show full text on hover */
+  white-space: normal;
+  overflow: visible;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .category-btn.active {
   background: linear-gradient(135deg, #6B8E23 0%, #D4AF37 100%);
   color: white;
   box-shadow: 0 5px 15px rgba(107, 142, 35, 0.3);
+  /* Ensure active text is visible */
+  white-space: normal;
+  overflow: visible;
 }
 
 .category-btn.active::before {
@@ -295,8 +328,102 @@
 }
 
 @media (max-width: 768px) {
+  .full-menu-overlay {
+    /* Ensure overlay covers entire mobile viewport */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .full-menu-container {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    /* Ensure it's always visible */
+    position: relative;
+    top: 0;
+    left: 0;
+  }
+  
+  .menu-content {
+    flex-direction: column; /* Stack vertically on mobile */
+  }
+  
+  .category-nav {
+    /* Make horizontal on mobile */
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    max-height: 120px; /* Limit height */
+    flex-direction: row; /* Horizontal layout */
+    padding: 1rem;
+    gap: 0.5rem;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    overflow-x: auto; /* Horizontal scrolling */
+    overflow-y: hidden;
+    /* Smooth scrolling on mobile */
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Hide scrollbar */
+    -ms-overflow-style: none;
+    /* Add subtle gradient to indicate scrolling */
+    position: relative;
+  }
+  
+  .category-nav::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 100%;
+    background: linear-gradient(to left, rgba(248, 249, 250, 1) 0%, rgba(248, 249, 250, 0) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .category-nav::-webkit-scrollbar {
+    display: none; /* Hide scrollbar on webkit browsers */
+  }
+  
+  .category-btn {
+    /* Mobile-friendly buttons */
+    padding: 0.8rem 1.2rem;
+    font-size: 0.9rem;
+    min-width: 140px; /* Minimum width for readability */
+    max-width: 180px; /* Maximum width to prevent too wide buttons */
+    flex-shrink: 0; /* Prevent shrinking */
+    white-space: nowrap; /* Keep text on one line */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center; /* Center text on mobile */
+    justify-content: center;
+    border: 1px solid transparent; /* Add border for better touch targets */
+  }
+  
+  .category-btn:hover {
+    transform: none; /* Remove slide effect on mobile */
+    background: rgba(107, 142, 35, 0.15);
+  }
+  
+  .category-btn.active {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    /* Keep active state visible */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
   .full-menu-header {
     padding: 1.5rem;
+    /* Add safe area for notched phones */
+    padding-top: max(1.5rem, env(safe-area-inset-top, 20px));
   }
   
   .full-menu-header h1 {
@@ -305,6 +432,10 @@
   
   .menu-items-container {
     padding: 1rem;
+    /* Add safe area for bottom */
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 20px));
+    flex: 1; /* Take remaining space */
+    overflow-y: auto;
   }
   
   .menu-category-section h2 {
@@ -314,24 +445,131 @@
   .menu-item-card {
     padding: 1rem;
   }
-  
-  .category-nav {
-    padding: 0.5rem;
-    gap: 0.3rem;
-  }
-  
-  .category-btn {
-    padding: 0.8rem 1rem;
-    font-size: 0.9rem;
-    min-width: 100px;
-  }
 }
 
 @media (max-width: 480px) {
-  .full-menu-container {
-    width: 100%;
+  .full-menu-overlay {
+    /* Full screen on very small devices */
+    width: 100vw;
     height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+  }
+  
+  .full-menu-container {
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
     border-radius: 0;
+    /* Remove any margins/padding that could cause issues */
+    margin: 0;
+    position: relative;
+  }
+  
+  .menu-content {
+    flex-direction: column;
+    height: calc(100vh - 80px); /* Account for header */
+    overflow: hidden;
+  }
+  
+  .category-nav {
+    /* Compact horizontal navigation for small screens */
+    width: 100%;
+    min-width: unset;
+    height: auto;
+    max-height: 100px; /* Smaller height for very small screens */
+    flex-direction: row;
+    padding: 0.8rem 0.5rem;
+    gap: 0.4rem;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    /* Add subtle gradient to indicate scrolling */
+    position: relative;
+  }
+  
+  .category-nav::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 15px; /* Smaller gradient for very small screens */
+    height: 100%;
+    background: linear-gradient(to left, rgba(248, 249, 250, 1) 0%, rgba(248, 249, 250, 0) 100%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .category-nav::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .category-btn {
+    /* Compact buttons for very small screens */
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    min-width: 120px; /* Smaller minimum width */
+    max-width: 150px; /* Smaller maximum width */
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 20px; /* More rounded for mobile */
+    min-height: 44px; /* iOS recommended touch target */
+  }
+  
+  .category-btn:hover {
+    transform: none;
+    background: rgba(107, 142, 35, 0.15);
+  }
+  
+  .category-btn.active {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* Add slight scaling for active state */
+    transform: scale(1.02);
+  }
+  
+  .full-menu-header {
+    /* Add safe area support for notched phones */
+    padding: 1rem;
+    padding-top: max(1rem, env(safe-area-inset-top, 20px));
+  }
+  
+  .full-menu-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .close-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  
+  .menu-items-container {
+    /* Add safe area for bottom home indicator */
+    padding: 0.8rem;
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 20px));
+    flex: 1;
+    overflow-y: auto;
+  }
+  
+  .menu-category-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
   }
   
   .item-header {

@@ -7,12 +7,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: 2rem 0; /* Add vertical padding for better spacing */
   margin: 0;
+  
+  /* Enhanced visual appeal */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .scroll-video-container {
-  max-width: 1000px;
+  max-width: 1200px; /* Increased max-width for better space usage */
   margin: 0 auto;
   padding: 0 2rem;
   width: 100%;
@@ -21,22 +26,35 @@
   align-items: center;
   position: sticky;
   top: 0;
+  
+  /* Enhanced container styling */
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0;
 }
 
 .scroll-video-content {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
-  gap: 3rem;
+  gap: 4rem; /* Increased gap for better spacing */
   align-items: center;
   width: 100%;
   min-height: 80vh;
+  
+  /* Enhanced content area */
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 20px;
+  padding: 3rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 /* Text Content */
 .scroll-video-text {
   color: var(--primary-forest, #2d4a36);
   z-index: 2;
-  max-width: 500px;
+  max-width: 100%; /* Remove restrictive max-width */
+  padding-right: 1rem; /* Add padding for better text flow */
 }
 
 .scroll-video-title {
@@ -63,10 +81,14 @@
   line-height: 1.6;
   color: var(--primary-forest, #2d4a36);
   opacity: 0.8;
+  word-wrap: break-word; /* Ensure long words break properly */
+  hyphens: auto; /* Enable hyphenation for better text flow */
+  text-align: justify; /* Better text alignment for readability */
 }
 
 .scroll-video-description p {
   margin-bottom: 1.5rem;
+  max-width: 100%; /* Ensure paragraphs don't exceed container */
 }
 
 /* Video Player */
@@ -140,74 +162,148 @@
 @media (max-width: 1024px) {
   .scroll-video-content {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2.5rem; /* Reduced gap for tablet */
     text-align: center;
+    padding: 2.5rem; /* Reduced padding for tablet */
   }
   
   .scroll-video-title {
     font-size: 3rem;
   }
   
+  .scroll-video-text {
+    max-width: 100%;
+    padding-right: 0; /* Remove right padding on tablet */
+  }
+  
   .scroll-video-player {
     height: 60vh;
     margin: 0 auto;
+    max-width: 600px; /* Limit video width on tablet */
   }
 }
 
 @media (max-width: 768px) {
+  .scroll-controlled-video-section {
+    padding: 1rem 0; /* Reduced padding on mobile */
+  }
+  
   .scroll-video-container {
-    padding: 0 1.5rem;
+    padding: 0 1.5rem; /* Better mobile padding */
+    max-width: 100%; /* Use full width on mobile */
   }
   
   .scroll-video-content {
-    gap: 2rem;
-    min-height: 70vh;
+    gap: 2rem; /* Better spacing than 0 */
+    padding: 2rem 1.5rem; /* Better mobile padding */
+    border-radius: 15px; /* Smaller border radius on mobile */
+  }
+  
+  .scroll-video-text {
+    max-width: 100%;
+    padding-right: 0;
   }
   
   .scroll-video-title {
     font-size: 2.5rem;
+    margin-bottom: 1rem; /* Reduced margin for mobile */
   }
   
   .scroll-video-subtitle {
     font-size: 1.3rem;
+    margin-bottom: 1.5rem; /* Better spacing */
   }
   
   .scroll-video-description {
     font-size: 1rem;
+    line-height: 1.7; /* Better readability */
+  }
+  
+  .scroll-video-player {
+    height: 50vh; /* Better height for mobile */
+    border-radius: 12px;
   }
 }
 
 @media (max-width: 480px) {
-  .scroll-controlled-video-section {
-    min-height: 120vh;
-  }
-  
-  .scroll-video-container {
-    padding: 0 1rem;
-  }
-  
-  .scroll-video-title {
-    font-size: 2rem;
-  }
-  
-  .scroll-video-subtitle {
-    font-size: 1.1rem;
+
+  .scroll-video-content {
+    gap: 0.5rem; /* Tighter spacing for small screens */
   }
   
   .scroll-video-player {
-    border-radius: 15px;
-    height: 45vh;
   }
 }
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .scroll-video-text {
-    color: #000000;
+/* Ultra-wide screen optimizations */
+@media (min-width: 1400px) {
+  .scroll-video-container {
+    max-width: 1400px;
+  }
+  
+  .scroll-video-content {
+    gap: 5rem; /* Even more space on large screens */
+    padding: 4rem;
   }
   
   .scroll-video-title {
-    -webkit-text-fill-color: #000000;
+    font-size: 4rem; /* Larger title on big screens */
+  }
+  
+  .scroll-video-subtitle {
+    font-size: 1.8rem;
+  }
+  
+  .scroll-video-description {
+    font-size: 1.2rem;
+  }
+}
+
+/* Enhanced mobile touch interactions */
+@media (max-width: 768px) and (hover: none) and (pointer: coarse) {
+  .scroll-video-content {
+    /* Better touch target sizing */
+    min-height: 70vh;
+  }
+  
+  .scroll-video-text {
+    /* Better text selection on mobile */
+    -webkit-user-select: text;
+    user-select: text;
+  }
+  
+  .scroll-video-title,
+  .scroll-video-subtitle,
+  .scroll-video-description {
+    /* Prevent text from being too small on mobile */
+    font-size: max(1rem, calc(1rem + 0.5vw));
+  }
+}
+
+
+/* Print styles */
+@media print {
+  .scroll-controlled-video-section {
+    background: white;
+    box-shadow: none;
+    border: none;
+    min-height: auto;
+    padding: 2rem 0;
+  }
+  
+  .scroll-video-content {
+    background: white;
+    box-shadow: none;
+    border: 1px solid #000;
+    page-break-inside: avoid;
+  }
+  
+  .scroll-video-player {
+    display: none; /* Hide video in print */
+  }
+  
+  .scroll-video-text {
+    max-width: 100%;
   }
 }
 

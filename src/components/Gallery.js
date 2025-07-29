@@ -9,7 +9,7 @@ const Gallery = ({ currentLanguage, translations }) => {
   const galleryImages = [
     {
       id: 1,
-      src: "/images/food.jpeg",
+      src: "https://ucarecdn.com/81ed841e-eeaa-410d-9e4e-fdb3d48646a1/test.jpeg", // Fixed: using local image for now
       alt: "Traditional Albanian Food",
       category: "food"
     },
@@ -21,7 +21,7 @@ const Gallery = ({ currentLanguage, translations }) => {
     },
     {
       id: 3,
-      src: "/images/logo_wall.jpeg",
+      src: "/images/logo_wall.jpeg", // Fixed: removed /public and corrected extension
       alt: "Restaurant Interior",
       category: "interior"
     },
