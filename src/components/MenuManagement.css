@@ -154,6 +154,36 @@
   background: linear-gradient(135deg, #e8f5cd 0%, #d4e6a3 100%);
 }
 
+/* Drag and drop styles */
+.category-item.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+}
+
+.category-item.drag-over {
+  border-color: #C4602D;
+  background: linear-gradient(135deg, #ffecd1 0%, #fcf4e9 100%);
+  transform: translateY(-2px);
+}
+
+.drag-handle {
+  font-size: 14px;
+  color: #999;
+  cursor: grab;
+  padding: 5px;
+  margin-right: 10px;
+  line-height: 1;
+  user-select: none;
+}
+
+.drag-handle:hover {
+  color: #6B8E23;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
 .category-info h4 {
   margin: 0 0 5px 0;
   color: #2c3e50;

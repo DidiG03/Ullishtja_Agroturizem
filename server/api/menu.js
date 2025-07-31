@@ -66,6 +66,35 @@ router.delete('/categories/:id', async (req, res) => {
   }
 });
 
+// Bulk update category orders
+router.patch('/categories', async (req, res) => {
+  try {
+    const { orders } = req.body;
+    
+    if (!orders || !Array.isArray(orders)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Orders array is required' 
+      });
+    }
+    
+    // Update categories in parallel for better performance
+    const updatePromises = orders.map(({ id, displayOrder }) =>
+      prisma.menuCategory.update({
+        where: { id },
+        data: { displayOrder }
+      })
+    );
+    
+    await Promise.all(updatePromises);
+    
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error updating category orders:', error);
+    res.status(500).json({ success: false, error: 'Failed to update category orders' });
+  }
+});
+
 // Get menu items (optionally filtered by category)
 router.get('/items', async (req, res) => {
   try {

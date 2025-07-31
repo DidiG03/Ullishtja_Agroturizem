@@ -12,6 +12,8 @@ function MenuManagement() {
   const [editingItem, setEditingItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [draggedCategory, setDraggedCategory] = useState(null);
+  const [dragOverIndex, setDragOverIndex] = useState(null);
 
   // Form states
   const [categoryForm, setCategoryForm] = useState({
@@ -132,6 +134,56 @@ function MenuManagement() {
     });
     setEditingCategory(null);
     setShowCategoryForm(false);
+  };
+
+  // Drag and drop handlers
+  const handleDragStart = (e, category, index) => {
+    setDraggedCategory({ category, index });
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = async (e, dropIndex) => {
+    e.preventDefault();
+    setDragOverIndex(null);
+    
+    if (!draggedCategory || draggedCategory.index === dropIndex) {
+      setDraggedCategory(null);
+      return;
+    }
+
+    const newCategories = [...categories];
+    const [movedCategory] = newCategories.splice(draggedCategory.index, 1);
+    newCategories.splice(dropIndex, 0, movedCategory);
+
+    // Update the display order for all categories
+    const ordersToUpdate = newCategories.map((category, index) => ({
+      id: category.id,
+      displayOrder: index + 1
+    }));
+
+    try {
+      // Optimistically update the UI
+      setCategories(newCategories);
+      
+      // Update the server
+      await MenuService.updateCategoryOrders(ordersToUpdate);
+    } catch (error) {
+      // Revert on error
+      setError('Failed to update category order');
+      await loadCategories();
+    }
+
+    setDraggedCategory(null);
   };
 
   // Menu item handlers
@@ -258,15 +310,27 @@ function MenuManagement() {
         <div className="categories-sidebar">
           <h3>Categories</h3>
           <div className="category-list">
-            {categories.map(category => (
+            {categories.map((category, index) => (
               <div 
                 key={category.id}
-                className={`category-item ${selectedCategory === category.id ? 'active' : ''}`}
+                className={`category-item ${selectedCategory === category.id ? 'active' : ''} ${
+                  dragOverIndex === index ? 'drag-over' : ''
+                } ${
+                  draggedCategory?.category.id === category.id ? 'dragging' : ''
+                }`}
+                draggable
+                onDragStart={(e) => handleDragStart(e, category, index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, index)}
                 onClick={() => {
                   setSelectedCategory(category.id);
                   loadMenuItems(category.id);
                 }}
               >
+                <div className="drag-handle" title="Drag to reorder">
+                  ⋮⋮
+                </div>
                 <div className="category-info">
                   <h4>{category.nameAL}</h4>
                   <small>{category.nameEN}</small>

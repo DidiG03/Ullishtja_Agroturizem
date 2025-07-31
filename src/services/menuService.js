@@ -72,6 +72,23 @@ class MenuService {
     }
   }
 
+  async updateCategoryOrders(orders) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/menu/categories`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ orders }),
+      });
+      if (!response.ok) throw new Error('Failed to update category orders');
+      return { success: true };
+    } catch (error) {
+      console.error('Error updating category orders:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
   // Menu Items
   async getMenuItems(categoryId = null) {
     try {
