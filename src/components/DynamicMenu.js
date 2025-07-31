@@ -76,7 +76,26 @@ function DynamicMenu({ currentLanguage, onClose }) {
     return (
       <div className="full-menu-overlay">
         <div className="full-menu-container">
-          <div className="loading">Loading menu...</div>
+          <div className="menu-loading-container">
+            <div className="menu-loading-content">
+              <div className="loading-spinner"></div>
+              <h2 className="loading-title">
+                {currentLanguage === 'al' && 'Po ngarkohet menuja...'}
+                {currentLanguage === 'en' && 'Loading menu...'}
+                {currentLanguage === 'it' && 'Caricamento menu...'}
+              </h2>
+              <p className="loading-subtitle">
+                {currentLanguage === 'al' && 'Përgatisim specialitetet tona për ju'}
+                {currentLanguage === 'en' && 'Preparing our specialties for you'}
+                {currentLanguage === 'it' && 'Preparando le nostre specialità per voi'}
+              </p>
+              <div className="loading-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
