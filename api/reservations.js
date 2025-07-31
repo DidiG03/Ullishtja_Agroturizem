@@ -2,6 +2,76 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// WhatsApp notification service
+const sendWhatsAppNotification = async (reservationData) => {
+  try {
+    // Format the WhatsApp message
+    const message = `🍽️ *NEW RESERVATION REQUEST*
+━━━━━━━━━━━━━━━━━━━━━━
+
+👤 *Customer:* ${reservationData.name}
+📧 *Email:* ${reservationData.email}
+📞 *Phone:* ${reservationData.phone}
+
+📅 *Date:* ${new Date(reservationData.date).toLocaleDateString()}
+🕐 *Time:* ${reservationData.time}
+👥 *Guests:* ${reservationData.guests}
+
+${reservationData.specialRequests ? `💬 *Special Requests:*\n${reservationData.specialRequests}` : ''}
+
+━━━━━━━━━━━━━━━━━━━━━━
+Sent automatically from Ullishtja Website`;
+
+    // Option 1: Use Twilio WhatsApp API (if configured)
+    if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+      const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${process.env.TWILIO_ACCOUNT_SID}/Messages.json`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${Buffer.from(`${process.env.TWILIO_ACCOUNT_SID}:${process.env.TWILIO_AUTH_TOKEN}`).toString('base64')}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          From: process.env.TWILIO_WHATSAPP_NUMBER || 'whatsapp:+14155238886',
+          To: 'whatsapp:+4407312706087', // Your restaurant WhatsApp number
+          Body: message,
+        }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('WhatsApp sent via Twilio:', result.sid);
+        return { success: true, method: 'twilio', messageId: result.sid };
+      }
+    }
+
+    // Option 2: Use webhook (Zapier, IFTTT, etc.)
+    if (process.env.WHATSAPP_WEBHOOK_URL) {
+      const response = await fetch(process.env.WHATSAPP_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message,
+          phone: '+4407312706087',
+          reservationData
+        }),
+      });
+
+      if (response.ok) {
+        console.log('WhatsApp sent via webhook');
+        return { success: true, method: 'webhook' };
+      }
+    }
+
+    // Option 3: Log message for manual handling
+    console.log('WhatsApp message to send:', message);
+    return { success: true, method: 'logged' };
+
+  } catch (error) {
+    console.error('WhatsApp notification failed:', error);
+    return { success: false, error: error.message };
+  }
+};
+
 export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -100,6 +170,14 @@ export default async function handler(req, res) {
           console.error('Error updating customer:', customerError);
           // Don't fail the reservation if customer update fails
         }
+      }
+
+      // Send WhatsApp notification (don't fail reservation if this fails)
+      try {
+        await sendWhatsAppNotification(reservationData);
+      } catch (whatsappError) {
+        console.error('WhatsApp notification failed:', whatsappError);
+        // Continue with successful reservation response
       }
 
       res.json({ success: true, data: reservation });

@@ -69,7 +69,7 @@ model TimeSlotCapacity {
 model RestaurantSettings {
   id              String   @id @default(cuid())
   restaurantName  String   @default("Ullishtja Agriturizem")
-  email          String   @default("info@ullishtja.com")
+  email          String   @default("hi@ullishtja-agroturizem.com")
   phone          String   @default("+355 XX XXX XXX")
   address        String   @default("Rruga e Ullishtes, Tirane, Albania")
   

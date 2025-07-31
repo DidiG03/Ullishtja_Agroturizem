@@ -11,7 +11,7 @@ import useMobileOptimizations from './hooks/useMobileOptimizations';
 // Lazy load components for better performance
 const DynamicMenu = React.lazy(() => import('./components/DynamicMenu'));
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
-const Gallery = React.lazy(() => import('./components/Gallery'));
+// const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
 const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
 
 const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
@@ -164,7 +164,11 @@ function App() {
 
     try {
       setLoadingTimeSlots(true);
-      const response = await fetch(`/api/timeslots?action=available&date=${date}`);
+      // Use correct API base URL for development
+      const apiBaseUrl = process.env.NODE_ENV === 'production' 
+        ? '' 
+        : process.env.REACT_APP_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiBaseUrl}/api/timeslots/available/${date}`);
       const result = await response.json();
       
       if (result.success) {
@@ -351,7 +355,11 @@ function App() {
     const guests = parseInt(formData.get('guests'));
     
     try {
-      const capacityResponse = await fetch(`/api/timeslots?action=validate&date=${date}&time=${time}&guests=${guests}`);
+      // Use correct API base URL for development
+      const apiBaseUrl = process.env.NODE_ENV === 'production' 
+        ? '' 
+        : process.env.REACT_APP_API_URL || 'http://localhost:3001';
+      const capacityResponse = await fetch(`${apiBaseUrl}/api/timeslots/validate?date=${date}&time=${time}&guests=${guests}`);
       const capacityResult = await capacityResponse.json();
       
       if (!capacityResult.isValid) {
@@ -455,7 +463,7 @@ function App() {
             <a href="#home" className="nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
             <a href="#about" className="nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
             <a href="#menu" className="nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-            <a href="#gallery" className="nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a>
+            {/* <a href="#gallery" className="nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
             <a href="#contact" className="nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
           </nav>
 
@@ -469,7 +477,7 @@ function App() {
                           <a href="#home" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
             <a href="#about" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
             <a href="#menu" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-            <a href="#gallery" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a>
+            {/* <a href="#gallery" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
             <a href="#contact" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
             </nav>
             <div className="mobile-language-selector">
@@ -881,10 +889,10 @@ function App() {
         </div>
       </section>
 
-      {/* Gallery Section */}
-      <Suspense fallback={<div className="loading-section">Loading gallery...</div>}>
+      {/* Gallery Section - Temporarily Disabled */}
+      {/* <Suspense fallback={<div className="loading-section">Loading gallery...</div>}>
         <Gallery currentLanguage={currentLanguage} translations={t} />
-      </Suspense>
+      </Suspense> */}
 
       {/* Google Reviews Section */}
       <Suspense fallback={<div className="loading-section">Loading reviews...</div>}>
@@ -944,20 +952,32 @@ function App() {
                   <p>{t.contact.info.phone.text}</p>
                 </div>
                 <div className="contact-item">
+                  <h4>{t.contact.info.email.title}</h4>
+                  <p>
+                    <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-email-link">
+                      {t.contact.info.email.text}
+                    </a>
+                  </p>
+                </div>
+                <div className="contact-item">
                   <h4>{t.contact.info.hours.title}</h4>
-                  <p>{t.contact.info.hours.text.split('\n').map((line, index) => (
-                    <span key={index}>
-                      {line}
-                      {index < t.contact.info.hours.text.split('\n').length - 1 && <br />}
+                  <p>
+                    <span className="contact-email-link">
+                      {t.contact.info.hours.text.split('\n').map((line, index) => (
+                        <span key={index}>
+                          {line}
+                          {index < t.contact.info.hours.text.split('\n').length - 1 && <br />}
+                        </span>
+                      ))}
                     </span>
-                  ))}</p>
+                  </p>
                 </div>
               </div>
             </div>
-            <div className="reservation-form">
+            {/* Reservation Form - Temporarily Disabled */}
+            {/* <div className="reservation-form">
               <h3>{t.contact.reservation.title}</h3>
               
-              {/* Status Messages */}
               {reservationStatus.loading && (
                 <div className="status-message loading">
                   <span className="spinner">⏳</span> {t.contact.reservation.processing}
@@ -1121,7 +1141,7 @@ function App() {
                   {reservationStatus.loading ? t.contact.reservation.processing : t.contact.reservation.submit}
                 </button>
               </form>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
@@ -1130,11 +1150,92 @@ function App() {
       <footer className="footer">
         <div className="container">
           <div className="footer-content">
-            <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja" className="footer-logo" />
-            <p>{t.footer.copyright}</p>
-            <p>{t.footer.tagline}</p>
-            <div className="admin-link-container">
-              <a href="/admin-login" className="admin-link">Admin</a>
+            {/* Footer Main Content */}
+            <div className="footer-main">
+              {/* Company Info */}
+              <div className="footer-section footer-company">
+                <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem" className="footer-logo" />
+                <p className="footer-description">{t.footer.tagline}</p>
+                <div className="footer-rating">
+                  <div className="rating-stars">
+                    {reviewsDisplay.stars}
+                  </div>
+                  <span className="rating-text">
+                    {reviewsData ? `${reviewsDisplay.rating} (${reviewsDisplay.count} ${t.hero.googleReviews})` : t.hero.loadingReviews}
+                  </span>
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="footer-section footer-contact">
+                <h4 className="footer-title">{t.contact.title}</h4>
+                <div className="contact-item">
+                  <span className="contact-icon">📍</span>
+                  <span className="contact-value">Ullishtja Agroturizem, Durres, Albania</span>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-icon">📞</span>
+                  <a href="tel:+35568409405" className="contact-value contact-link">
+                    +355 68 409 0405
+                  </a>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-icon">📧</span>
+                  <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-value contact-link">
+                    hi@ullishtja-agroturizem.com
+                  </a>
+                </div>
+                <div className="contact-item">
+                  <span className="contact-icon">🕒</span>
+                  <span className="contact-value">
+                    {t.contact.info.hours.text.replace('\n', ' • ')}
+                  </span>
+                </div>
+              </div>
+
+              {/* Quick Links */}
+              <div className="footer-section footer-links">
+                <h4 className="footer-title">{t.footer.quickLinks}</h4>
+                <nav className="footer-nav">
+                  <a href="#home" className="footer-link" onClick={closeMobileMenu}>{t.nav.home}</a>
+                  <a href="#about" className="footer-link" onClick={closeMobileMenu}>{t.nav.about}</a>
+                  <a href="#menu" className="footer-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
+                  {/* <a href="#gallery" className="footer-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
+                  <a href="#contact" className="footer-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
+                </nav>
+              </div>
+
+              {/* Services */}
+              <div className="footer-section footer-services">
+                <h4 className="footer-title">{t.footer.services}</h4>
+                <div className="service-list">
+                  <span className="service-item">🍽️ {t.footer.alaCarte}</span>
+                  <span className="service-item">🎉 {t.footer.events}</span>
+                  <span className="service-item">🌿 {t.footer.organic}</span>
+                  <span className="service-item">🏔️ {t.footer.views}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Bottom */}
+            <div className="footer-bottom">
+              <div className="footer-copyright">
+                <p>{t.footer.copyright}</p>
+              </div>
+              <div className="footer-links-bottom">
+                <a href="https://maps.google.com/?q=41.340278,19.433569+(Ullishtja+Agroturizem)" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   className="footer-map-link">
+                  🗺️ {t.footer.directions}
+                </a>
+                <a href="tel:+35568409405" className="footer-phone-link">
+                  📞 {t.footer.callUs}
+                </a>
+                <div className="admin-link-container">
+                  <a href="/admin-login" className="admin-link">Admin</a>
+                </div>
+              </div>
             </div>
           </div>
         </div>

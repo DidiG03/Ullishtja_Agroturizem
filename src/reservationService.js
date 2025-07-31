@@ -9,7 +9,7 @@ const EMAILJS_CONFIG = {
 
 // Restaurant contact information
 const RESTAURANT_CONFIG = {
-  email: 'sefridkapllan@gmail.com', // Replace with your restaurant email
+  email: 'hi@ullishtja-agroturizem.com', // Restaurant email
   phone: '+4407312706087', // Replace with your WhatsApp number (include country code)
   name: 'Ullishtja Agriturizem'
 };
@@ -189,7 +189,7 @@ export const handleReservation = async (formData, preferredMethod = 'email') => 
         results.email = await sendReservationEmail(emailData);
       }
 
-      // Only redirect to WhatsApp if specifically requested
+      // Only redirect to WhatsApp if specifically requested (manual method)
       if (preferredMethod === 'whatsapp') {
         const whatsappData = {
           ...reservationData,

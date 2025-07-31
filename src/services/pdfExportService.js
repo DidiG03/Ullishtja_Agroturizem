@@ -66,89 +66,163 @@ class PDFExportService {
     
     if (requiredHeight > availableHeight) {
       this.pdf.addPage();
-      this.currentY = this.margins.top;
+      
+      // Add background and border to new page
+      this.addCleanBackground();
+      this.addElegantBorder();
+      
+      this.currentY = this.margins.top + 20; // Add some space from the border
       return true;
     }
     return false;
   }
 
-  // Add vintage decorative border
-  addVintageBorder() {
-    // Outer border with vintage styling
-    this.pdf.setLineWidth(2);
-    this.pdf.setDrawColor(139, 115, 85); // Vintage brown
-    this.pdf.rect(10, 10, 190, 277);
+  // Add elegant decorative border like the actual menu
+  addElegantBorder() {
+    this.pdf.setLineWidth(1.5);
+    this.pdf.setDrawColor(85, 107, 47); // Olive green matching the text
+    
+    // Main border frame with rounded corners
+    const margin = 12;
+    const width = 210 - (margin * 2);
+    const height = 297 - (margin * 2);
+    
+    // Create the main decorative frame
+    this.pdf.roundedRect(margin, margin, width, height, 8, 8);
     
     // Inner decorative border
-    this.pdf.setLineWidth(0.5);
-    this.pdf.rect(15, 15, 180, 267);
+    this.pdf.setLineWidth(0.8);
+    const innerMargin = margin + 6;
+    const innerWidth = width - 12;
+    const innerHeight = height - 12;
+    this.pdf.roundedRect(innerMargin, innerMargin, innerWidth, innerHeight, 6, 6);
     
-    // Corner decorative elements
-    const cornerSize = 8;
-    this.pdf.setLineWidth(1);
-    
-    // Top-left corner
-    this.pdf.line(15, 15 + cornerSize, 15 + cornerSize, 15 + cornerSize);
-    this.pdf.line(15 + cornerSize, 15, 15 + cornerSize, 15 + cornerSize);
-    
-    // Top-right corner
-    this.pdf.line(195 - cornerSize, 15, 195 - cornerSize, 15 + cornerSize);
-    this.pdf.line(195 - cornerSize, 15 + cornerSize, 195, 15 + cornerSize);
-    
-    // Bottom-left corner
-    this.pdf.line(15, 282 - cornerSize, 15 + cornerSize, 282 - cornerSize);
-    this.pdf.line(15 + cornerSize, 282 - cornerSize, 15 + cornerSize, 282);
-    
-    // Bottom-right corner
-    this.pdf.line(195 - cornerSize, 282 - cornerSize, 195, 282 - cornerSize);
-    this.pdf.line(195 - cornerSize, 282 - cornerSize, 195 - cornerSize, 282);
+    // Clean border without corner decorations
   }
 
-  // Add vintage background texture
-  addVintageBackground() {
-    // Add subtle vintage texture using overlapping shapes
-    this.pdf.setFillColor(250, 248, 240); // Vintage cream background
+  // Corner flourishes removed for cleaner design
+
+  // Add textured background with green rust patina
+  addCleanBackground() {
+    // Base cream background
+    this.pdf.setFillColor(252, 250, 246);
     this.pdf.rect(0, 0, 210, 297, 'F');
     
-    // Add subtle texture with very light brown dots
-    this.pdf.setFillColor(245, 240, 235);
-    this.pdf.setDrawColor(245, 240, 235);
-    
-    // Create a subtle pattern
-    for (let x = 20; x < 190; x += 15) {
-      for (let y = 20; y < 280; y += 15) {
-        if (Math.random() > 0.7) {
-          this.pdf.circle(x, y, 0.5, 'F');
+    // Add subtle green rust texture overlay
+    this.addGreenRustTexture();
+  }
+
+  // Add balanced green rust/patina texture
+  addGreenRustTexture() {
+    // Create random seed for consistent pattern
+    let seed = 12345;
+    const random = () => {
+      seed = (seed * 9301 + 49297) % 233280;
+      return seed / 233280;
+    };
+
+    // Add medium-subtle green tinted patches - visible but not overwhelming
+    for (let i = 0; i < 50; i++) {
+      const x = random() * 210;
+      const y = random() * 297;
+      const size = random() * 18 + 6;
+      
+      // Balanced green rust colors - visible but subtle
+      const greenVariant = Math.floor(random() * 4);
+      switch (greenVariant) {
+        case 0:
+          this.pdf.setFillColor(235, 240, 230); // Light sage green
+          break;
+        case 1:
+          this.pdf.setFillColor(230, 238, 225); // Soft green
+          break;
+        case 2:
+          this.pdf.setFillColor(240, 245, 238); // Very light green
+          break;
+        default:
+          this.pdf.setFillColor(238, 242, 235); // Green-gray
+      }
+      
+      // Create soft shapes with slight blur effect
+      const layers = 2;
+      for (let layer = 0; layer < layers; layer++) {
+        const layerSize = size * (1 - layer * 0.15);
+        const offsetX = (random() - 0.5) * 1.5;
+        const offsetY = (random() - 0.5) * 1.5;
+        
+        if (random() > 0.6) {
+          this.pdf.circle(x + offsetX, y + offsetY, layerSize / 2, 'F');
+        } else {
+          this.pdf.ellipse(x + offsetX, y + offsetY, layerSize / 2, layerSize / 3, 'F');
         }
       }
     }
+
+    // Add smaller texture details
+    for (let i = 0; i < 80; i++) {
+      const x = random() * 210;
+      const y = random() * 297;
+      const size = random() * 8 + 2;
+      
+      // Subtle but visible tints
+      this.pdf.setFillColor(
+        242 + Math.floor(random() * 6), // More noticeable variation
+        246 + Math.floor(random() * 6), 
+        238 + Math.floor(random() * 8)
+      );
+      
+      this.pdf.circle(x, y, size / 2, 'F');
+    }
+
+    // Add soft weathered streaks
+    for (let i = 0; i < 12; i++) {
+      const x = random() * 210;
+      const y = random() * 297;
+      const length = random() * 20 + 5;
+      const angle = random() * Math.PI * 2;
+      
+      this.pdf.setFillColor(236, 241, 232); // Visible but soft
+      this.pdf.setLineWidth(random() * 1.5 + 0.8);
+      this.pdf.setDrawColor(236, 241, 232);
+      
+      const endX = x + Math.cos(angle) * length;
+      const endY = y + Math.sin(angle) * length;
+      
+      // Single line for cleaner appearance
+      this.pdf.line(x, y, endX, endY);
+    }
   }
 
-  // Add header with restaurant logo and vintage styling
+  // QR code functionality removed as requested
+
+  // Add header with restaurant logo and elegant styling
   async addHeader(language = 'al') {
     const t = translations[language];
     
-    // Add vintage background first
-    this.addVintageBackground();
+    // Add clean background first
+    this.addCleanBackground();
     
-    // Add decorative border
-    this.addVintageBorder();
+    // Add elegant decorative border
+    this.addElegantBorder();
     
-    // Reset text color to dark brown for vintage look
-    this.pdf.setTextColor(101, 67, 33);
+    // Skip QR code - start with logo directly
+    this.currentY += 10;
+    
+    // Reset text color to olive green
+    this.pdf.setTextColor(85, 107, 47);
     
     // Try to load and add the actual logo
     const logoBase64 = await this.loadImageAsBase64('/images/ullishtja_logo.jpeg');
     
     if (logoBase64) {
-      // Add the actual logo image
-      const logoSize = 25;
+      // Add the actual logo image - larger and more prominent
+      const logoSize = 35;
       const logoX = (210 - logoSize) / 2;
       const logoY = this.currentY;
       
       try {
         this.pdf.addImage(logoBase64, 'JPEG', logoX, logoY, logoSize, logoSize);
-        this.currentY += logoSize + 10;
+        this.currentY += logoSize + 8;
       } catch (error) {
         console.warn('Could not add logo image, using fallback');
         this.addFallbackLogo();
@@ -158,73 +232,29 @@ class PDFExportService {
       this.addFallbackLogo();
     }
 
-    // Decorative separator
-    this.pdf.setLineWidth(1);
-    this.pdf.setDrawColor(139, 115, 85);
-    const centerX = 210 / 2;
-    this.pdf.line(centerX - 30, this.currentY, centerX + 30, this.currentY);
-    
-    // Add decorative elements on the line
-    this.pdf.circle(centerX - 25, this.currentY, 2);
-    this.pdf.circle(centerX, this.currentY, 3);
-    this.pdf.circle(centerX + 25, this.currentY, 2);
-    
-    this.currentY += 10;
-
-    // Restaurant name with vintage typography
-    this.pdf.setFontSize(28);
+    // Restaurant name with elegant typography matching the menu
+    this.pdf.setFontSize(24);
     this.pdf.setFont(undefined, 'bold');
-    const mainTitle = 'Ullishtja Agroturizem';
+    const mainTitle = 'Ullishtja';
     const titleWidth = this.pdf.getTextWidth(mainTitle);
     this.pdf.text(mainTitle, (210 - titleWidth) / 2, this.currentY);
-    this.currentY += 12;
-
-    // Subtitle with decorative elements
-    this.pdf.setFontSize(18);
-    this.pdf.setFont(undefined, 'italic');
-    const subtitle = t.nav.menu || 'Menu';
-    const subtitleWidth = this.pdf.getTextWidth(subtitle);
-    
-    // Add decorative flourishes around subtitle
-    const subtitleX = (210 - subtitleWidth) / 2;
-    this.pdf.text('~ ', subtitleX - 8, this.currentY);
-    this.pdf.text(subtitle, subtitleX, this.currentY);
-    this.pdf.text(' ~', subtitleX + subtitleWidth + 3, this.currentY);
-    this.currentY += 10;
-
-    // Vintage tagline
-    this.pdf.setFontSize(11);
-    this.pdf.setFont(undefined, 'italic');
-    const tagline = language === 'al' 
-      ? 'Tradita • Cilësi • Përvojë Autentike'
-      : language === 'en' 
-      ? 'Tradition • Quality • Authentic Experience'
-      : 'Tradizione • Qualità • Esperienza Autentica';
-    const taglineWidth = this.pdf.getTextWidth(tagline);
-    this.pdf.text(tagline, (210 - taglineWidth) / 2, this.currentY);
     this.currentY += 8;
 
-    // Contact info and date in vintage style
-    this.pdf.setFontSize(9);
+    // Subtitle - clean style like the actual menu
+    this.pdf.setFontSize(14);
     this.pdf.setFont(undefined, 'normal');
-    const contactInfo = 'Durres, Albania • Tel: +355 XX XXX XXX';
-    const contactWidth = this.pdf.getTextWidth(contactInfo);
-    this.pdf.text(contactInfo, (210 - contactWidth) / 2, this.currentY);
-    this.currentY += 5;
+    const subtitle = 'AGRI TURIZËM';
+    const subtitleWidth = this.pdf.getTextWidth(subtitle);
+    this.pdf.text(subtitle, (210 - subtitleWidth) / 2, this.currentY);
+    this.currentY += 6;
 
-    // Date
-    const currentDate = new Date().toLocaleDateString(language === 'al' ? 'sq-AL' : language === 'en' ? 'en-US' : 'it-IT');
-    const dateText = `${language === 'al' ? 'Data' : language === 'en' ? 'Date' : 'Data'}: ${currentDate}`;
-    const dateWidth = this.pdf.getTextWidth(dateText);
-    this.pdf.text(dateText, (210 - dateWidth) / 2, this.currentY);
-    this.currentY += 15;
-
-    // Final decorative separator
-    this.pdf.setLineWidth(0.8);
-    this.pdf.setDrawColor(139, 115, 85);
-    this.pdf.line(this.margins.left, this.currentY, 210 - this.margins.right, this.currentY);
-    
-    this.currentY += 12;
+    // "est 2021" like in the actual menu
+    this.pdf.setFontSize(10);
+    this.pdf.setFont(undefined, 'italic');
+    const estText = 'est 2021';
+    const estWidth = this.pdf.getTextWidth(estText);
+    this.pdf.text(estText, (210 - estWidth) / 2, this.currentY);
+    this.currentY += 20;
   }
 
   // Fallback method for text-based logo when image fails
@@ -235,7 +265,7 @@ class PDFExportService {
     
     // Logo border/frame
     this.pdf.setLineWidth(1.5);
-    this.pdf.setDrawColor(139, 115, 85);
+    this.pdf.setDrawColor(85, 107, 47);
     this.pdf.circle(logoX + logoSize/2, logoY + logoSize/2, logoSize/2);
     
     // Logo text
@@ -253,13 +283,13 @@ class PDFExportService {
     this.currentY += logoSize + 10;
   }
 
-  // Add category section with vintage styling
+  // Add category section with elegant styling matching the actual menu
   addCategory(category, language = 'al') {
-    this.checkPageBreak(25);
+    this.checkPageBreak(30);
 
-    // Category title with vintage styling
-    this.pdf.setTextColor(101, 67, 33); // Dark brown
-    this.pdf.setFontSize(20);
+    // Category title with elegant styling
+    this.pdf.setTextColor(85, 107, 47); // Olive green
+    this.pdf.setFontSize(18);
     this.pdf.setFont(undefined, 'bold');
     
     let categoryName = 'Category';
@@ -273,25 +303,13 @@ class PDFExportService {
       categoryName = category.name;
     }
     
-    // Center the category name with decorative elements
+    // Center the category name
     const categoryNameWidth = this.pdf.getTextWidth(categoryName);
     const categoryX = (210 - categoryNameWidth) / 2;
     
-    // Add decorative elements before and after category name
-    this.pdf.setFontSize(16);
-    this.pdf.text('•', categoryX - 12, this.currentY);
-    this.pdf.text('•', categoryX + categoryNameWidth + 8, this.currentY);
-    
-    // Category name
-    this.pdf.setFontSize(20);
+    // Category name centered like in the actual menu
     this.pdf.text(categoryName, categoryX, this.currentY);
-    this.currentY += 10;
-    
-    // Decorative underline
-    this.pdf.setLineWidth(1);
-    this.pdf.setDrawColor(139, 115, 85);
-    this.pdf.line(categoryX - 5, this.currentY, categoryX + categoryNameWidth + 5, this.currentY);
-    this.currentY += 8;
+    this.currentY += 12;
 
     // Category description (if available)
     let categoryDescription = null;
@@ -324,13 +342,13 @@ class PDFExportService {
     this.currentY += 5; // Space after category
   }
 
-  // Add individual menu item with vintage styling
+  // Add individual menu item with clean styling like the actual menu
   addMenuItem(item, language = 'al') {
-    this.checkPageBreak(18);
+    this.checkPageBreak(20);
 
     // Item name and price - use language-specific name
-    this.pdf.setTextColor(101, 67, 33); // Dark brown
-    this.pdf.setFontSize(14);
+    this.pdf.setTextColor(85, 107, 47); // Olive green
+    this.pdf.setFontSize(12);
     this.pdf.setFont(undefined, 'bold');
     
     let itemName = 'Item';
@@ -344,47 +362,23 @@ class PDFExportService {
       itemName = item.name;
     }
     
-    const price = item.price ? `${item.price} ${item.currency || 'ALL'}` : '';
+    // Format price to match the actual menu (e.g., "250 Lekë")
+    const price = item.price ? `${item.price} ${item.currency === 'ALL' ? 'Lekë' : item.currency || 'ALL'}` : '';
     
-    // Calculate positions for name and price
-    const nameWidth = this.pdf.getTextWidth(itemName);
-    const priceWidth = this.pdf.getTextWidth(price);
-    const availableWidth = 165; // Page width minus larger margins for vintage look
-    const dotsWidth = availableWidth - nameWidth - priceWidth - 6;
+    // Add item name
+    this.pdf.text(itemName, this.margins.left + 5, this.currentY);
     
-    // Add decorative bullet point
-    this.pdf.setFontSize(12);
-    this.pdf.text('•', this.margins.left + 2, this.currentY);
-    
-    // Add name
-    this.pdf.setFontSize(14);
-    this.pdf.text(itemName, this.margins.left + 8, this.currentY);
-    
-    // Add price (right aligned) with vintage styling
+    // Add price (right aligned) - clean style like actual menu
     if (price) {
-      // Price background for vintage effect
-      this.pdf.setFillColor(245, 240, 215); // Light vintage background
-      this.pdf.setDrawColor(139, 115, 85);
-      this.pdf.setLineWidth(0.5);
-      const priceX = 210 - this.margins.right - priceWidth - 4;
-      this.pdf.rect(priceX - 2, this.currentY - 4, priceWidth + 4, 6, 'FD');
-      
-      this.pdf.setTextColor(101, 67, 33);
+      this.pdf.setTextColor(85, 107, 47);
+      const priceWidth = this.pdf.getTextWidth(price);
+      const priceX = 210 - this.margins.right - priceWidth - 5;
       this.pdf.text(price, priceX, this.currentY);
-      
-      // Add vintage dots between name and price
-      if (dotsWidth > 15) {
-        this.pdf.setFont(undefined, 'normal');
-        this.pdf.setFontSize(10);
-        this.pdf.setTextColor(139, 115, 85); // Lighter brown for dots
-        const dots = ' . '.repeat(Math.floor(dotsWidth / 8));
-        this.pdf.text(dots, this.margins.left + nameWidth + 12, this.currentY);
-      }
     }
     
-    this.currentY += 8;
+    this.currentY += 6;
 
-    // Item description - use language-specific description
+    // Item description - use language-specific description (clean style)
     let itemDescription = null;
     if (language === 'al' && item.descriptionAL) {
       itemDescription = item.descriptionAL;
@@ -397,78 +391,49 @@ class PDFExportService {
     }
 
     if (itemDescription) {
-      this.pdf.setFontSize(10);
+      this.pdf.setFontSize(9);
       this.pdf.setFont(undefined, 'italic');
-      this.pdf.setTextColor(120, 90, 60); // Slightly lighter brown for description
-      const descLines = this.pdf.splitTextToSize(itemDescription, 155);
-      this.pdf.text(descLines, this.margins.left + 12, this.currentY);
-      this.currentY += descLines.length * 4 + 4;
+      this.pdf.setTextColor(140, 140, 140); // Subtle gray for description
+      const descLines = this.pdf.splitTextToSize(itemDescription, 170);
+      this.pdf.text(descLines, this.margins.left + 5, this.currentY);
+      this.currentY += descLines.length * 3.5 + 2;
     }
 
-    // Allergens or dietary info (if available) with vintage styling
-    if (item.allergens && item.allergens.length > 0) {
-      this.pdf.setFontSize(8);
-      this.pdf.setFont(undefined, 'italic');
-      this.pdf.setTextColor(139, 115, 85); // Vintage brown
-      this.pdf.text(`${language === 'al' ? 'Alergjene' : language === 'en' ? 'Allergens' : 'Allergeni'}: ${item.allergens.join(', ')}`, this.margins.left + 12, this.currentY);
-      this.currentY += 5;
-    }
-
-    // Add subtle decorative line between items
-    this.pdf.setLineWidth(0.2);
-    this.pdf.setDrawColor(200, 190, 170); // Very light brown
-    this.pdf.line(this.margins.left + 15, this.currentY + 1, 210 - this.margins.right - 15, this.currentY + 1);
-    
-    this.currentY += 4; // Space after item
+    this.currentY += 4; // Clean spacing between items like the actual menu
   }
 
-  // Add vintage-styled footer
+  // Add elegant footer like the actual menu
   addFooter(language = 'al') {
     
     // Go to bottom of page
-    this.currentY = this.pageHeight - this.margins.bottom - 25;
+    this.currentY = this.pageHeight - this.margins.bottom - 30;
     
-    // Decorative vintage separator
-    this.pdf.setLineWidth(1);
-    this.pdf.setDrawColor(139, 115, 85);
-    const centerLine = 210 / 2;
-    this.pdf.line(centerLine - 40, this.currentY, centerLine + 40, this.currentY);
-    
-    // Add decorative elements
-    this.pdf.circle(centerLine - 35, this.currentY, 1.5);
-    this.pdf.circle(centerLine, this.currentY, 2);
-    this.pdf.circle(centerLine + 35, this.currentY, 1.5);
-    
+    // Add main Ullishtja logo section
+    this.pdf.setFontSize(24);
+    this.pdf.setFont(undefined, 'bold');
+    this.pdf.setTextColor(85, 107, 47);
+    const logoText = 'Ullishtja';
+    const logoWidth = this.pdf.getTextWidth(logoText);
+    this.pdf.text(logoText, (210 - logoWidth) / 2, this.currentY);
     this.currentY += 8;
-
-    // Footer message with vintage styling
+    
+    // Add subtitle
+    this.pdf.setFontSize(14);
+    this.pdf.setFont(undefined, 'normal');
+    const subtitle = 'AGRI TURIZËM';
+    const subtitleWidth = this.pdf.getTextWidth(subtitle);
+    this.pdf.text(subtitle, (210 - subtitleWidth) / 2, this.currentY);
+    this.currentY += 6;
+    
+    // Add "est 2021"
     this.pdf.setFontSize(10);
     this.pdf.setFont(undefined, 'italic');
-    this.pdf.setTextColor(101, 67, 33);
-    const footerText = language === 'al' 
-      ? 'Përbërës të freskët nga ferma jonë ~ Përvojë Autentike Të Agroturizmit Shqiptar'
-      : language === 'en' 
-      ? 'Fresh ingredients from our farm ~ Authentic Albanian Agritourism Experience'
-      : 'Ingredienti freschi dalla nostra fattoria ~ Autentica Esperienza Agrituristica Albanese';
+    const estText = 'est 2021';
+    const estWidth = this.pdf.getTextWidth(estText);
+    this.pdf.text(estText, (210 - estWidth) / 2, this.currentY);
+    this.currentY += 15;
     
-    const footerLines = this.pdf.splitTextToSize(footerText, 165);
-    const footerX = (210 - 165) / 2; // Center the footer text
-    this.pdf.text(footerLines, footerX, this.currentY);
-    this.currentY += footerLines.length * 4;
-
-    // Website and contact in vintage frame
-    this.pdf.setFontSize(9);
-    this.pdf.setFont(undefined, 'bold');
-    this.pdf.setTextColor(139, 115, 85);
-    const contactText = 'www.ullishtja-agroturizem.com';
-    const contactWidth = this.pdf.getTextWidth(contactText);
-    const contactX = (210 - contactWidth) / 2;
-    
-    // Small decorative frame around contact
-    this.pdf.setLineWidth(0.5);
-    this.pdf.rect(contactX - 3, this.currentY - 3, contactWidth + 6, 6);
-    
-    this.pdf.text(contactText, contactX, this.currentY);
+    // Footer complete - no QR code needed
   }
 
   // Main method to generate PDF from menu data
@@ -492,7 +457,7 @@ class PDFExportService {
         console.log('No menu data available, adding fallback message');
         // Fallback message if no menu data
         this.pdf.setFontSize(14);
-        this.pdf.setTextColor(101, 67, 33);
+        this.pdf.setTextColor(85, 107, 47);
         this.pdf.text(
           language === 'al' ? 'Menu në përgatitje...' : 
           language === 'en' ? 'Menu in preparation...' : 

@@ -276,7 +276,7 @@ export const settingsService = {
       data: settings.length > 0 ? settings[0] : {
         id: 'default',
         restaurantName: 'Ullishtja Agriturizem',
-        email: 'info@ullishtja.com',
+        email: 'hi@ullishtja-agroturizem.com',
         phone: '+355 XX XXX XXX'
       }
     };

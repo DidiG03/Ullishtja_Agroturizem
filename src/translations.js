@@ -54,8 +54,8 @@ export const translations = {
     events: {
       title: "Eventet dhe Festimet",
       subtitle: "Krijoni Kujtrime të Përhershme",
-      text1: "Ullishtja Agriturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga dasmat tradicionale shqiptare te ndjekat e punës dhe festimet familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
-      text2: "Stafi ynë i dedikuar bashkëpunon me ju për të planifikuar çdo detaj, nga menuja e personalizuar me specialitete lokale te dekorimi dhe koordinimi i plotë i ngjarjes.",
+      text1: "Ullishtja Agriturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga fejesat tradicionale shqiptare te eventet korporative dhe festimet familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
+      text2: "Stafi ynë i dedikuar bashkëpunon me ju për të planifikuar çdo detaj, nga menuja e personalizuar me specialitete lokale te dekorimi dhe koordinimi i plotë i eveentit.",
       features: {
         weddings: "Fejesë Tradicionale",
         corporate: "Evente Korporative", 
@@ -67,7 +67,7 @@ export const translations = {
     alacarte: {
       title: "Menuja A la Carte",
       subtitle: "Përjetoni Shijen e Vërtetë Shqiptare",
-      text1: "Zbuloni pasurirë shijesh në menunë tonë të plotë a la carte, ku çdo pjatë tregon një histori të trashëgimisë kulinare shqiptare. Përbërësit tanë të freskët vijnë direkt nga fermat lokale dhe kopshtet tona.",
+      text1: "Zbuloni një risi shijesh në menunë tonë të plotë a la carte, ku çdo pjatë tregon një histori të trashëgimisë kulinare shqiptare. Përbërësit tanë të freskët vijnë direkt nga fermat lokale dhe kopshtet tona.",
       text2: "Nga antipastat tradicionale me djathë të bardhë dhe ullinje, te pjatat kryesore si Tavë Kosi dhe Qofte të Fërguara, çdo vakt përgatitet me kujdesin dhe dashurinë e traditës familjare.",
       features: {
         fresh: "Përbërës të Freskët Çdo Ditë",
@@ -133,7 +133,7 @@ export const translations = {
     contact: {
       title: "Na Vizitoni",
       info: {
-        title: "Vendndodhja & Orari",
+        title: "Vendndodhja",
         address: {
           title: "📍 Adresa",
           text: "Fshati Shqiptar\nKontaktoni për drejtime të sakta"
@@ -141,6 +141,10 @@ export const translations = {
         phone: {
           title: "📞 Telefoni",
           text: " +355 68 409 0405"
+        },
+        email: {
+          title: "📧 Email",
+          text: "hi@ullishtja-agroturizem.com"
         },
         hours: {
           title: "🕒 Orari",
@@ -170,7 +174,15 @@ export const translations = {
     // Footer
     footer: {
       copyright: "© 2024 Ullishtja Agriturizem. Të gjitha të drejtat e rezervuara.",
-      tagline: "Duke shërbyer kuzhinë autentike shqiptare që nga viti 2021"
+      tagline: "Duke shërbyer kuzhinë autentike shqiptare që nga viti 2021",
+      quickLinks: "Linqe të Shpejta",
+      services: "Shërbimet",
+      alaCarte: "A la Carte",
+      events: "Evente",
+      organic: "Produkte Organike",
+      views: "Pamje Malesh",
+      directions: "Drejtimet",
+      callUs: "Na Telefononi"
     },
     // Full Menu
     fullMenu: {
@@ -558,7 +570,7 @@ export const translations = {
     contact: {
       title: "Visit Us",
       info: {
-        title: "Location & Hours",
+        title: "Location",
         address: {
           title: "📍 Address",
           text: "Albanian Countryside\nContact for exact directions"
@@ -566,6 +578,10 @@ export const translations = {
         phone: {
           title: "📞 Phone",
           text: " +355 68 409 0405"
+        },
+        email: {
+          title: "📧 Email",
+          text: "hi@ullishtja-agroturizem.com"
         },
         hours: {
           title: "🕒 Hours",
@@ -595,7 +611,15 @@ export const translations = {
     // Footer
     footer: {
       copyright: "© 2024 Ullishtja Agriturizem. All rights reserved.",
-      tagline: "Serving authentic Albanian cuisine since 2021"
+      tagline: "Serving authentic Albanian cuisine since 2021",
+      quickLinks: "Quick Links",
+      services: "Our Services",
+      alaCarte: "A la Carte",
+      events: "Special Events",
+      organic: "Organic Products",
+      views: "Mountain Views",
+      directions: "Get Directions",
+      callUs: "Call Us"
     },
     // Full Menu
     fullMenu: {
@@ -984,7 +1008,7 @@ export const translations = {
     contact: {
       title: "Visitateci",
       info: {
-        title: "Posizione e Orari",
+        title: "Posizione",
         address: {
           title: "📍 Indirizzo",
           text: "Campagna Albanese\nContattate per indicazioni precise"
@@ -992,6 +1016,10 @@ export const translations = {
         phone: {
           title: "📞 Telefono",
           text: " +355 68 409 0405"
+        },
+        email: {
+          title: "📧 Email",
+          text: "hi@ullishtja-agroturizem.com"
         },
         hours: {
           title: "🕒 Orari",
@@ -1021,7 +1049,15 @@ export const translations = {
     // Footer
     footer: {
       copyright: "© 2024 Ullishtja Agriturizem. Tutti i diritti riservati.",
-      tagline: "Servendo autentica cucina albanese dal 2021"
+      tagline: "Servendo autentica cucina albanese dal 2021",
+      quickLinks: "Link Rapidi",
+      services: "I Nostri Servizi",
+      alaCarte: "A la Carte",
+      events: "Eventi Speciali",
+      organic: "Prodotti Biologici",
+      views: "Vista Montagna",
+      directions: "Ottieni Indicazioni",
+      callUs: "Chiamaci"
     },
     // Full Menu
     fullMenu: {

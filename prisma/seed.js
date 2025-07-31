@@ -18,7 +18,7 @@ async function main() {
   const settings = await prisma.restaurantSettings.create({
     data: {
       restaurantName: 'Ullishtja Agriturizem',
-      email: 'info@ullishtja.com',
+      email: 'hi@ullishtja-agroturizem.com',
       phone: '+355 68 409 0405',
       address: 'Rruga e Ullishtes, Tirane, Albania',
       websiteUrl: 'https://ullishtja-agriturizem.com',
