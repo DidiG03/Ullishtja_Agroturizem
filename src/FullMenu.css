@@ -1,27 +1,54 @@
-/* Prevent body scroll when modal is open */
-body.modal-open {
-  overflow: hidden;
-  position: fixed;
-  width: 100%;
-  height: 100%;
+/* Enhanced scroll prevention when modal is open */
+body.modal-open,
+html.modal-open {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: none !important;
 }
 
-/* Full Menu Overlay */
+body.modal-open {
+  -webkit-overflow-scrolling: touch !important;
+}
+
+/* Prevent any scrollable elements when modal is open */
+.modal-open * {
+  overscroll-behavior: none;
+}
+
+/* Ensure modal content can still scroll internally */
+.modal-open .menu-items-container,
+.modal-open .category-nav {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+}
+
+/* Full Menu Overlay - Enhanced visibility and positioning */
 .full-menu-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(5px);
-  z-index: 2000;
-  display: flex;
+  z-index: 2000 !important;
+  display: flex !important;
   align-items: center;
   justify-content: center;
   animation: fadeIn 0.3s ease;
-  /* Prevent scrolling */
-  overflow: hidden;
+  /* Enhanced scroll prevention */
+  overflow: hidden !important;
+  overscroll-behavior: none;
+  touch-action: none;
+  /* Ensure it's always on top and visible */
+  pointer-events: auto;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 @keyframes fadeIn {
@@ -29,21 +56,28 @@ body.modal-open {
   to { opacity: 1; }
 }
 
-/* Full Menu Container */
+/* Full Menu Container - Enhanced display and positioning */
 .full-menu-container {
-  background: white;
+  background: white !important;
   width: 95vw;
   max-width: 1200px;
   height: 90vh;
   max-height: 90vh;
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  display: flex;
+  display: flex !important;
   flex-direction: column;
   overflow: hidden;
   animation: slideUp 0.4s ease;
-  /* Ensure it's always in viewport */
+  /* Enhanced positioning and visibility */
   position: relative;
+  z-index: 2001;
+  pointer-events: auto;
+  visibility: visible !important;
+  opacity: 1 !important;
+  /* Ensure minimum visibility */
+  min-width: 300px;
+  min-height: 400px;
 }
 
 @keyframes slideUp {

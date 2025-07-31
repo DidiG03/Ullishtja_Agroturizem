@@ -201,12 +201,11 @@ function App() {
 
   const openFullMenu = useCallback(() => {
     setShowFullMenu(true);
-    // Prevent body scrolling when menu is open
+    // Enhanced scroll prevention for modal
     preventBodyScroll();
     // Add CSS class for additional scroll prevention
     document.body.classList.add('modal-open');
-    // Scroll to top of the page so modal appears in viewport
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    document.documentElement.classList.add('modal-open');
     
     // Track menu view
     analytics.trackMenuView(currentLanguage, 'full');
@@ -216,8 +215,9 @@ function App() {
     setShowFullMenu(false);
     // Re-enable body scrolling when menu is closed
     enableBodyScroll();
-    // Remove CSS class
+    // Remove CSS classes
     document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
   }, [enableBodyScroll]);
 
   const handlePDFExport = useCallback(async () => {

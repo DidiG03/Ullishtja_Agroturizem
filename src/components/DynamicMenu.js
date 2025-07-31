@@ -93,8 +93,25 @@ function DynamicMenu({ currentLanguage, onClose }) {
     );
   }
 
+  // Debug logs for render
+  console.log('DynamicMenu render:', {
+    categories: categories.length,
+    activeCategory,
+    loading,
+    error
+  });
+
   return (
-    <div className="full-menu-overlay">
+    <div 
+      className="full-menu-overlay" 
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+      onTouchMove={(e) => {
+        // Prevent background scrolling but allow internal scrolling
+        if (e.target === e.currentTarget) {
+          e.preventDefault();
+        }
+      }}
+    >
       <div className="full-menu-container">
         <div className="full-menu-header">
           <h1>
@@ -108,25 +125,53 @@ function DynamicMenu({ currentLanguage, onClose }) {
         <div className="menu-content">
           {/* Category Navigation */}
           <div className="category-nav">
-            {(Array.isArray(categories) ? categories : []).map(category => (
-              <button
-                key={category.id}
-                className={`category-btn ${activeCategory === category.id ? 'active' : ''}`}
-                onClick={() => setActiveCategory(category.id)}
-              >
-                {getLocalizedName(category)}
-              </button>
-            ))}
+            {categories.length === 0 ? (
+              <div style={{ 
+                padding: '1rem', 
+                textAlign: 'center', 
+                color: '#666',
+                fontSize: '0.9rem'
+              }}>
+                Loading categories...
+              </div>
+            ) : (
+              (Array.isArray(categories) ? categories : []).map(category => (
+                <button
+                  key={category.id}
+                  className={`category-btn ${activeCategory === category.id ? 'active' : ''}`}
+                  onClick={() => setActiveCategory(category.id)}
+                >
+                  {getLocalizedName(category)}
+                </button>
+              ))
+            )}
           </div>
 
           {/* Menu Items */}
           <div className="menu-items-container">
             <div className="menu-category-section">
-              <h2>{getCurrentCategory() ? getLocalizedName(getCurrentCategory()) : ''}</h2>
+              <h2>{getCurrentCategory() ? getLocalizedName(getCurrentCategory()) : 'Menu Items'}</h2>
               <div className="menu-items-grid">
                 {(() => {
                   const items = getCurrentItems();
                   console.log('Rendering items:', items.length, 'items');
+                  
+                  if (!items || items.length === 0) {
+                    return (
+                      <div style={{ 
+                        padding: '2rem', 
+                        textAlign: 'center', 
+                        color: '#666',
+                        fontSize: '1.1rem'
+                      }}>
+                        {categories.length === 0 
+                          ? 'No menu categories available'
+                          : 'No items available in this category'
+                        }
+                      </div>
+                    );
+                  }
+                  
                   return items.map((item, index) => (
                   <div key={item.id} className="menu-item-card">
                     <div className="item-header">
