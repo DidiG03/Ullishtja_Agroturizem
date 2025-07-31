@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ClerkProvider } from '@clerk/clerk-react';
 import App from './App';
+import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 
 // Lazy load admin components for better performance
 const AdminLogin = React.lazy(() => import('./components/AdminLogin'));
@@ -44,41 +45,49 @@ if (!clerkPubKey) {
   console.error('Missing Clerk Publishable Key. Please add REACT_APP_CLERK_PUBLISHABLE_KEY to your environment variables.');
 }
 
+// Component to initialize Google Analytics
+const AnalyticsWrapper = ({ children }) => {
+  useGoogleAnalytics(); // Initialize and track page views
+  return children;
+};
+
 const AppRouter = () => {
   return (
     <ClerkProvider publishableKey={clerkPubKey || 'pk_test_placeholder'}>
       <Router>
-        <Suspense fallback={<LoadingSpinner />}>
-          <Routes>
-            {/* Main website route */}
-            <Route path="/" element={<App />} />
-            
-            {/* Admin login route - lazy loaded */}
-            <Route 
-              path="/admin-login" 
-              element={
-                <Suspense fallback={<LoadingSpinner />}>
-                  <AdminLogin />
-                </Suspense>
-              } 
-            />
-            
-            {/* Protected dashboard route - admin only, lazy loaded */}
-            <Route 
-              path="/dashboard" 
-              element={
-                <Suspense fallback={<LoadingSpinner />}>
-                  <ProtectedRoute adminOnly={true}>
-                    <Dashboard />
-                  </ProtectedRoute>
-                </Suspense>
-              } 
-            />
-            
-            {/* Fallback route - redirect to home */}
-            <Route path="*" element={<App />} />
-          </Routes>
-        </Suspense>
+        <AnalyticsWrapper>
+          <Suspense fallback={<LoadingSpinner />}>
+            <Routes>
+              {/* Main website route */}
+              <Route path="/" element={<App />} />
+              
+              {/* Admin login route - lazy loaded */}
+              <Route 
+                path="/admin-login" 
+                element={
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <AdminLogin />
+                  </Suspense>
+                } 
+              />
+              
+              {/* Protected dashboard route - admin only, lazy loaded */}
+              <Route 
+                path="/dashboard" 
+                element={
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <ProtectedRoute adminOnly={true}>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  </Suspense>
+                } 
+              />
+              
+              {/* Fallback route - redirect to home */}
+              <Route path="*" element={<App />} />
+            </Routes>
+          </Suspense>
+        </AnalyticsWrapper>
       </Router>
     </ClerkProvider>
   );

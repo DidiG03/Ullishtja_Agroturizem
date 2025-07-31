@@ -7,6 +7,7 @@ import pdfExportService from './services/pdfExportService';
 import { handleReservation, validateReservationForm } from './reservationService';
 import useScrollOptimization from './hooks/useScrollOptimization';
 import useMobileOptimizations from './hooks/useMobileOptimizations';
+import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
 
 // Lazy load components for better performance
 const DynamicMenu = React.lazy(() => import('./components/DynamicMenu'));
@@ -18,6 +19,7 @@ const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadi
 
 function App() {
   const [currentLanguage, setCurrentLanguage] = useState('al');
+  const analytics = useAnalyticsTracking();
   const [showFullMenu, setShowFullMenu] = useState(false);
   
   // Initialize scroll optimization
@@ -135,9 +137,15 @@ function App() {
   }, [enableBodyScroll]);
 
   const changeLanguage = useCallback((lang) => {
+    const previousLanguage = currentLanguage;
     setCurrentLanguage(lang);
     closeMobileMenu(); // Close mobile menu when language changes
-  }, [closeMobileMenu]);
+    
+    // Track language change
+    if (previousLanguage !== lang) {
+      analytics.trackLanguageChange(lang, previousLanguage);
+    }
+  }, [closeMobileMenu, currentLanguage, analytics]);
 
   const handleGuestCountChange = useCallback((e) => {
     const guestCount = e.target.value;
@@ -199,7 +207,10 @@ function App() {
     document.body.classList.add('modal-open');
     // Scroll to top of the page so modal appears in viewport
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [preventBodyScroll]);
+    
+    // Track menu view
+    analytics.trackMenuView(currentLanguage, 'full');
+  }, [preventBodyScroll, currentLanguage, analytics]);
 
   const closeFullMenu = useCallback(() => {
     setShowFullMenu(false);
@@ -256,6 +267,9 @@ function App() {
       }
       
       console.log('Calling PDF service...');
+      // Track PDF download attempt
+      analytics.trackPDFDownload(currentLanguage, menuDataForPDF.length);
+      
       // Generate and open/download PDF
       await pdfExportService.openPDFInNewWindow(menuDataForPDF, currentLanguage);
       console.log('PDF service completed successfully');
@@ -383,6 +397,15 @@ function App() {
     }
 
     try {
+      // Track reservation attempt
+      const reservationData = {
+        guests: guests,
+        date: date,
+        time: time,
+        language: currentLanguage
+      };
+      analytics.trackReservationAttempt(reservationData);
+      
       // Handle reservation - send email notification to restaurant
       const result = await handleReservation(formData, 'email');
       
@@ -392,6 +415,12 @@ function App() {
           success: true,
           error: null,
           message: t.contact.reservation.confirmationMessage
+        });
+
+        // Track successful reservation
+        analytics.trackReservationSuccess({
+          ...reservationData,
+          id: result.id || Date.now().toString()
         });
 
         // Clear form
@@ -412,7 +441,7 @@ function App() {
         message: ''
       });
     }
-  }, [isLargeGroup, t.contact.reservation.largeGroupError, t.contact.reservation.confirmationMessage, t.contact.reservation.errorMessage]);
+  }, [isLargeGroup, t.contact.reservation.largeGroupError, t.contact.reservation.confirmationMessage, t.contact.reservation.errorMessage, currentLanguage, analytics]);
 
   // Memoize complex computations
   const formattedTimeSlots = useMemo(() => {
