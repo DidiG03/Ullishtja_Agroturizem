@@ -202,14 +202,13 @@ function App() {
   const openFullMenu = useCallback(() => {
     setShowFullMenu(true);
     // Enhanced scroll prevention for modal
-    preventBodyScroll();
     // Add CSS class for additional scroll prevention
     document.body.classList.add('modal-open');
     document.documentElement.classList.add('modal-open');
     
     // Track menu view
     analytics.trackMenuView(currentLanguage, 'full');
-  }, [preventBodyScroll, currentLanguage, analytics]);
+  }, [currentLanguage, analytics]);
 
   const closeFullMenu = useCallback(() => {
     setShowFullMenu(false);
