@@ -70,14 +70,25 @@ Sent automatically from Ullishtja Website`;
   }
 };
 
+import { applyCorsHeaders } from '../src/utils/corsConfig.js';
+import { applySecurityHeaders } from '../src/utils/securityHeaders.js';
+import { checkRateLimit } from '../src/utils/rateLimiter.js';
+import { validateReservationData } from '../src/utils/inputValidation.js';
+
 export default async function handler(req, res) {
-  // Enable CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // Apply security headers
+  applySecurityHeaders(res);
+  
+  // Apply CORS headers
+  applyCorsHeaders(res, req.headers.origin);
   
   if (req.method === 'OPTIONS') {
     res.status(200).end();
+    return;
+  }
+
+  // Rate limiting for reservation endpoint
+  if (!checkRateLimit(req, res, 'reservations')) {
     return;
   }
 
@@ -118,8 +129,17 @@ export default async function handler(req, res) {
       });
 
     } else if (req.method === 'POST') {
-      // Create a new reservation
-      const reservationData = req.body;
+      // Validate and sanitize input data
+      const validation = validateReservationData(req.body);
+      if (!validation.isValid) {
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid reservation data',
+          details: validation.errors
+        });
+      }
+      
+      const reservationData = validation.sanitizedData;
       
       // Import time slot service for validation
       const { timeSlotService } = await import('../src/services/timeSlotService.js');

@@ -107,7 +107,7 @@ class IntelligentVideoPreloader {
   }
 
   getOptimalVideoSource(videoId, priority = 'normal') {
-    const { isMobile, isTablet, isDesktop, isLowPower } = this.deviceInfo;
+    const { isTablet, isDesktop, isLowPower } = this.deviceInfo;
     const { effectiveType, downlink, saveData } = this.networkInfo;
     const { batteryOptimization } = this.userBehavior;
 

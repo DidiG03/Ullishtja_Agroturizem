@@ -32,11 +32,16 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "node server/index.js",
+    "server:prod": "NODE_ENV=production node server/index.js",
     "dev": "concurrently \"npm run server\" \"npm start\"",
     "seed-menu": "node scripts/seed-menu.js",
     "clear-reservations": "node scripts/clear-test-reservations.js",
     "init-settings": "node scripts/init-restaurant-settings.js",
     "optimize-images": "node scripts/optimize-images.js",
+    "validate-env": "node -e \"require('./src/utils/envValidation.js').logEnvironmentStatus()\"",
+    "validate-deployment": "node scripts/validate-deployment.js",
+    "production-check": "node scripts/production-check.js",
+    "setup": "npm install && npx prisma generate && npm run init-settings",
     "postinstall": "prisma generate"
   },
   "eslintConfig": {

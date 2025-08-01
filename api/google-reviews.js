@@ -8,8 +8,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    const placeId = process.env.REACT_APP_GOOGLE_PLACE_ID || "ChIJ_6oztHnbTxMRmn95pUlRg40";
-    const apiKey = process.env.REACT_APP_GOOGLE_PLACES_API_KEY || "AIzaSyBVqtCAyNk4YFM_rn3tOII_uJ8-a5WgCHY";
+    const placeId = process.env.REACT_APP_GOOGLE_PLACE_ID;
+const apiKey = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
+
+if (!placeId || !apiKey) {
+  console.error('Missing Google Places configuration. Please set REACT_APP_GOOGLE_PLACE_ID and REACT_APP_GOOGLE_PLACES_API_KEY');
+}
 
     if (!apiKey || !placeId) {
       console.error('Missing API key or Place ID');

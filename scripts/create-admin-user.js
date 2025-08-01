@@ -20,10 +20,16 @@ async function createAdminUser() {
       process.exit(1);
     }
 
-    const email = 'sefridkapllani@gmail.com';
-    const password = 'Sefrid2003?';
-    const firstName = 'Sefrid';
-    const lastName = 'Kapllani';
+    // Get admin details from environment variables
+    const email = process.env.ADMIN_EMAIL;
+    const password = process.env.ADMIN_PASSWORD;
+    const firstName = process.env.ADMIN_FIRST_NAME || 'Admin';
+    const lastName = process.env.ADMIN_LAST_NAME || 'User';
+
+    if (!email || !password) {
+      console.error('❌ Missing admin credentials. Please set ADMIN_EMAIL and ADMIN_PASSWORD environment variables.');
+      process.exit(1);
+    }
 
     // Create user in Clerk
     const user = await clerkClient.users.createUser({

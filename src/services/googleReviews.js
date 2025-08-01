@@ -4,9 +4,13 @@
 
 class GoogleReviewsService {
   constructor() {
-    // Your actual Google Place ID and API Key
-    this.placeId = process.env.REACT_APP_GOOGLE_PLACE_ID || "ChIJ_6oztHnbTxMRmn95pUlRg40"
-    this.apiKey = process.env.REACT_APP_GOOGLE_PLACES_API_KEY || "AIzaSyBVqtCAyNk4YFM_rn3tOII_uJ8-a5WgCHY"
+    // Google Place ID and API Key from environment
+    this.placeId = process.env.REACT_APP_GOOGLE_PLACE_ID
+    this.apiKey = process.env.REACT_APP_GOOGLE_PLACES_API_KEY
+    
+    if (!this.placeId || !this.apiKey) {
+      console.error('Missing Google Places configuration. Please set REACT_APP_GOOGLE_PLACE_ID and REACT_APP_GOOGLE_PLACES_API_KEY');
+    }
     this.useRealData = process.env.REACT_APP_USE_REAL_REVIEWS === 'true' || true // Enable by default
   }
 
