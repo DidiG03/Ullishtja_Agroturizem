@@ -32,9 +32,9 @@ app.get('/health', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📋 Menu API available at http://localhost:${PORT}/api/menu`);
-  console.log(`🍽️ Reservations API available at http://localhost:${PORT}/api/reservations`);
-  console.log(`🕒 Time Slots API available at http://localhost:${PORT}/api/timeslots`);
-  console.log(`🏥 Health check at http://localhost:${PORT}/health`);
-}); 
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📊 Health check: http://localhost:${PORT}/health`);
+  console.log(`📝 Google Reviews API: http://localhost:${PORT}/api/google-reviews`);
+  console.log(`🍽️ Menu API: http://localhost:${PORT}/api/menu/complete`);
+});
+  

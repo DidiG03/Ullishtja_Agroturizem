@@ -42,19 +42,20 @@ const useMobileOptimizations = () => {
     const deltaY = Math.abs(e.touches[0].clientY - touchStartRef.current.y);
     const element = e.target;
     
-    // If menu is open, only allow vertical scrolling within mobile nav
+    // If menu is open, only allow scrolling within mobile nav
     if (document.body.classList.contains('scroll-locked')) {
-      if (!element.closest('.mobile-nav')) {
+      if (!element.closest('.mobile-nav') && !element.closest('.mobile-menu-container')) {
         e.preventDefault();
         return;
       }
-      // Allow vertical scrolling within mobile nav
-      if (deltaY > deltaX && element.closest('.mobile-nav')) {
-        return;
+      
+      // Allow horizontal scrolling in mobile categories navigation
+      if (element.closest('.mobile-categories-nav')) {
+        return; // Let the browser handle horizontal scrolling for categories
       }
-      // Prevent horizontal scrolling in mobile nav
-      if (deltaX > deltaY) {
-        e.preventDefault();
+      
+      // Allow vertical scrolling within mobile menu content
+      if (deltaY > deltaX && element.closest('.mobile-menu-content')) {
         return;
       }
     }
@@ -68,7 +69,8 @@ const useMobileOptimizations = () => {
     if (deltaX > deltaY && (deltaX > 10)) {
       if (!element.closest('.scroll-controlled-video-section') && 
           !element.closest('.gallery') &&
-          !element.closest('.mobile-nav')) {
+          !element.closest('.mobile-nav') &&
+          !element.closest('.mobile-categories-nav')) {
         e.preventDefault();
       }
     }
@@ -135,18 +137,7 @@ const useMobileOptimizations = () => {
     const heroVideoPoster = new Image();
     heroVideoPoster.src = '/videos/dji-20240806130059-0020-d-poster.jpg';
     
-    // Preload critical fonts
-    const fontLink = document.createElement('link');
-    fontLink.rel = 'preload';
-    fontLink.as = 'font';
-    fontLink.type = 'font/woff2';
-    fontLink.crossOrigin = 'anonymous';
-    fontLink.href = '/fonts/georgia-bold.woff2'; // Adjust path as needed
-    
-    // Only add if not already present
-    if (!document.querySelector(`link[href="${fontLink.href}"]`)) {
-      document.head.appendChild(fontLink);
-    }
+    // Font preloading removed - not using georgia-bold font in the design
   }, []);
 
   // Initialize mobile optimizations

@@ -15,7 +15,6 @@ router.get('/', async (req, res) => {
       });
     }
 
-    console.log('Fetching Google Reviews for Place ID:', placeId);
 
     // Use dynamic import for fetch in Node.js
     const fetch = (await import('node-fetch')).default;
@@ -27,7 +26,6 @@ router.get('/', async (req, res) => {
     const data = await response.json();
 
     if (data.status === 'OK' && data.result) {
-      console.log('Successfully fetched Google Reviews');
       
       // Process the reviews data
       const processedData = {

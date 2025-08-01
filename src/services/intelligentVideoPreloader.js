@@ -174,9 +174,12 @@ class IntelligentVideoPreloader {
           });
         }, { once: true });
 
-        video.addEventListener('error', () => {
+        video.addEventListener('error', (event) => {
           clearTimeout(timeoutId);
-          reject(new Error('Video preload failed'));
+          const errorMsg = event.target.error 
+            ? `Video preload failed: ${event.target.error.message}` 
+            : `Video preload failed for ${videoSource.src}`;
+          reject(new Error(errorMsg));
         }, { once: true });
       });
 
@@ -190,7 +193,8 @@ class IntelligentVideoPreloader {
       
       return result;
     } catch (error) {
-      console.warn(`Failed to preload video ${videoId}:`, error);
+      console.warn(`Failed to preload video ${videoId}:`, error.message);
+      // Don't throw error, just return null to prevent blocking other preloads
       return null;
     }
   }
@@ -276,9 +280,14 @@ class IntelligentVideoPreloader {
     }
 
     // Preload critical videos with high priority
-    const preloadPromises = criticalVideos.map(videoId => 
-      this.preloadVideo(videoId, 'high')
-    );
+    const preloadPromises = criticalVideos.map(async (videoId) => {
+      try {
+        return await this.preloadVideo(videoId, 'high');
+      } catch (error) {
+        console.warn(`Failed to preload critical video ${videoId}:`, error.message);
+        return null;
+      }
+    });
 
     try {
       await Promise.allSettled(preloadPromises);

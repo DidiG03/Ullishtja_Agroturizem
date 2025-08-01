@@ -245,12 +245,10 @@ const menuData = {
 
 async function seedMenu() {
   try {
-    console.log('🌱 Starting menu seeding...');
     
     // Create categories
     const createdCategories = {};
     for (const categoryData of menuData.categories) {
-      console.log(`📁 Creating category: ${categoryData.nameAL}`);
       const category = await prisma.menuCategory.create({
         data: categoryData
       });
@@ -261,11 +259,9 @@ async function seedMenu() {
     for (const [categorySlug, items] of Object.entries(menuData.items)) {
       const category = createdCategories[categorySlug];
       if (!category) {
-        console.log(`⚠️  Category not found for slug: ${categorySlug}`);
         continue;
       }
       
-      console.log(`📋 Creating ${items.length} items for category: ${category.nameAL}`);
       
       for (const itemData of items) {
         await prisma.menuItem.create({
@@ -274,22 +270,12 @@ async function seedMenu() {
             categoryId: category.id
           }
         });
-        console.log(`   ✅ Created: ${itemData.nameAL}`);
       }
     }
     
-    console.log('🎉 Menu seeding completed successfully!');
-    
-    // Display summary
-    const categoriesCount = await prisma.menuCategory.count();
-    const itemsCount = await prisma.menuItem.count();
-    
-    console.log('\n📊 Summary:');
-    console.log(`   Categories: ${categoriesCount}`);
-    console.log(`   Menu Items: ${itemsCount}`);
-    
+      
   } catch (error) {
-    console.error('❌ Error seeding menu:', error);
+    console.error('Error seeding menu:', error);
     throw error;
   } finally {
     await prisma.$disconnect();

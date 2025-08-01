@@ -193,7 +193,6 @@ class GoogleReviewsService {
   async fetchGoogleReviews() {
     try {
       // Always try to fetch real reviews from our backend API first
-      console.log('Attempting to fetch real Google Reviews...');
       
       // Use relative path for production, localhost for development
       const apiBaseUrl = process.env.NODE_ENV === 'production' 
@@ -205,7 +204,6 @@ class GoogleReviewsService {
       const result = await response.json();
       
       if (result.success && result.data) {
-        console.log('Successfully fetched real Google Reviews');
         return result.data;
       } else {
         console.warn('API response indicates failure or no data, using mock data:', result.error || 'Unknown error');

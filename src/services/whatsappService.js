@@ -151,7 +151,6 @@ export const sendWhatsAppNotification = async (reservationData) => {
     try {
       const result = await method.fn(reservationData);
       if (result.success) {
-        console.log(`WhatsApp sent successfully via ${method.name}`);
         return result;
       }
     } catch (error) {

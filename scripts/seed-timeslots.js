@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 async function seedTimeSlots() {
   try {
-    console.log('🕒 Seeding default time slots...');
 
     const defaultSlots = [
       { time: '12:00', maxCapacity: 20, displayOrder: 1 },
@@ -38,21 +37,13 @@ async function seedTimeSlots() {
           data: slotData,
         });
         created++;
-        console.log(`✓ Created time slot: ${slotData.time} (capacity: ${slotData.maxCapacity})`);
       } else {
         existing++;
-        console.log(`- Time slot already exists: ${slotData.time}`);
       }
     }
-
-    console.log(`\n📊 Summary:`);
-    console.log(`   Created: ${created} time slots`);
-    console.log(`   Existing: ${existing} time slots`);
-    console.log(`   Total: ${created + existing} time slots`);
-
-    console.log('\n🎉 Time slots seeding completed successfully!');
+    
   } catch (error) {
-    console.error('❌ Error seeding time slots:', error);
+    console.error('Error seeding time slots:', error);
     process.exit(1);
   } finally {
     await prisma.$disconnect();

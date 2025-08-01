@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Starting database seed...');
 
   // Clear existing data
   await prisma.adminActivity.deleteMany();
@@ -311,18 +310,12 @@ async function main() {
     await prisma.review.create({ data: review });
   }
 
-  console.log('✅ Database seeded successfully!');
-  console.log(`Created:
-  - ${menuItems.length} menu items across 4 categories
-  - ${customers.length} sample customers  
-  - ${reservations.length} sample reservations
-  - ${reviews.length} sample reviews
-  - Restaurant settings initialized`);
+
 }
 
 main()
   .catch((e) => {
-    console.error('❌ Error seeding database:', e);
+    console.error('Error seeding database:', e);
     process.exit(1);
   })
   .finally(async () => {

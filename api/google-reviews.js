@@ -19,7 +19,6 @@ export default async function handler(req, res) {
       });
     }
 
-    console.log('Fetching Google Reviews for Place ID:', placeId);
 
     // Fetch place details from Google Places API
     const apiUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,rating,reviews,user_ratings_total&key=${apiKey}`;
@@ -28,7 +27,6 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (data.status === 'OK' && data.result) {
-      console.log('Successfully fetched Google Reviews');
       
       // Process the reviews data
       const processedData = {

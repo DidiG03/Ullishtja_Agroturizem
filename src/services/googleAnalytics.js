@@ -39,7 +39,6 @@ class GoogleAnalyticsService {
       });
 
       this.initialized = true;
-      console.log('Google Analytics initialized for Ullishtja Agroturizem');
     } catch (error) {
       console.error('Failed to initialize Google Analytics:', error);
     }

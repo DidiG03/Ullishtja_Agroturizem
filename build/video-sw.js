@@ -46,7 +46,6 @@ const isPosterRequest = (url) => {
 
 // Install event - cache critical resources
 self.addEventListener('install', event => {
-  console.log('Video SW: Installing...');
   
   event.waitUntil(
     Promise.all([
@@ -65,7 +64,6 @@ self.addEventListener('install', event => {
         return cache.addAll(POSTER_IMAGES);
       })
     ]).then(() => {
-      console.log('Video SW: Critical resources cached');
       self.skipWaiting(); // Force activation
     })
   );
@@ -73,7 +71,6 @@ self.addEventListener('install', event => {
 
 // Activate event - clean up old caches
 self.addEventListener('activate', event => {
-  console.log('Video SW: Activating...');
   
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -83,13 +80,11 @@ self.addEventListener('activate', event => {
           if (cacheName.startsWith('ullishtja-videos') && 
               cacheName !== VIDEO_CACHE_NAME && 
               cacheName !== POSTER_CACHE_NAME) {
-            console.log('Video SW: Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
       );
     }).then(() => {
-      console.log('Video SW: Activated');
       return self.clients.claim();
     })
   );
@@ -124,7 +119,6 @@ async function handleVideoRequest(request) {
     const cachedResponse = await cache.match(request);
     
     if (cachedResponse) {
-      console.log('Video SW: Serving from cache:', url.pathname);
       return cachedResponse;
     }
 
@@ -279,7 +273,6 @@ async function cacheVideoResponse(cache, request, response) {
       
       if (shouldCache || shouldCacheDesktop) {
         await cache.put(request, response);
-        console.log('Video SW: Cached video:', url.pathname);
         
         // Manage cache size
         await manageCacheSize();
@@ -306,7 +299,6 @@ async function manageCacheSize() {
       await cache.delete(request);
     }
     
-    console.log(`Video SW: Removed ${videosToRemove.length} old cached videos`);
   }
 }
 
@@ -343,7 +335,6 @@ async function preloadVideo(videoId, priority = 'normal') {
       return;
     }
     
-    console.log('Video SW: Preloading video:', videoUrl);
     
     // Preload video and poster
     const [videoResponse, posterResponse] = await Promise.allSettled([
@@ -369,7 +360,6 @@ async function clearVideoCache() {
   try {
     await caches.delete(VIDEO_CACHE_NAME);
     await caches.delete(POSTER_CACHE_NAME);
-    console.log('Video SW: Video cache cleared');
   } catch (error) {
     console.error('Video SW: Error clearing cache:', error);
   }

@@ -420,16 +420,20 @@
     gap: 0.5rem;
     border-right: none;
     border-bottom: 1px solid #eee;
-    overflow-x: scroll;
+    overflow-x: auto;
     overflow-y: hidden;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-x;
     overscroll-behavior-x: contain;
+    overscroll-behavior-y: none;
     scrollbar-width: none;
     -ms-overflow-style: none;
     position: relative;
     white-space: nowrap;
     flex-shrink: 0;
+    /* Force hardware acceleration for smoother scrolling */
+    transform: translateZ(0);
+    will-change: scroll-position;
   }
   
   .mobile-categories-nav::-webkit-scrollbar {

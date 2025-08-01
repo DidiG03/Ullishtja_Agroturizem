@@ -92,8 +92,7 @@ const optimizeVideos = async () => {
     
     for (const file of files) {
       if (file.match(/\.(mov|mp4|avi|mkv)$/i)) {
-        console.log(`\n🎬 Processing ${file}...`);
-        
+
         const inputPath = path.join(inputDir, file);
         const fileName = path.parse(file).name.toLowerCase().replace(/[^a-z0-9-]/g, '-');
         
@@ -102,16 +101,14 @@ const optimizeVideos = async () => {
         
         // Generate videos for each device type and format
         for (const [deviceType, formats] of Object.entries(compressionSettings)) {
-          console.log(`  📱 Generating ${deviceType} versions...`);
           
           for (const [format, settings] of Object.entries(formats)) {
             const outputPath = path.join(outputDir, `${fileName}-${deviceType}.${format === 'av1' ? 'av1.mp4' : format}`);
             
             try {
               await generateVideoVariant(inputPath, outputPath, format, settings);
-              console.log(`    ✅ Created ${fileName}-${deviceType}.${format}`);
             } catch (error) {
-              console.error(`    ❌ Failed to create ${fileName}-${deviceType}.${format}:`, error.message);
+              console.error(`Failed to create ${fileName}-${deviceType}.${format}:`, error.message);
             }
           }
         }
@@ -121,20 +118,14 @@ const optimizeVideos = async () => {
     // Generate video mappings file for easy reference
     generateVideoMappings(outputDir);
     
-    console.log('\n🎉 All videos optimized successfully!');
-    console.log('\n📊 Optimization Summary:');
     
     // Calculate size savings
     const originalSize = calculateDirectorySize(inputDir);
     const optimizedSize = calculateDirectorySize(outputDir);
     const savings = ((originalSize - optimizedSize) / originalSize * 100).toFixed(1);
     
-    console.log(`Original size: ${formatBytes(originalSize)}`);
-    console.log(`Optimized size: ${formatBytes(optimizedSize)}`);
-    console.log(`Size reduction: ${savings}%`);
-    
   } catch (error) {
-    console.error('❌ Error processing videos:', error);
+    console.error('Error processing videos:', error);
   }
 };
 
@@ -233,7 +224,7 @@ const generateVideoVariant = (inputPath, outputPath, format, settings) => {
       .output(outputPath)
       .on('progress', (progress) => {
         if (progress.percent) {
-          process.stdout.write(`\r    📊 ${format.toUpperCase()}: ${Math.round(progress.percent)}%`);
+          process.stdout.write(`\r     ${format.toUpperCase()}: ${Math.round(progress.percent)}%`);
         }
       })
       .on('end', () => {
@@ -285,7 +276,6 @@ const generateVideoMappings = (outputDir) => {
     JSON.stringify(mappings, null, 2)
   );
   
-  console.log(`\n📋 Generated video mappings for ${mappings.videos.length} videos`);
 };
 
 // Utility functions

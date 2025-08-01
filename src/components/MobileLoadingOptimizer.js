@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import intelligentVideoPreloader from '../services/intelligentVideoPreloader';
 
 const MobileLoadingOptimizer = () => {
   useEffect(() => {
@@ -91,7 +90,6 @@ const MobileLoadingOptimizer = () => {
           scope: '/videos/'
         });
         
-        console.log('Video SW registered successfully:', registration);
         
         // Listen for service worker updates
         registration.addEventListener('updatefound', () => {
@@ -99,7 +97,7 @@ const MobileLoadingOptimizer = () => {
           if (newWorker) {
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'activated') {
-                console.log('New video service worker activated');
+                // New video service worker activated
               }
             });
           }

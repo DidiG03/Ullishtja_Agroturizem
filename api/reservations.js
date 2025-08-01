@@ -39,7 +39,6 @@ Sent automatically from Ullishtja Website`;
 
       if (response.ok) {
         const result = await response.json();
-        console.log('WhatsApp sent via Twilio:', result.sid);
         return { success: true, method: 'twilio', messageId: result.sid };
       }
     }
@@ -57,13 +56,12 @@ Sent automatically from Ullishtja Website`;
       });
 
       if (response.ok) {
-        console.log('WhatsApp sent via webhook');
+        ('WhatsApp sent via webhook');
         return { success: true, method: 'webhook' };
       }
     }
 
     // Option 3: Log message for manual handling
-    console.log('WhatsApp message to send:', message);
     return { success: true, method: 'logged' };
 
   } catch (error) {

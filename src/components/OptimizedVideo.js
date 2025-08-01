@@ -86,7 +86,7 @@ const OptimizedVideo = ({
                   const playPromise = videoRef.current.play();
                   if (playPromise !== undefined) {
                     playPromise.catch(error => {
-                      console.log('Auto-play prevented:', error);
+                      // Auto-play was prevented, but that's okay
                     });
                   }
                 }
@@ -145,7 +145,6 @@ const OptimizedVideo = ({
       if (playPromise !== undefined) {
         playPromise.catch(error => {
           // Auto-play was prevented, but that's okay
-          console.log('Auto-play prevented:', error);
         });
       }
     }

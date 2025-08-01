@@ -25,7 +25,6 @@ const optimizeImages = async () => {
     
     for (const file of files) {
       if (file.match(/\.(jpg|jpeg|png)$/i)) {
-        console.log(`Processing ${file}...`);
         
         const inputPath = path.join(inputDir, file);
         const fileName = path.parse(file).name;
@@ -41,7 +40,6 @@ const optimizeImages = async () => {
             .webp({ quality: 85 })
             .toFile(outputPath);
             
-          console.log(`✅ Created ${fileName}-${size.name}.webp`);
         }
         
         // Also create JPEG fallback
@@ -51,13 +49,11 @@ const optimizeImages = async () => {
           .jpeg({ quality: 85 })
           .toFile(jpegPath);
           
-        console.log(`✅ Created ${fileName}.jpg`);
       }
     }
     
-    console.log('🎉 All images optimized successfully!');
-  } catch (error) {
-    console.error('❌ Error processing images:', error);
+    } catch (error) {
+    console.error('Error processing images:', error);
   }
 };
 

@@ -242,18 +242,6 @@ const AdaptiveVideo = ({
     };
   }, [lazy, isLoaded, autoPlay, deviceInfo]);
 
-  // Auto-play when video becomes visible and loaded
-  useEffect(() => {
-    if (isLoaded && videoRef.current && autoPlay && isInView) {
-      const playPromise = videoRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          console.log('Auto-play prevented:', error);
-        });
-      }
-    }
-  }, [isLoaded, autoPlay, isInView]);
-
   const handleVideoLoad = () => {
     setIsLoaded(true);
   };

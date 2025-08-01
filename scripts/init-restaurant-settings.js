@@ -4,13 +4,11 @@ const prisma = new PrismaClient();
 
 async function initializeRestaurantSettings() {
   try {
-    console.log('🔧 Initializing restaurant settings...');
-    
+
     // Check if settings already exist
     const existingSettings = await prisma.restaurantSettings.findFirst();
     
     if (existingSettings) {
-      console.log('✅ Restaurant settings already exist');
       return;
     }
     
@@ -42,11 +40,9 @@ async function initializeRestaurantSettings() {
       }
     });
     
-    console.log('✅ Restaurant settings initialized successfully');
-    console.log('📝 Settings ID:', defaultSettings.id);
     
   } catch (error) {
-    console.error('❌ Error initializing restaurant settings:', error);
+    console.error('Error initializing restaurant settings:', error);
     throw error;
   } finally {
     await prisma.$disconnect();
@@ -56,10 +52,9 @@ async function initializeRestaurantSettings() {
 // Run the initialization
 initializeRestaurantSettings()
   .then(() => {
-    console.log('🎉 Restaurant settings initialization completed');
     process.exit(0);
   })
   .catch((error) => {
-    console.error('💥 Failed to initialize restaurant settings:', error);
+    console.error('Failed to initialize restaurant settings:', error);
     process.exit(1);
   }); 

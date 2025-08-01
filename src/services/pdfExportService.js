@@ -1,5 +1,4 @@
 import jsPDF from 'jspdf';
-import { translations } from '../translations';
 
 class PDFExportService {
   constructor() {
@@ -197,8 +196,6 @@ class PDFExportService {
 
   // Add header with restaurant logo and elegant styling
   async addHeader(language = 'al') {
-    const t = translations[language];
-    
     // Add clean background first
     this.addCleanBackground();
     
@@ -439,7 +436,6 @@ class PDFExportService {
   // Main method to generate PDF from menu data
   async generateMenuPDF(menuData, language = 'al', options = {}) {
     try {
-      console.log('Generating PDF with:', { menuDataLength: menuData?.length, language });
       
       this.initializePDF();
       
@@ -448,13 +444,10 @@ class PDFExportService {
 
       // Add categories and items
       if (menuData && menuData.length > 0) {
-        console.log('Adding menu categories:', menuData.length);
         menuData.forEach((category, index) => {
-          console.log(`Adding category ${index + 1}:`, category.nameAL || category.nameEN || category.name);
           this.addCategory(category, language);
         });
       } else {
-        console.log('No menu data available, adding fallback message');
         // Fallback message if no menu data
         this.pdf.setFontSize(14);
         this.pdf.setTextColor(85, 107, 47);
@@ -481,7 +474,6 @@ class PDFExportService {
       // Add footer on last page
       this.addFooter(language);
 
-      console.log('PDF generation completed successfully');
       // Return the PDF for download or preview
       return this.pdf;
     } catch (error) {
@@ -540,7 +532,6 @@ class PDFExportService {
           // Check if pop-up was blocked
           if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
             // Pop-up blocked, fallback to download
-            console.log('Pop-up blocked, falling back to download');
             const filename = `Ullishtja_Menu_${language.toUpperCase()}_${new Date().toISOString().split('T')[0]}.pdf`;
             pdf.save(filename);
           } else {
@@ -550,7 +541,6 @@ class PDFExportService {
             }, 5000); // Longer delay for slower loading
           }
         } catch (windowError) {
-          console.log('Window.open failed, falling back to download:', windowError);
           // Fallback to download
           const filename = `Ullishtja_Menu_${language.toUpperCase()}_${new Date().toISOString().split('T')[0]}.pdf`;
           pdf.save(filename);
@@ -616,8 +606,7 @@ class PDFExportService {
   }
 
   // Test PDF generation with minimal data
-  async testPDFGeneration(language = 'al') {
-    console.log('Testing PDF generation...');
+  async testPDFGeneration(language = 'al') {  
     try {
       // Create minimal test data
       const testMenuData = [
@@ -647,26 +636,21 @@ class PDFExportService {
         }
       ];
 
-      console.log('Generating test PDF with data:', testMenuData);
       const pdf = await this.generateMenuPDF(testMenuData, language);
       
       if (this.isMobileDevice()) {
-        console.log('Mobile device detected - downloading test PDF');
         pdf.save(`Test_Menu_${language.toUpperCase()}.pdf`);
         this.showMobileNotification('Test PDF downloaded successfully!');
       } else {
-        console.log('Desktop device - opening test PDF in new window');
         const pdfBlob = pdf.output('blob');
         const pdfUrl = URL.createObjectURL(pdfBlob);
         const newWindow = window.open(pdfUrl, '_blank');
         
         if (!newWindow) {
-          console.log('Pop-up blocked - downloading instead');
           pdf.save(`Test_Menu_${language.toUpperCase()}.pdf`);
         }
       }
       
-      console.log('Test PDF generation completed successfully');
       return true;
     } catch (error) {
       console.error('Test PDF generation failed:', error);

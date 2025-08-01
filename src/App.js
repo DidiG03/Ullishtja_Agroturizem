@@ -86,11 +86,9 @@ function App() {
     const loadMenu = async () => {
       try {
         const response = await MenuService.getCompleteMenu();
-        console.log('Menu API response:', response); // Debug log
-        
+
         if (response && response.success) {
           const categories = response.data || [];
-          console.log('Setting menu categories:', categories); // Debug log
           setMenuCategories(Array.isArray(categories) ? categories : []);
         } else {
           console.error('Failed to load menu:', response?.error || 'Unknown error');
@@ -205,17 +203,11 @@ function App() {
   }, []);
 
   const handlePDFExport = useCallback(async () => {
-    console.log('PDF Export button clicked!', { 
-      currentLanguage, 
-      menuCategoriesLength: menuCategories.length,
-      isMobile: window.innerWidth <= 768,
-      userAgent: navigator.userAgent 
-    });
+    
     
     try {
       // Check if we have menu data
       const menuDataForPDF = menuCategories.length > 0 ? menuCategories : [];
-      console.log('Menu data for PDF:', menuDataForPDF);
       
       // Show loading state for user feedback
       const isMobile = window.innerWidth <= 768;
@@ -225,7 +217,6 @@ function App() {
         ? 'Preparing PDF...' 
         : 'Preparazione PDF...';
       
-      console.log('Creating loading indicator for mobile:', isMobile);
       
       // Create temporary loading indicator
       let loadingElement = null;
@@ -247,21 +238,17 @@ function App() {
         `;
         loadingElement.textContent = loadingMessage;
         document.body.appendChild(loadingElement);
-        console.log('Loading indicator added to DOM');
       }
       
-      console.log('Calling PDF service...');
       // Track PDF download attempt
       analytics.trackPDFDownload(currentLanguage, menuDataForPDF.length);
       
       // Generate and open/download PDF
-      await pdfExportService.openPDFInNewWindow(menuDataForPDF, currentLanguage);
-      console.log('PDF service completed successfully');
+      await pdfExportService.openPDFInNewWindow(menuDataForPDF, currentLanguage); 
       
       // Remove loading indicator
       if (loadingElement && loadingElement.parentNode) {
         loadingElement.parentNode.removeChild(loadingElement);
-        console.log('Loading indicator removed');
       }
       
     } catch (error) {
@@ -281,8 +268,6 @@ function App() {
         : currentLanguage === 'en' 
         ? 'Error creating PDF. Please try again.' 
         : 'Errore durante la creazione del PDF. Riprovare.';
-      
-      console.log('Showing error message:', errorMessage);
       
       if (isMobile) {
         // Create mobile-friendly error notification
