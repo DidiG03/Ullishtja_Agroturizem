@@ -1,4 +1,7 @@
-import { API_BASE_URL, apiCall } from '../utils/apiConfig';
+// Use relative paths for production, localhost for development
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? '' 
+  : process.env.REACT_APP_API_URL || 'http://localhost:3001';
 
 // Add a delay to ensure server is ready
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));

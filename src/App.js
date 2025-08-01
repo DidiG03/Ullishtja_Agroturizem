@@ -8,12 +8,11 @@ import { handleReservation, validateReservationForm } from './reservationService
 import useScrollOptimization from './hooks/useScrollOptimization';
 import useMobileOptimizations from './hooks/useMobileOptimizations';
 import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
-import { createApiUrl } from './utils/apiConfig';
 
 // Lazy load components for better performance
 const DynamicMenu = React.lazy(() => import('./components/DynamicMenu'));
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
-// Gallery component removed - no longer needed
+// const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
 const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
 
 const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
@@ -86,20 +85,18 @@ function App() {
     const loadMenu = async () => {
       try {
         const response = await MenuService.getCompleteMenu();
+        console.log('Menu API response:', response); // Debug log
         
         if (response && response.success) {
           const categories = response.data || [];
+          console.log('Setting menu categories:', categories); // Debug log
           setMenuCategories(Array.isArray(categories) ? categories : []);
         } else {
-          if (process.env.NODE_ENV === 'development') {
-            console.error('Failed to load menu:', response?.error || 'Unknown error');
-          }
+          console.error('Failed to load menu:', response?.error || 'Unknown error');
           setMenuCategories([]);
         }
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('Error loading menu:', error);
-        }
+        console.error('Error loading menu:', error);
         setMenuCategories([]);
       }
     };
@@ -114,9 +111,7 @@ function App() {
         const data = await googleReviewsService.fetchGoogleReviews();
         setReviewsData(data);
       } catch (error) {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('Error loading reviews:', error);
-        }
+        console.error('Error loading reviews:', error);
       }
     };
 
@@ -177,21 +172,21 @@ function App() {
 
     try {
       setLoadingTimeSlots(true);
-      const response = await fetch(createApiUrl(`/timeslots/available/${date}`));
+      // Use correct API base URL for development
+      const apiBaseUrl = process.env.NODE_ENV === 'production' 
+        ? '' 
+        : process.env.REACT_APP_API_URL || 'http://localhost:3001';
+      const response = await fetch(`${apiBaseUrl}/api/timeslots/available/${date}`);
       const result = await response.json();
       
       if (result.success) {
         setAvailableTimeSlots(result.data);
       } else {
-        if (process.env.NODE_ENV === 'development') {
-          console.error('Failed to fetch available time slots:', result.error);
-        }
+        console.error('Failed to fetch available time slots:', result.error);
         setAvailableTimeSlots([]);
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Error fetching available time slots:', error);
-      }
+      console.error('Error fetching available time slots:', error);
       setAvailableTimeSlots([]);
     } finally {
       setLoadingTimeSlots(false);
@@ -220,31 +215,117 @@ function App() {
   }, [enableBodyScroll]);
 
   const handlePDFExport = useCallback(async () => {
+    console.log('PDF Export button clicked!', { 
+      currentLanguage, 
+      menuCategoriesLength: menuCategories.length,
+      isMobile: window.innerWidth <= 768,
+      userAgent: navigator.userAgent 
+    });
+    
     try {
+      // Check if we have menu data
       const menuDataForPDF = menuCategories.length > 0 ? menuCategories : [];
+      console.log('Menu data for PDF:', menuDataForPDF);
       
+      // Show loading state for user feedback
+      const isMobile = window.innerWidth <= 768;
+      const loadingMessage = currentLanguage === 'al' 
+        ? 'Duke përgatitur PDF-në...' 
+        : currentLanguage === 'en' 
+        ? 'Preparing PDF...' 
+        : 'Preparazione PDF...';
+      
+      console.log('Creating loading indicator for mobile:', isMobile);
+      
+      // Create temporary loading indicator
+      let loadingElement = null;
+      if (isMobile) {
+        loadingElement = document.createElement('div');
+        loadingElement.style.cssText = `
+          position: fixed;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #2196F3;
+          color: white;
+          padding: 12px 24px;
+          border-radius: 25px;
+          font-size: 14px;
+          font-weight: 600;
+          z-index: 10000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        `;
+        loadingElement.textContent = loadingMessage;
+        document.body.appendChild(loadingElement);
+        console.log('Loading indicator added to DOM');
+      }
+      
+      console.log('Calling PDF service...');
       // Track PDF download attempt
       analytics.trackPDFDownload(currentLanguage, menuDataForPDF.length);
       
       // Generate and open/download PDF
       await pdfExportService.openPDFInNewWindow(menuDataForPDF, currentLanguage);
+      console.log('PDF service completed successfully');
+      
+      // Remove loading indicator
+      if (loadingElement && loadingElement.parentNode) {
+        loadingElement.parentNode.removeChild(loadingElement);
+        console.log('Loading indicator removed');
+      }
       
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Error exporting PDF:', error);
+      console.error('Error exporting PDF:', error);
+      console.error('Error stack:', error.stack);
+      
+      // Remove loading indicator on error
+      const loadingElement = document.querySelector('[style*="background: #2196F3"]');
+      if (loadingElement && loadingElement.parentNode) {
+        loadingElement.parentNode.removeChild(loadingElement);
       }
       
       // Show user-friendly error message
+      const isMobile = window.innerWidth <= 768;
       const errorMessage = currentLanguage === 'al' 
         ? 'Gabim gjatë krijimit të PDF-së. Provoni përsëri.' 
         : currentLanguage === 'en' 
         ? 'Error creating PDF. Please try again.' 
         : 'Errore durante la creazione del PDF. Riprovare.';
       
-      // Use simple alert for now - can be enhanced with toast notifications later
-      alert(errorMessage);
+      console.log('Showing error message:', errorMessage);
+      
+      if (isMobile) {
+        // Create mobile-friendly error notification
+        const errorElement = document.createElement('div');
+        errorElement.style.cssText = `
+          position: fixed;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #f44336;
+          color: white;
+          padding: 12px 24px;
+          border-radius: 25px;
+          font-size: 14px;
+          font-weight: 600;
+          z-index: 10000;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        `;
+        errorElement.textContent = errorMessage;
+        document.body.appendChild(errorElement);
+        
+        // Remove error notification after delay
+        setTimeout(() => {
+          if (errorElement.parentNode) {
+            errorElement.parentNode.removeChild(errorElement);
+          }
+        }, 4000);
+      } else {
+        // Desktop: use alert as fallback
+        alert(errorMessage);
+      }
     }
-  }, [menuCategories, currentLanguage, analytics]);
+  }, [menuCategories, currentLanguage]);
 
   const handleReservationSubmit = useCallback(async (e) => {
     e.preventDefault();
@@ -282,7 +363,11 @@ function App() {
     const guests = parseInt(formData.get('guests'));
     
     try {
-      const capacityResponse = await fetch(createApiUrl(`/timeslots/validate?date=${date}&time=${time}&guests=${guests}`));
+      // Use correct API base URL for development
+      const apiBaseUrl = process.env.NODE_ENV === 'production' 
+        ? '' 
+        : process.env.REACT_APP_API_URL || 'http://localhost:3001';
+      const capacityResponse = await fetch(`${apiBaseUrl}/api/timeslots/validate?date=${date}&time=${time}&guests=${guests}`);
       const capacityResult = await capacityResponse.json();
       
       if (!capacityResult.isValid) {
@@ -295,9 +380,7 @@ function App() {
         return;
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Error validating time slot:', error);
-      }
+      console.error('Error validating time slot:', error);
       setReservationStatus({
         loading: false,
         success: false,
@@ -344,9 +427,7 @@ function App() {
         throw new Error(result.error || 'Reservation failed');
       }
     } catch (error) {
-      if (process.env.NODE_ENV === 'development') {
-        console.error('Reservation error:', error);
-      }
+      console.error('Reservation error:', error);
       setReservationStatus({
         loading: false,
         success: false,
@@ -405,7 +486,7 @@ function App() {
             <a href="#home" className="nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
             <a href="#about" className="nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
             <a href="#menu" className="nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-
+            {/* <a href="#gallery" className="nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
             <a href="#contact" className="nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
           </nav>
 
@@ -419,7 +500,7 @@ function App() {
                           <a href="#home" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
             <a href="#about" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
             <a href="#menu" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-
+            {/* <a href="#gallery" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
             <a href="#contact" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
             </nav>
             <div className="mobile-language-selector">
@@ -831,7 +912,10 @@ function App() {
         </div>
       </section>
 
-
+      {/* Gallery Section - Temporarily Disabled */}
+      {/* <Suspense fallback={<div className="loading-section">Loading gallery...</div>}>
+        <Gallery currentLanguage={currentLanguage} translations={t} />
+      </Suspense> */}
 
       {/* Google Reviews Section */}
       <Suspense fallback={<div className="loading-section">Loading reviews...</div>}>
@@ -1139,7 +1223,7 @@ function App() {
                   <a href="#home" className="footer-link" onClick={closeMobileMenu}>{t.nav.home}</a>
                   <a href="#about" className="footer-link" onClick={closeMobileMenu}>{t.nav.about}</a>
                   <a href="#menu" className="footer-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-
+                  {/* <a href="#gallery" className="footer-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
                   <a href="#contact" className="footer-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
                 </nav>
               </div>

@@ -83,14 +83,13 @@ const useMobileOptimizations = () => {
   // Optimize scrolling performance
   const optimizeScrolling = useCallback(() => {
     let ticking = false;
-    let scrollTimeout;
     
     const updateScrollState = () => {
       // Add scroll class for CSS optimizations
       document.body.classList.add('is-scrolling');
       
-      clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(() => {
+      clearTimeout(window.scrollTimeout);
+      window.scrollTimeout = setTimeout(() => {
         document.body.classList.remove('is-scrolling');
       }, 150);
       
