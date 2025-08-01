@@ -788,63 +788,7 @@ function App() {
         <div className="container">
           <h2>{t.menu.title}</h2>
 
-          {menuCategories.length === 0 ? (
-            ( /* Fallback to translations while menu loads */
-              <div className="menu-grid">
-                <div className="menu-category">
-                  <h3>{t.menu.appetizers.title}</h3>
-                  <div className="menu-item">
-                    <h4>{t.menu.appetizers.byrek.name}</h4>
-                    <p>{t.menu.appetizers.byrek.desc}</p>
-                    <span className="price">800 ALL</span>
-                  </div>
-                  <div className="menu-item">
-                    <h4>{t.menu.appetizers.turshi.name}</h4>
-                    <p>{t.menu.appetizers.turshi.desc}</p>
-                    <span className="price">600 ALL</span>
-                  </div>
-                  <div className="menu-item">
-                    <h4>{t.menu.appetizers.cheese.name}</h4>
-                    <p>{t.menu.appetizers.cheese.desc}</p>
-                    <span className="price">700 ALL</span>
-                  </div>
-                </div>
-
-                <div className="menu-category">
-                  <h3>{t.menu.mains.title}</h3>
-                  <div className="menu-item">
-                    <h4>{t.menu.mains.tave.name}</h4>
-                    <p>{t.menu.mains.tave.desc}</p>
-                    <span className="price">1500 ALL</span>
-                  </div>
-                  <div className="menu-item">
-                    <h4>{t.menu.mains.qofte.name}</h4>
-                    <p>{t.menu.mains.qofte.desc}</p>
-                    <span className="price">1200 ALL</span>
-                  </div>
-                  <div className="menu-item">
-                    <h4>{t.menu.mains.fish.name}</h4>
-                    <p>{t.menu.mains.fish.desc}</p>
-                    <span className="price">1800 ALL</span>
-                  </div>
-                </div>
-
-                <div className="menu-category">
-                  <h3>{t.menu.salads.title}</h3>
-                  <div className="menu-item">
-                    <h4>{t.menu.salads.village.name}</h4>
-                    <p>{t.menu.salads.village.desc}</p>
-                    <span className="price">800 ALL</span>
-                  </div>
-                  <div className="menu-item">
-                    <h4>{t.menu.salads.olive.name}</h4>
-                    <p>{t.menu.salads.olive.desc}</p>
-                    <span className="price">900 ALL</span>
-                  </div>
-                </div>
-              </div>
-            )
-          ) : (
+          {menuCategories.length > 0 && (
             <div className="menu-grid">
               {(Array.isArray(menuCategories) ? menuCategories : [])
                 .sort((a, b) => a.displayOrder - b.displayOrder)
