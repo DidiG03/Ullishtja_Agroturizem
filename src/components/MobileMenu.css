@@ -7,17 +7,22 @@
   bottom: 0;
   width: 100vw;
   height: 100vh;
+  /* Use dynamic viewport units for better mobile support */
+  height: 100dvh; /* Dynamic viewport height */
+  min-height: 100vh; /* Fallback */
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(8px);
   z-index: 9999;
   display: flex;
-  align-items: center;
+  align-items: flex-end; /* Align to bottom */
   justify-content: center;
   animation: fadeIn 0.2s ease-out;
   overflow: hidden;
   /* Prevent any scrolling on the overlay */
   touch-action: none;
   overscroll-behavior: none;
+  /* Add safe area padding for iOS */
+  padding-bottom: env(safe-area-inset-bottom, 20px);
 }
 
 @keyframes fadeIn {
@@ -35,9 +40,10 @@
 .mobile-menu-container {
   background: white;
   width: 95vw;
-  height: 92vh;
+  height: calc(100vh - 100px); /* Account for Safari UI elements */
+  max-height: calc(100vh - 100px);
   max-width: 500px; /* Optimal for mobile viewing */
-  border-radius: 20px;
+  border-radius: 20px 20px 8px 8px; /* Rounded top, less rounded bottom */
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
@@ -46,6 +52,8 @@
   position: relative;
   /* Enable internal scrolling */
   overscroll-behavior: contain;
+  /* Position it slightly above bottom UI */
+  margin-bottom: 50px;
 }
 
 @keyframes slideUp {
@@ -172,13 +180,18 @@
   flex: 1;
   padding: 1rem;
   overflow-y: auto;
+  overflow-x: hidden;
   /* Allow vertical scrolling for content */
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y;
   overscroll-behavior-y: contain;
   /* Ensure proper layout structure */
-  display: flex;
-  flex-direction: column;
+  display: block; /* Changed from flex to block for better scrolling */
+  /* Better scrolling on all devices */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(107, 142, 35, 0.3) transparent;
+  /* Ensure minimum height for content */
+  min-height: 0;
 }
 
 .mobile-category-title {
@@ -372,9 +385,33 @@
 
 /* Mobile layout - stack vertically */
 @media (max-width: 767px) {
+  .mobile-menu-overlay {
+    /* Better mobile positioning */
+    align-items: flex-end;
+    padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
+  }
+  
+  .mobile-menu-container {
+    /* Better mobile height calculation */
+    height: calc(100vh - 100px);
+    max-height: calc(100vh - 100px);
+    /* Use dynamic viewport height if supported */
+    height: calc(100dvh - 100px);
+    max-height: calc(100dvh - 100px);
+    width: 98vw;
+    margin-bottom: 0;
+    border-radius: 20px 20px 0 0; /* Only round the top corners on mobile */
+    /* Ensure proper display */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
   .mobile-menu-layout {
     flex-direction: column;
     height: 100%;
+    overflow: hidden;
+    display: flex;
   }
   
   .mobile-categories-nav {
@@ -437,7 +474,8 @@
     align-items: center;
   }
   
-  .mobile-category-btn:hover {
+  .mobile-category-btn:hover,
+  .mobile-category-btn:active {
     background: rgba(107, 142, 35, 0.15);
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -456,30 +494,62 @@
   
   .mobile-menu-content {
     flex: 1;
-    min-height: 0;
-    height: auto;
-    padding: 1.5rem;
-    overflow-y: auto;
+    min-height: 0; /* This is crucial for flex scrolling */
+    padding: 1rem 1.5rem 1.5rem;
+    overflow-y: scroll !important; /* Force scrolling */
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    /* Enhanced touch scrolling */
+    touch-action: pan-y;
+    overscroll-behavior-y: contain;
+    /* Force the scrollable area with specific height */
+    height: calc(100vh - 280px);
+    max-height: calc(100vh - 280px);
+    /* Ensure scrollbar is visible when needed */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(107, 142, 35, 0.5) transparent;
+    /* Additional bottom padding for safe area */
+    padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 2rem);
+    /* Force scrolling behavior */
+    position: relative;
   }
   
   .mobile-menu-items {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-  }
-  
-  .mobile-menu-container {
-    height: 95vh;
-    max-height: 95vh;
-    width: 98vw;
+    /* Add extra bottom padding for the last item */
+    padding-bottom: 4rem;
+    /* Force content to be taller than container to enable scrolling */
+    min-height: calc(100vh - 200px);
   }
   
   .mobile-menu-header {
     padding: 1.5rem;
+    flex-shrink: 0;
   }
   
   .mobile-menu-header h1 {
     font-size: 2rem;
+  }
+  
+  /* Custom scrollbar for mobile content */
+  .mobile-menu-content::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .mobile-menu-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
+  }
+  
+  .mobile-menu-content::-webkit-scrollbar-thumb {
+    background: rgba(107, 142, 35, 0.4);
+    border-radius: 2px;
+  }
+  
+  .mobile-menu-content::-webkit-scrollbar-thumb:active {
+    background: rgba(107, 142, 35, 0.7);
   }
 }
 
