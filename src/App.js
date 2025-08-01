@@ -10,17 +10,18 @@ import useMobileOptimizations from './hooks/useMobileOptimizations';
 import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
 
 // Lazy load components for better performance
-const DynamicMenu = React.lazy(() => import('./components/DynamicMenu'));
+const MobileMenu = React.lazy(() => import('./components/MobileMenu'));
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
 const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
 
 const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
 
+
 function App() {
   const [currentLanguage, setCurrentLanguage] = useState('al');
   const analytics = useAnalyticsTracking();
-  const [showFullMenu, setShowFullMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   
   // Initialize scroll optimization
   useScrollOptimization();
@@ -193,26 +194,15 @@ function App() {
     }
   }, []);
 
-  const openFullMenu = useCallback(() => {
-    setShowFullMenu(true);
-    // Enhanced scroll prevention for modal
-    preventBodyScroll();
-    // Add CSS class for additional scroll prevention
-    document.body.classList.add('modal-open');
-    document.documentElement.classList.add('modal-open');
-    
+  const openNewMobileMenu = useCallback(() => {
+    setShowMobileMenu(true);
     // Track menu view
-    analytics.trackMenuView(currentLanguage, 'full');
-  }, [preventBodyScroll, currentLanguage, analytics]);
+    analytics.trackMenuView(currentLanguage, 'full-menu');
+  }, [currentLanguage, analytics]);
 
-  const closeFullMenu = useCallback(() => {
-    setShowFullMenu(false);
-    // Re-enable body scrolling when menu is closed
-    enableBodyScroll();
-    // Remove CSS classes
-    document.body.classList.remove('modal-open');
-    document.documentElement.classList.remove('modal-open');
-  }, [enableBodyScroll]);
+  const closeNewMobileMenu = useCallback(() => {
+    setShowMobileMenu(false);
+  }, []);
 
   const handlePDFExport = useCallback(async () => {
     console.log('PDF Export button clicked!', { 
@@ -897,8 +887,12 @@ function App() {
           )}
 
           <div className="menu-cta-container">
-            <button className="full-menu-btn" onClick={openFullMenu}>
-              {t.fullMenu.viewFullMenu}
+            <button className="mobile-menu-btn" onClick={openNewMobileMenu}>
+              {currentLanguage === 'al'
+                ? 'Shiko Menunë e Plotë'
+                : currentLanguage === 'en'
+                ? 'View Full Menu'
+                : 'Visualizza Menu Completo'}
             </button>
             <button className="pdf-export-btn" onClick={handlePDFExport}>
               <span className="btn-icon">📄</span>
@@ -1264,32 +1258,25 @@ function App() {
         </div>
       </footer>
 
-            {/* Full Menu Modal */}
-      {showFullMenu && (
+            {/* Mobile Menu */}
+      {showMobileMenu && (
         <Suspense fallback={
-          <div className="full-menu-overlay">
-            <div className="full-menu-container">
-              <div className="menu-loading-container">
-                <div className="menu-loading-content">
-                  <div className="loading-spinner"></div>
-                  <h2 className="loading-title">
-                    {currentLanguage === 'al' && 'Po ngarkohet menuja...'}
-                    {currentLanguage === 'en' && 'Loading menu...'}
-                    {currentLanguage === 'it' && 'Caricamento menu...'}
-                  </h2>
-                  <p className="loading-subtitle">
-                    {currentLanguage === 'al' && 'Përgatisim specialitetet tona për ju'}
-                    {currentLanguage === 'en' && 'Preparing our specialties for you'}
-                    {currentLanguage === 'it' && 'Preparando le nostre specialità per voi'}
-                  </p>
-                </div>
+          <div className="mobile-menu-overlay">
+            <div className="mobile-menu-container">
+              <div className="mobile-menu-loading">
+                <div className="loading-spinner"></div>
+                <p>
+                  {currentLanguage === 'al' && 'Po ngarkohet menuja...'}
+                  {currentLanguage === 'en' && 'Loading menu...'}
+                  {currentLanguage === 'it' && 'Caricamento menu...'}
+                </p>
               </div>
             </div>
           </div>
         }>
-          <DynamicMenu 
+          <MobileMenu 
             currentLanguage={currentLanguage}
-            onClose={closeFullMenu}
+            onClose={closeNewMobileMenu}
           />
         </Suspense>
       )}
