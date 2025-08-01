@@ -25,7 +25,8 @@
   "env": {
     "NODE_ENV": "production",
     "PRISMA_CLI_QUERY_ENGINE_TYPE": "binary",
-    "PRISMA_CLI_BINARY_TARGETS": "rhel-openssl-1.0.x"
+    "PRISMA_CLI_BINARY_TARGETS": "rhel-openssl-1.0.x",
+    "REACT_APP_ADMIN_USER_IDS": "user_30gXt4vL1LdpNte91OYp1nRccgE"
   },
   "build": {
     "env": {
