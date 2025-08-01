@@ -4,29 +4,24 @@
   "buildCommand": "NODE_ENV=production npm run build",
   "outputDirectory": "build",
   "installCommand": "npm install",
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     },
     {
-      "handle": "filesystem"
+      "source": "/admin-login",
+      "destination": "/index.html"
     },
     {
-      "src": "/admin-login",
-      "dest": "/index.html"
+      "source": "/dashboard",
+      "destination": "/index.html"
     },
     {
-      "src": "/dashboard",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/((?!static|api).*)",
+      "destination": "/index.html"
     }
   ],
-  "cleanUrls": true,
-  "trailingSlash": false,
   "env": {
     "NODE_ENV": "production",
     "PRISMA_CLI_QUERY_ENGINE_TYPE": "binary",
