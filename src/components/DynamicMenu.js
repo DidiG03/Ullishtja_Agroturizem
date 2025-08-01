@@ -126,7 +126,8 @@ function DynamicMenu({ currentLanguage, onClose }) {
       onClick={(e) => e.target === e.currentTarget && onClose()}
       onTouchMove={(e) => {
         // Prevent background scrolling but allow internal scrolling
-        if (e.target === e.currentTarget) {
+        // Don't interfere with category navigation scrolling
+        if (e.target === e.currentTarget && !e.target.closest('.category-nav')) {
           e.preventDefault();
         }
       }}
