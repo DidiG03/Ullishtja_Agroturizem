@@ -1,4 +1,5 @@
 import emailjs from '@emailjs/browser';
+import { apiCall } from './utils/apiConfig';
 
 // EmailJS Configuration - You'll need to set these up at https://www.emailjs.com/
 const EMAILJS_CONFIG = {
@@ -14,31 +15,8 @@ const RESTAURANT_CONFIG = {
   name: 'Ullishtja Agriturizem'
 };
 
-// API Base URL - Use relative paths for production, localhost for development
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '' 
-  : process.env.REACT_APP_API_URL || 'http://localhost:3001';
-
 // Initialize EmailJS
 emailjs.init(EMAILJS_CONFIG.publicKey);
-
-// API Helper Functions
-const apiCall = async (endpoint, options = {}) => {
-  const url = `${API_BASE_URL}/api${endpoint}`;
-  const response = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
-  });
-  
-  if (!response.ok) {
-    throw new Error(`API call failed: ${response.statusText}`);
-  }
-  
-  return response.json();
-};
 
 // Reservation Service using API calls
 const reservationService = {
@@ -50,7 +28,9 @@ const reservationService = {
       });
       return result;
     } catch (error) {
-      console.error('Error creating reservation:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error creating reservation:', error);
+      }
       return { success: false, error: error.message };
     }
   },
@@ -61,7 +41,9 @@ const reservationService = {
       const result = await apiCall(`/reservations?${params}`);
       return result;
     } catch (error) {
-      console.error('Error fetching reservations:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error fetching reservations:', error);
+      }
       return { success: false, error: error.message };
     }
   },
@@ -74,7 +56,9 @@ const reservationService = {
       });
       return result;
     } catch (error) {
-      console.error('Error updating reservation:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error updating reservation:', error);
+      }
       return { success: false, error: error.message };
     }
   },

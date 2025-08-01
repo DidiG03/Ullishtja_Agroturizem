@@ -118,14 +118,12 @@ const ScrollControlledVideo = ({
     };
 
     // More aggressive throttling on mobile for better performance
+    let timeoutId;
     const throttledScroll = isMobile ? 
-      (() => {
-        let timeoutId;
-        return () => {
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(handleScroll, 16); // ~60fps
-        };
-      })() : 
+      () => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(handleScroll, 16); // ~60fps
+      } : 
       handleScroll;
 
     // Initial calculation
@@ -138,6 +136,10 @@ const ScrollControlledVideo = ({
     return () => {
       window.removeEventListener('scroll', throttledScroll);
       window.removeEventListener('resize', updateVideoProgress);
+      // Clear any pending timeout
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
   }, [updateVideoProgress]);
 

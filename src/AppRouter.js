@@ -64,22 +64,16 @@ const AppRouter = () => {
               {/* Admin login route - lazy loaded */}
               <Route 
                 path="/admin-login" 
-                element={
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <AdminLogin />
-                  </Suspense>
-                } 
+                element={<AdminLogin />} 
               />
               
               {/* Protected dashboard route - admin only, lazy loaded */}
               <Route 
                 path="/dashboard" 
                 element={
-                  <Suspense fallback={<LoadingSpinner />}>
-                    <ProtectedRoute adminOnly={true}>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  </Suspense>
+                  <ProtectedRoute adminOnly={true}>
+                    <Dashboard />
+                  </ProtectedRoute>
                 } 
               />
               

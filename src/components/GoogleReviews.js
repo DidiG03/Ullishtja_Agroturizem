@@ -18,7 +18,9 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
         setReviewsData(dailyShuffledReviews);
         setAllHighRatingReviews(dailyShuffledReviews.allHighRatingReviews || dailyShuffledReviews.reviews);
       } catch (error) {
-        console.error('Error loading reviews:', error);
+        if (process.env.NODE_ENV === 'development') {
+          console.error('Error loading reviews:', error);
+        }
       } finally {
         setLoading(false);
       }

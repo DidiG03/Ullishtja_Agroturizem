@@ -1,3 +1,5 @@
+import { createApiUrl } from '../utils/apiConfig';
+
 // Google Reviews Service
 // Note: For production, you would need to integrate with Google Places API
 // This service provides a structure for handling Google Reviews data
@@ -192,27 +194,23 @@ class GoogleReviewsService {
   // Fetch real Google Reviews or return mock data
   async fetchGoogleReviews() {
     try {
-      // Always try to fetch real reviews from our backend API first
-      console.log('Attempting to fetch real Google Reviews...');
-      
-      // Use relative path for production, localhost for development
-      const apiBaseUrl = process.env.NODE_ENV === 'production' 
-        ? '' 
-        : process.env.REACT_APP_API_URL || 'http://localhost:3001';
-      const apiUrl = `${apiBaseUrl}/api/google-reviews`;
+      const apiUrl = createApiUrl('/google-reviews');
       
       const response = await fetch(apiUrl);
       const result = await response.json();
       
       if (result.success && result.data) {
-        console.log('Successfully fetched real Google Reviews');
         return result.data;
       } else {
-        console.warn('API response indicates failure or no data, using mock data:', result.error || 'Unknown error');
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('API response indicates failure or no data, using mock data:', result.error || 'Unknown error');
+        }
         return this.getMockReviewsData(); // Fallback to mock data
       }
     } catch (error) {
-      console.error('Error fetching Google reviews:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Error fetching Google reviews:', error);
+      }
       return this.getMockReviewsData(); // Fallback to mock data
     }
   }
