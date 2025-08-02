@@ -25,6 +25,27 @@ const Dashboard = () => {
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [addingReservation, setAddingReservation] = useState(false);
   const [updatingReservation, setUpdatingReservation] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  
+  // Handle responsive sidebar collapse
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1024) {
+        setSidebarCollapsed(true);
+      } else {
+        setSidebarCollapsed(false);
+      }
+    };
+
+    // Set initial state
+    handleResize();
+    
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+    
+    // Cleanup
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   // Restaurant settings state
   const [restaurantSettings, setRestaurantSettings] = useState({
@@ -673,37 +694,79 @@ const Dashboard = () => {
       </div>
       
       <div className="dashboard-content">
-        <nav className="dashboard-nav">
-          <button 
-            className={`nav-tab ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
-          >
-            📊 Overview
-          </button>
-          <button 
-            className={`nav-tab ${activeTab === 'menu' ? 'active' : ''}`}
-            onClick={() => setActiveTab('menu')}
-          >
-            📋 Menu
-          </button>
-          <button 
-            className={`nav-tab ${activeTab === 'timeslots' ? 'active' : ''}`}
-            onClick={() => setActiveTab('timeslots')}
-          >
-            🕒 Time Slots
-          </button>
-          <button 
-            className={`nav-tab ${activeTab === 'layout' ? 'active' : ''}`}
-            onClick={() => setActiveTab('layout')}
-          >
-            📐 Layout
-          </button>
-          <button 
-            className={`nav-tab ${activeTab === 'settings' ? 'active' : ''}`}
-            onClick={() => setActiveTab('settings')}
-          >
-            ⚙️ Settings
-          </button>
+        <nav className={`dashboard-nav ${sidebarCollapsed ? 'collapsed' : ''}`}>
+          <div className="nav-header">
+            <button 
+              className="nav-toggle" 
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+              title={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M3 12h18M3 6h18M3 18h18"/>
+              </svg>
+            </button>
+            {!sidebarCollapsed && <span className="nav-title">Dashboard</span>}
+          </div>
+          
+          <div className="nav-items">
+            <button 
+              className={`nav-tab ${activeTab === 'overview' ? 'active' : ''}`}
+              onClick={() => setActiveTab('overview')}
+              title="Overview"
+            >
+              <svg className="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+              </svg>
+              {!sidebarCollapsed && <span className="nav-text">Overview</span>}
+            </button>
+            <button 
+              className={`nav-tab ${activeTab === 'menu' ? 'active' : ''}`}
+              onClick={() => setActiveTab('menu')}
+              title="Menu Management"
+            >
+              <svg className="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 12l2 2 4-4"/>
+                <path d="M21 12c.552 0 1-.448 1-1V5c0-.552-.448-1-1-1H3c-.552 0-1 .448-1 1v6c0 .552.448 1 1 1h9zm0 0v7c0 .552-.448 1-1 1H11c-.552 0-1-.448-1-1v-7"/>
+              </svg>
+              {!sidebarCollapsed && <span className="nav-text">Menu</span>}
+            </button>
+            <button 
+              className={`nav-tab ${activeTab === 'timeslots' ? 'active' : ''}`}
+              onClick={() => setActiveTab('timeslots')}
+              title="Time Slots"
+            >
+              <svg className="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12,6 12,12 16,14"/>
+              </svg>
+              {!sidebarCollapsed && <span className="nav-text">Time Slots</span>}
+            </button>
+            <button 
+              className={`nav-tab ${activeTab === 'layout' ? 'active' : ''}`}
+              onClick={() => setActiveTab('layout')}
+              title="Restaurant Layout"
+            >
+              <svg className="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                <line x1="9" y1="9" x2="15" y2="9"/>
+                <line x1="9" y1="15" x2="15" y2="15"/>
+                <line x1="9" y1="12" x2="15" y2="12"/>
+              </svg>
+              {!sidebarCollapsed && <span className="nav-text">Layout</span>}
+            </button>
+            <button 
+              className={`nav-tab ${activeTab === 'settings' ? 'active' : ''}`}
+              onClick={() => setActiveTab('settings')}
+              title="Settings"
+            >
+              <svg className="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M12 1v6m0 8v6m11-7h-6m-8 0H1m17.5-2.5L19 19l-2.5-2.5M7 7L4.5 4.5M7 17l-2.5 2.5M17 7l2.5-2.5"/>
+              </svg>
+              {!sidebarCollapsed && <span className="nav-text">Settings</span>}
+            </button>
+          </div>
         </nav>
         
         <main className="dashboard-main">

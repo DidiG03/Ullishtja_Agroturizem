@@ -1660,6 +1660,34 @@ h2::after {
   opacity: 1;
 }
 
+/* Footer Language Selector */
+.footer-lang {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.footer-lang .lang-btn {
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  border: 1px solid var(--olive-green);
+  background: transparent;
+  color: white;
+  border-radius: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.footer-lang .lang-btn:hover {
+  background: var(--olive-green);
+  transform: translateY(-1px);
+}
+
+.footer-lang .lang-btn.active {
+  background: linear-gradient(135deg, var(--olive-green) 0%, var(--accent-gold) 100%);
+  border-color: var(--accent-gold);
+}
+
 /* Mobile Navigation Styles */
 .hamburger-btn {
   display: none;
@@ -2756,6 +2784,11 @@ body.scroll-locked {
   .footer-links-bottom {
     gap: 1rem;
     flex-direction: column;
+  }
+
+  .footer-lang {
+    order: -1; /* Show language selector first on mobile */
+    justify-content: center;
   }
 
   /* Status Messages */

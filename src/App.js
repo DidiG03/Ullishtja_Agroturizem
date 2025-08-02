@@ -478,52 +478,13 @@ function App() {
             {/* <a href="#gallery" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
             <a href="#contact" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
             </nav>
-            <div className="mobile-language-selector">
-              <button 
-                className={`mobile-lang-btn ${currentLanguage === 'al' ? 'active' : ''}`}
-                onClick={() => changeLanguage('al')}
-              >
-                AL
-              </button>
-              <button 
-                className={`mobile-lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
-                onClick={() => changeLanguage('en')}
-              >
-                EN
-              </button>
-              <button 
-                className={`mobile-lang-btn ${currentLanguage === 'it' ? 'active' : ''}`}
-                onClick={() => changeLanguage('it')}
-              >
-                IT
-              </button>
-            </div>
+
           </div>
 
           {/* Mobile Menu Overlay */}
           {mobileMenuOpen && <div className="mobile-overlay" onClick={closeMobileMenu}></div>}
           
-          {/* Desktop Language Selector */}
-          <div className="language-selector desktop-lang">
-            <button 
-              className={`lang-btn ${currentLanguage === 'al' ? 'active' : ''}`}
-              onClick={() => changeLanguage('al')}
-            >
-              AL
-            </button>
-            <button 
-              className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
-              onClick={() => changeLanguage('en')}
-            >
-              EN
-            </button>
-            <button 
-              className={`lang-btn ${currentLanguage === 'it' ? 'active' : ''}`}
-              onClick={() => changeLanguage('it')}
-            >
-              IT
-            </button>
-          </div>
+
 
           {/* Hamburger Menu Button */}
           <button className="hamburger-btn" onClick={toggleMobileMenu} aria-label="Toggle mobile menu">
@@ -1182,6 +1143,26 @@ function App() {
                 <a href="tel:+35568409405" className="footer-phone-link">
                   📞 {t.footer.callUs}
                 </a>
+                <div className="language-selector footer-lang">
+                  <button 
+                    className={`lang-btn ${currentLanguage === 'al' ? 'active' : ''}`}
+                    onClick={() => changeLanguage('al')}
+                  >
+                    AL
+                  </button>
+                  <button 
+                    className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
+                    onClick={() => changeLanguage('en')}
+                  >
+                    EN
+                  </button>
+                  <button 
+                    className={`lang-btn ${currentLanguage === 'it' ? 'active' : ''}`}
+                    onClick={() => changeLanguage('it')}
+                  >
+                    IT
+                  </button>
+                </div>
                 <div className="admin-link-container">
                   <a href="/admin-login" className="admin-link">Admin</a>
                 </div>
