@@ -195,9 +195,6 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
         )}
 
         <div className="reviews-footer">
-          <p className="reviews-disclaimer">
-            {translations.googleReviews.disclaimer}
-          </p>
           <a 
             href={googleReviewsService.getWriteReviewUrl()} 
             target="_blank" 

@@ -895,7 +895,11 @@ function App() {
                 
                 <div className="contact-item">
                   <h4>{t.contact.info.phone.title}</h4>
-                  <p>{t.contact.info.phone.text}</p>
+                  <p>
+                    <a href="tel:+35568409405" className="contact-email-link">
+                      {t.contact.info.phone.text}
+                    </a>
+                  </p>
                 </div>
                 <div className="contact-item">
                   <h4>{t.contact.info.email.title}</h4>

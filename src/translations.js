@@ -430,7 +430,7 @@ export const translations = {
       showLessReviews: "Trego Më Pak Recensione",
       seeMore: "Shiko Më Shumë",
       showLess: "Shiko Më Pak",
-      disclaimer: "* Tregojmë vetëm recensionet 4 dhe 5 yje. Recensionet ndryshojnë çdo ditë për të treguar më shumë përvojë. Të gjitha recensionet janë të verifikuara nga Google.",
+
       writeReview: "Shkruaj një Recensione në Google",
       loadingReviews: "Duke ngarkuar recensionet...",
       unableToLoad: "Nuk mund të ngarkojmë recensionet në këtë moment."
@@ -867,7 +867,7 @@ export const translations = {
       showLessReviews: "Show Less Reviews",
       seeMore: "See More",
       showLess: "Show Less",
-      disclaimer: "* We only show reviews with 4 and 5 stars. Reviews change daily to showcase more experiences. All reviews are verified by Google.",
+
       writeReview: "Write a Review on Google",
       loadingReviews: "Loading reviews...",
       unableToLoad: "Unable to load reviews at this moment."
@@ -1305,7 +1305,7 @@ export const translations = {
       showLessReviews: "Mostra meno recensioni",
       seeMore: "Vedi di Più",
       showLess: "Mostra Meno",
-      disclaimer: "* Mostriamo solo recensioni con 4 e 5 stelle. Le recensioni cambiano ogni giorno per mostrare più esperienze. Tutte le recensioni sono verificate da Google.",
+
       writeReview: "Scrivi una recensione su Google",
       loadingReviews: "Caricamento recensioni...",
       unableToLoad: "Impossibile caricare le recensioni in questo momento."
