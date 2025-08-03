@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Main Homepage - Contains all primary content sections -->
+  <url>
+    <loc>https://your-domain.com/</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    
+    <!-- Language alternatives for international SEO -->
+    <xhtml:link rel="alternate" hreflang="sq" href="https://ullishtja-agroturizem.com/?lang=al" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ullishtja-agroturizem.com/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://ullishtja-agroturizem.com/?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ullishtja-agroturizem.com/" />
+  </url>
+  
+  <!-- Language-specific versions (using URL parameters for now) -->
+  <url>
+    <loc>https://your-domain.com/?lang=al</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://your-domain.com/?lang=en</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://your-domain.com/?lang=it</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Note: Admin pages (/admin-login, /dashboard) are intentionally excluded 
+       from the sitemap as they are not meant for public indexing -->
+       
+  <!-- Additional SEO Note: Consider creating separate dedicated pages for:
+       - Menu (standalone page)
+       - Events & Weddings (standalone page) 
+       - Gallery (standalone page)
+       - Reservations (standalone page)
+       - Contact (standalone page)
+       This would improve SEO by giving each major section its own URL -->
+       
+</urlset>
