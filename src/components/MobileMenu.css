@@ -36,10 +36,7 @@
 
 /* Mobile Menu Container */
 .mobile-menu-container {
-  background: white;
   width: 100vw;
-  height: 100vh;
-  height: 100dvh; /* Dynamic viewport height */
   max-width: 500px; /* Optimal for mobile viewing */
   border-radius: 0; /* No border radius for full screen */
   box-shadow: none; /* No shadow for full screen */

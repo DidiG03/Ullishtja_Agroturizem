@@ -9,23 +9,19 @@
   backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
-  align-items: center;
   z-index: 10000;
   animation: fadeIn 0.3s ease-out;
+  overflow: hidden;
+  touch-action: none;
 }
 
 .language-modal {
   background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
   border-radius: 20px;
-  padding: 2rem;
-  max-width: 500px;
   width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
+  max-height: 70vh;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  transform: translateY(0);
   animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .language-modal-header {
