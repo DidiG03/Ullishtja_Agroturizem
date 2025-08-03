@@ -511,15 +511,7 @@ class PDFExportService {
         const filename = `Ullishtja_Menu_${language.toUpperCase()}_${new Date().toISOString().split('T')[0]}.pdf`;
         pdf.save(filename);
         
-        // Show user feedback
-        const message = language === 'al' 
-          ? 'PDF-ja u shkarkua në pajisjen tuaj'
-          : language === 'en'
-          ? 'PDF downloaded to your device'
-          : 'PDF scaricato sul tuo dispositivo';
-        
-        // Create temporary notification
-        this.showMobileNotification(message);
+        // PDF downloaded silently
       } else {
         // On desktop: try to open in new window, fallback to download
         try {
@@ -640,7 +632,6 @@ class PDFExportService {
       
       if (this.isMobileDevice()) {
         pdf.save(`Test_Menu_${language.toUpperCase()}.pdf`);
-        this.showMobileNotification('Test PDF downloaded successfully!');
       } else {
         const pdfBlob = pdf.output('blob');
         const pdfUrl = URL.createObjectURL(pdfBlob);

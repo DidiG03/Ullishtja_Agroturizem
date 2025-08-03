@@ -248,57 +248,15 @@ function App() {
       // Check if we have menu data
       const menuDataForPDF = menuCategories.length > 0 ? menuCategories : [];
       
-      // Show loading state for user feedback
-      const isMobile = window.innerWidth <= 768;
-      const loadingMessage = currentLanguage === 'al' 
-        ? 'Duke përgatitur PDF-në...' 
-        : currentLanguage === 'en' 
-        ? 'Preparing PDF...' 
-        : 'Preparazione PDF...';
-      
-      
-      // Create temporary loading indicator
-      let loadingElement = null;
-      if (isMobile) {
-        loadingElement = document.createElement('div');
-        loadingElement.style.cssText = `
-          position: fixed;
-          top: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: #2196F3;
-          color: white;
-          padding: 12px 24px;
-          border-radius: 25px;
-          font-size: 14px;
-          font-weight: 600;
-          z-index: 10000;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        `;
-        loadingElement.textContent = loadingMessage;
-        document.body.appendChild(loadingElement);
-      }
-      
       // Track PDF download attempt
       analytics.trackPDFDownload(currentLanguage, menuDataForPDF.length);
       
       // Generate and open/download PDF
-      await pdfExportService.openPDFInNewWindow(menuDataForPDF, currentLanguage); 
-      
-      // Remove loading indicator
-      if (loadingElement && loadingElement.parentNode) {
-        loadingElement.parentNode.removeChild(loadingElement);
-      }
+      await pdfExportService.openPDFInNewWindow(menuDataForPDF, currentLanguage);
       
     } catch (error) {
       console.error('Error exporting PDF:', error);
       console.error('Error stack:', error.stack);
-      
-      // Remove loading indicator on error
-      const loadingElement = document.querySelector('[style*="background: #2196F3"]');
-      if (loadingElement && loadingElement.parentNode) {
-        loadingElement.parentNode.removeChild(loadingElement);
-      }
       
       // Show user-friendly error message
       const isMobile = window.innerWidth <= 768;
@@ -826,10 +784,10 @@ function App() {
             <button className="pdf-export-btn" onClick={handlePDFExport}>
               <span className="btn-icon">📄</span>
               {currentLanguage === 'al'
-                ? 'Shiko PDF'
+                ? 'Shkarkoni Menunë'
                 : currentLanguage === 'en'
-                ? 'View PDF'
-                : 'Visualizza PDF'}
+                ? 'Download Menu'
+                : 'Scarica Menu'}
             </button>
           </div>
         </div>
