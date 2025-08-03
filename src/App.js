@@ -17,6 +17,7 @@ const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
 const LanguageModal = React.lazy(() => import('./components/LanguageModal'));
 
 const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
+const AnalyticsTest = React.lazy(() => import('./components/AnalyticsTest'));
 
 
 // Helper function to get language from localStorage or detect browser language
@@ -1199,6 +1200,13 @@ function App() {
             currentLanguage={currentLanguage}
             onClose={closeNewMobileMenu}
           />
+        </Suspense>
+      )}
+      
+      {/* Analytics Test Component - Development Only */}
+      {process.env.NODE_ENV === 'development' && (
+        <Suspense fallback={null}>
+          <AnalyticsTest />
         </Suspense>
       )}
     </div>

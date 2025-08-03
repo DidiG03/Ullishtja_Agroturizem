@@ -1,16 +1,20 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import googleAnalyticsService from '../services/googleAnalytics';
+import integratedAnalyticsService from '../services/integratedAnalytics';
 
-// Hook for Google Analytics integration
+// Hook for Integrated Analytics (Google Analytics + Vercel Analytics)
 export const useGoogleAnalytics = () => {
   const location = useLocation();
   const previousLocation = useRef(location);
   const pageStartTime = useRef(Date.now());
 
-  // Initialize GA on mount
+  // Initialize integrated analytics on mount
   useEffect(() => {
-    googleAnalyticsService.initialize();
+    integratedAnalyticsService.initialize();
+    
+    // Log which services are active
+    const activeServices = integratedAnalyticsService.getActiveServices();
+    console.log('Active analytics services:', activeServices);
   }, []);
 
   // Track page views on route changes
@@ -22,13 +26,13 @@ export const useGoogleAnalytics = () => {
     if (previousPath !== currentPath) {
       const timeOnPage = (Date.now() - pageStartTime.current) / 1000;
       if (timeOnPage > 1) { // Only track if user spent more than 1 second
-        googleAnalyticsService.trackTimeOnPage(timeOnPage, previousPath);
+        integratedAnalyticsService.trackTimeOnPage(timeOnPage, previousPath);
       }
     }
 
     // Track new page view
     const pageTitle = getPageTitle(currentPath);
-    googleAnalyticsService.trackPageView(currentPath, pageTitle);
+    integratedAnalyticsService.trackPageView(currentPath, pageTitle);
 
     // Update refs
     previousLocation.current = location;
@@ -53,7 +57,7 @@ export const useGoogleAnalytics = () => {
         trackScrollThreshold.forEach(threshold => {
           if (scrollPercent >= threshold && !trackedDepths.has(threshold)) {
             trackedDepths.add(threshold);
-            googleAnalyticsService.trackScrollDepth(threshold);
+            integratedAnalyticsService.trackScrollDepth(threshold);
           }
         });
       }
@@ -63,44 +67,44 @@ export const useGoogleAnalytics = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [location]);
 
-  return googleAnalyticsService;
+  return integratedAnalyticsService;
 };
 
 // Hook specifically for tracking user interactions
 export const useAnalyticsTracking = () => {
   return {
     trackMenuView: (language, menuType) => 
-      googleAnalyticsService.trackMenuView(language, menuType),
+      integratedAnalyticsService.trackMenuView(language, menuType),
     
-    trackPDFDownload: (language, itemsCount) => 
-      googleAnalyticsService.trackPDFDownload(language, itemsCount),
+    trackPDFDownload: (menuType, language) => 
+      integratedAnalyticsService.trackPDFDownload(menuType, language),
     
-    trackReservationAttempt: (data) => 
-      googleAnalyticsService.trackReservationAttempt(data),
+    trackReservationAttempt: (date, time, partySize, language) => 
+      integratedAnalyticsService.trackReservationAttempt(date, time, partySize, language),
     
-    trackReservationSuccess: (data) => 
-      googleAnalyticsService.trackReservationSuccess(data),
+    trackReservationSuccess: (reservationId, date, time, partySize, language) => 
+      integratedAnalyticsService.trackReservationSuccess(reservationId, date, time, partySize, language),
     
-    trackLanguageChange: (newLang, prevLang) => 
-      googleAnalyticsService.trackLanguageChange(newLang, prevLang),
+    trackLanguageChange: (fromLanguage, toLanguage) => 
+      integratedAnalyticsService.trackLanguageChange(fromLanguage, toLanguage),
     
     trackMenuCategory: (category, language) => 
-      googleAnalyticsService.trackMenuCategoryView(category, language),
+      integratedAnalyticsService.trackMenuCategoryClick(category, language),
     
-    trackContact: (type, method) => 
-      googleAnalyticsService.trackContactInteraction(type, method),
+    trackWhatsAppClick: (language) => 
+      integratedAnalyticsService.trackWhatsAppClick(language),
     
-    trackVideo: (action, videoId) => 
-      googleAnalyticsService.trackVideoInteraction(action, videoId),
+    trackPhoneClick: (language) => 
+      integratedAnalyticsService.trackPhoneClick(language),
     
-    trackSearch: (term, language) => 
-      googleAnalyticsService.trackSearch(term, language),
+    trackEmailClick: (language) => 
+      integratedAnalyticsService.trackEmailClick(language),
     
-    trackError: (error, context) => 
-      googleAnalyticsService.trackError(error, context),
+    trackError: (errorType, errorMessage, pagePath, language) => 
+      integratedAnalyticsService.trackError(errorType, errorMessage, pagePath, language),
     
-    trackCustomEvent: (name, params) => 
-      googleAnalyticsService.trackCustomEvent(name, params)
+    trackMenuItemView: (itemName, category, price, language) => 
+      integratedAnalyticsService.trackMenuItemView(itemName, category, price, language)
   };
 };
 
