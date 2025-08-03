@@ -10,7 +10,7 @@
   /* Use dynamic viewport units for better mobile support */
   height: 100dvh; /* Dynamic viewport height */
   min-height: 100vh; /* Fallback */
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   z-index: 9999;
   display: flex;

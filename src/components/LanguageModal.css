@@ -9,7 +9,7 @@
   backdrop-filter: blur(10px);
   display: flex;
   justify-content: center;
-  z-index: 10000;
+  z-index: 1000;
   animation: fadeIn 0.3s ease-out;
   overflow: hidden;
   touch-action: none;
