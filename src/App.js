@@ -8,6 +8,7 @@ import { handleReservation, validateReservationForm } from './reservationService
 import useScrollOptimization from './hooks/useScrollOptimization';
 import useMobileOptimizations from './hooks/useMobileOptimizations';
 import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
+import SEOHead from './components/SEOHead';
 
 // Lazy load components for better performance
 const MobileMenu = React.lazy(() => import('./components/MobileMenu'));
@@ -442,6 +443,12 @@ function App() {
 
   return (
     <div className="App">
+      {/* SEO Head Component */}
+      <SEOHead 
+        currentLanguage={currentLanguage}
+        pageSection="home"
+      />
+      
       {/* Mobile Loading Optimizer */}
       <Suspense fallback={null}>
         <MobileLoadingOptimizer />
@@ -451,7 +458,7 @@ function App() {
       <header className="navbar">
         <div className="nav-container">
           <div className="logo-container">
-            <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agriturizem" className="logo" />
+            <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Authentic Albanian Restaurant Logo" className="logo" />
           </div>
           
           {/* Desktop Navigation */}
@@ -466,7 +473,7 @@ function App() {
           {/* Mobile Navigation */}
           <div className={`mobile-nav ${mobileMenuOpen ? 'active' : ''}`}>
             <div className="mobile-nav-header">
-              <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agriturizem" className="mobile-logo" />
+              <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Mobile Logo" className="mobile-logo" />
               <button className="mobile-close-btn" onClick={closeMobileMenu}>×</button>
             </div>
             <nav className="mobile-nav-menu">
@@ -555,12 +562,12 @@ function App() {
           <div className="hero-visual">
             <div className="hero-image-container">
               <div className="hero-main-image">
-                <Suspense fallback={<img src="/images/panorama.jpeg" alt="Ullishtja Restaurant" className="main-img" />}>
+                <Suspense fallback={<img src="/images/panorama.jpeg" alt="Ullishtja Agroturizem Restaurant with breathtaking 360° mountain views in Durres, Albania" className="main-img" />}>
                   <OptimizedVideo
                     src="/images/wetransfer_ullishtja/DJI_20240806130609_0022_D.mov"
                     poster="/images/posters/hero-poster.jpg"
                     fallbackImage="/images/panorama.jpeg"
-                    alt="Ullishtja Restaurant"
+                    alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views"
                     className="main-img"
                     autoPlay={true}
                     muted={true}
@@ -611,7 +618,7 @@ function App() {
         <div className="container">
           <div className="about-content">
             <div className="about-text">
-              <h2>{t.about.title}</h2>
+              <h2 id="about-heading">{t.about.title}</h2>
               <p>
                 {t.about.text1}
               </p>
@@ -631,7 +638,7 @@ function App() {
         <div className="container">
           <div className="section-grid">
             <div className="section-content">
-              <h2>{t.events.title}</h2>
+              <h2 id="events-heading">{t.events.title}</h2>
               <h3 className="section-subtitle">{t.events.subtitle}</h3>
               <p className="section-text">
                 {t.events.text1}
@@ -659,12 +666,12 @@ function App() {
               </div>
             </div>
             <div className="section-image">
-              <Suspense fallback={<img src="/images/food.jpeg" alt="Events and Celebrations" className="section-img" />}>
+              <Suspense fallback={<img src="/images/food.jpeg" alt="Albanian wedding venue and events space with mountain views at Ullishtja Agroturizem" className="section-img" />}>
                 <OptimizedVideo
                   src="/images/wetransfer_ullishtja/DJI_20240806124740_0003_D.mov"
                   poster="/images/posters/events-poster.jpg"
                   fallbackImage="/images/food.jpeg"
-                  alt="Events and Celebrations"
+                  alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
                   className="section-img"
                   autoPlay={true}
                   muted={true}
@@ -689,12 +696,12 @@ function App() {
         <div className="container">
           <div className="section-grid reverse">
             <div className="section-image">
-              <Suspense fallback={<img src="/images/food.jpeg" alt="A la Carte Menu" className="section-img" />}>
+              <Suspense fallback={<img src="/images/food.jpeg" alt="Traditional Albanian a la carte menu with farm-to-table ingredients at Ullishtja Agroturizem" className="section-img" />}>
                 <OptimizedVideo
                   src="/images/wetransfer_ullishtja/IMG_4999.mov"
                   poster="/images/posters/alacarte-poster.jpg"
                   fallbackImage="/images/food.jpeg"
-                  alt="A la Carte Menu"
+                  alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
                   className="section-img"
                   autoPlay={true}
                   muted={true}
@@ -711,7 +718,7 @@ function App() {
               </div>
             </div>
             <div className="section-content">
-              <h2>{t.alacarte.title}</h2>
+              <h2 id="alacarte-heading">{t.alacarte.title}</h2>
               <h3 className="section-subtitle">{t.alacarte.subtitle}</h3>
               <p className="section-text">
                 {t.alacarte.text1}
@@ -745,7 +752,7 @@ function App() {
       {/* Menu Section */}
       <section id="menu" className="menu">
         <div className="container">
-          <h2>{t.menu.title}</h2>
+          <h2 id="menu-heading">{t.menu.title}</h2>
 
           {menuCategories.length > 0 && (
             <div className="menu-grid">
@@ -807,7 +814,7 @@ function App() {
       {/* Contact Section */}
       <section id="contact" className="contact">
         <div className="container">
-          <h2>{t.contact.title}</h2>
+          <h2 id="contact-heading">{t.contact.title}</h2>
           <div className="contact-grid">
             <div className="contact-info">
               <h3>{t.contact.info.title}</h3>
@@ -825,7 +832,7 @@ function App() {
                       allowFullScreen=""
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
-                      title="Ullishtja Agroturizem Location - Durres, Albania"
+                      title="Ullishtja Agroturizem Location Map - Authentic Albanian Restaurant in Durres, Albania - Directions and Contact"
                     ></iframe>
                   </div>
                   <p className="address-text">
@@ -1063,7 +1070,7 @@ function App() {
             <div className="footer-main">
               {/* Company Info */}
               <div className="footer-section footer-company">
-                <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem" className="footer-logo" />
+                <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Footer Logo" className="footer-logo" />
                 <p className="footer-description">{t.footer.tagline}</p>
                 <div className="footer-rating">
                   <div className="rating-stars">

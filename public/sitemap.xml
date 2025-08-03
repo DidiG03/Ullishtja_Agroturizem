@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   
   <!-- Main Homepage - Contains all primary content sections -->
   <url>
-    <loc>https://your-domain.com/</loc>
+    <loc>https://ullishtja-agroturizem.com/</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -14,39 +15,108 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://ullishtja-agroturizem.com/?lang=en" />
     <xhtml:link rel="alternate" hreflang="it" href="https://ullishtja-agroturizem.com/?lang=it" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://ullishtja-agroturizem.com/" />
+    
+    <!-- Image information for SEO -->
+    <image:image>
+      <image:loc>https://ullishtja-agroturizem.com/images/posters/hero-poster.jpg</image:loc>
+      <image:title>Ullishtja Agroturizem Restaurant - Mountain Views</image:title>
+      <image:caption>Authentic Albanian restaurant with breathtaking 360° mountain views</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ullishtja-agroturizem.com/images/ullishtja_logo.jpeg</image:loc>
+      <image:title>Ullishtja Agroturizem Logo</image:title>
+      <image:caption>Official logo of Ullishtja Agroturizem Albanian restaurant</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ullishtja-agroturizem.com/images/posters/alacarte-poster.jpg</image:loc>
+      <image:title>Albanian A la Carte Menu</image:title>
+      <image:caption>Traditional Albanian cuisine and farm-to-table dining experience</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://ullishtja-agroturizem.com/images/posters/events-poster.jpg</image:loc>
+      <image:title>Wedding and Events Venue</image:title>
+      <image:caption>Beautiful venue for weddings, events and celebrations in Durres, Albania</image:caption>
+    </image:image>
   </url>
   
-  <!-- Language-specific versions (using URL parameters for now) -->
+  <!-- Language-specific versions (using URL parameters) -->
   <url>
-    <loc>https://your-domain.com/?lang=al</loc>
+    <loc>https://ullishtja-agroturizem.com/?lang=al</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sq" href="https://ullishtja-agroturizem.com/?lang=al" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ullishtja-agroturizem.com/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://ullishtja-agroturizem.com/?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ullishtja-agroturizem.com/" />
+  </url>
+  
+  <url>
+    <loc>https://ullishtja-agroturizem.com/?lang=en</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sq" href="https://ullishtja-agroturizem.com/?lang=al" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ullishtja-agroturizem.com/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://ullishtja-agroturizem.com/?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ullishtja-agroturizem.com/" />
+  </url>
+  
+  <url>
+    <loc>https://ullishtja-agroturizem.com/?lang=it</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sq" href="https://ullishtja-agroturizem.com/?lang=al" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://ullishtja-agroturizem.com/?lang=en" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://ullishtja-agroturizem.com/?lang=it" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ullishtja-agroturizem.com/" />
+  </url>
+  
+  <!-- Section-specific URLs for better SEO (anchor-based navigation) -->
+  <url>
+    <loc>https://ullishtja-agroturizem.com/#home</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://ullishtja-agroturizem.com/#about</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <url>
+    <loc>https://ullishtja-agroturizem.com/#menu</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   
   <url>
-    <loc>https://your-domain.com/?lang=en</loc>
+    <loc>https://ullishtja-agroturizem.com/#events</loc>
     <lastmod>2025-01-27</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
   
   <url>
-    <loc>https://your-domain.com/?lang=it</loc>
+    <loc>https://ullishtja-agroturizem.com/#alacarte</loc>
     <lastmod>2025-01-27</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://ullishtja-agroturizem.com/#contact</loc>
+    <lastmod>2025-01-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
   </url>
   
   <!-- Note: Admin pages (/admin-login, /dashboard) are intentionally excluded 
        from the sitemap as they are not meant for public indexing -->
-       
-  <!-- Additional SEO Note: Consider creating separate dedicated pages for:
-       - Menu (standalone page)
-       - Events & Weddings (standalone page) 
-       - Gallery (standalone page)
-       - Reservations (standalone page)
-       - Contact (standalone page)
-       This would improve SEO by giving each major section its own URL -->
        
 </urlset>
