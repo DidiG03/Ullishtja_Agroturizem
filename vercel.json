@@ -1,56 +1,114 @@
 {
   "version": 2,
-  "framework": "create-react-app",
-  "buildCommand": "NODE_ENV=production npm run build",
-  "outputDirectory": "build",
-  "installCommand": "npm install",
-  "rewrites": [
+  "name": "ullishtja-agroturizem",
+  "builds": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
-    },
-    {
-      "source": "/admin-login",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/dashboard",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/((?!static|api).*)",
-      "destination": "/index.html"
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
     }
   ],
-  "env": {
-    "NODE_ENV": "production",
-    "PRISMA_CLI_QUERY_ENGINE_TYPE": "binary",
-    "PRISMA_CLI_BINARY_TARGETS": "rhel-openssl-1.0.x",
-    "REACT_APP_ADMIN_USER_IDS": "user_30gXt4vL1LdpNte91OYp1nRccgE"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/images/(.*)",
+      "headers": {
+        "cache-control": "public, max-age=31536000"
+      }
+    },
+    {
+      "src": "/videos/(.*)",
+      "headers": {
+        "cache-control": "public, max-age=31536000"
+      }
+    },
+    {
+      "src": "/(.*\\.(css|js|png|jpg|jpeg|gif|svg|webp|ico|woff|woff2|mp4|webm|mov))",
+      "headers": {
+        "cache-control": "public, max-age=31536000"
+      }
+    },
+    {
+      "src": "/(.*\\.css)",
+      "headers": {
+        "content-type": "text/css; charset=utf-8"
+      }
+    },
+    {
+      "src": "/(.*\\.js)",
+      "headers": {
+        "content-type": "application/javascript; charset=utf-8"
+      }
+    },
+    {
+      "src": "/sitemap.xml",
+      "headers": {
+        "content-type": "application/xml; charset=utf-8"
+      }
+    },
+    {
+      "src": "/robots.txt",
+      "headers": {
+        "content-type": "text/plain; charset=utf-8"
+      }
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
-  },
+  ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" },
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-XSS-Protection", "value": "1; mode=block" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=()" }
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
       ]
     },
     {
-      "source": "/api/(.*)",
+      "source": "/static/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, PUT, DELETE, OPTIONS" },
-        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authorization" },
-        { "key": "Access-Control-Max-Age", "value": "86400" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     }
-  ]
-} 
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
+  "functions": {
+    "app/api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
