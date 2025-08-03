@@ -14,12 +14,40 @@ const MobileMenu = React.lazy(() => import('./components/MobileMenu'));
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
 const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
+const LanguageModal = React.lazy(() => import('./components/LanguageModal'));
 
 const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
 
 
+// Helper function to get language from localStorage or detect browser language
+const getInitialLanguage = () => {
+  // Check if user has a stored preference
+  const storedLanguage = localStorage.getItem('preferredLanguage');
+  if (storedLanguage && ['al', 'en', 'it'].includes(storedLanguage)) {
+    return storedLanguage;
+  }
+
+  // If no stored preference, try to detect browser language
+  const browserLang = navigator.language || navigator.languages[0];
+  if (browserLang) {
+    const langCode = browserLang.toLowerCase();
+    if (langCode.startsWith('sq') || langCode.startsWith('al')) return 'al'; // Albanian
+    if (langCode.startsWith('it')) return 'it'; // Italian
+    if (langCode.startsWith('en')) return 'en'; // English
+  }
+
+  // Default to Albanian
+  return 'al';
+};
+
+// Helper function to check if user has visited before
+const isFirstVisit = () => {
+  return !localStorage.getItem('hasVisitedBefore');
+};
+
 function App() {
-  const [currentLanguage, setCurrentLanguage] = useState('al');
+  const [currentLanguage, setCurrentLanguage] = useState(getInitialLanguage());
+  const [showLanguageModal, setShowLanguageModal] = useState(isFirstVisit());
   const analytics = useAnalyticsTracking();
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   
@@ -140,11 +168,22 @@ function App() {
     setCurrentLanguage(lang);
     closeMobileMenu(); // Close mobile menu when language changes
     
+    // Store language preference in localStorage
+    localStorage.setItem('preferredLanguage', lang);
+    
     // Track language change
     if (previousLanguage !== lang) {
       analytics.trackLanguageChange(lang, previousLanguage);
     }
   }, [closeMobileMenu, currentLanguage, analytics]);
+
+  const handleLanguageSelection = useCallback((selectedLanguage) => {
+    setCurrentLanguage(selectedLanguage);
+    setShowLanguageModal(false);
+    
+    // Track initial language selection
+    analytics.trackLanguageChange(selectedLanguage, 'initial');
+  }, [analytics]);
 
   const handleGuestCountChange = useCallback((e) => {
     const guestCount = e.target.value;
@@ -1172,7 +1211,17 @@ function App() {
         </div>
       </footer>
 
-            {/* Mobile Menu */}
+            {/* Language Selection Modal */}
+      {showLanguageModal && (
+        <Suspense fallback={null}>
+          <LanguageModal 
+            isOpen={showLanguageModal}
+            onSelectLanguage={handleLanguageSelection}
+          />
+        </Suspense>
+      )}
+
+      {/* Mobile Menu */}
       {showMobileMenu && (
         <Suspense fallback={
           <div className="mobile-menu-overlay">
