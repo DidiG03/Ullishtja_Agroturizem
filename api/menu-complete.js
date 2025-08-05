@@ -22,13 +22,13 @@ export default async function handler(req, res) {
     if (!path || path.length === 0) {
       // GET /api/menu-complete - Complete menu with categories and items
       if (req.method === 'GET') {
-        const categories = await prisma.category.findMany({
+        const categories = await prisma.menuCategory.findMany({
           include: {
             menuItems: {
-              orderBy: { name: 'asc' }
+              orderBy: { nameAL: 'asc' }
             }
           },
-          orderBy: { name: 'asc' }
+          orderBy: { nameAL: 'asc' }
         });
 
         return res.status(200).json({
@@ -41,8 +41,8 @@ export default async function handler(req, res) {
       if (path.length === 1) {
         // GET /api/menu-complete?path=categories - Get all categories
         if (req.method === 'GET') {
-          const categories = await prisma.category.findMany({
-            orderBy: { name: 'asc' }
+          const categories = await prisma.menuCategory.findMany({
+            orderBy: { nameAL: 'asc' }
           });
 
           return res.status(200).json({
@@ -52,17 +52,24 @@ export default async function handler(req, res) {
         }
         // POST /api/menu-complete?path=categories - Create category
         else if (req.method === 'POST') {
-          const { name, description } = req.body;
+          const { nameAL, nameEN, nameIT, slug, displayOrder, isActive } = req.body;
 
-          if (!name) {
+          if (!nameAL || !nameEN || !nameIT || !slug) {
             return res.status(400).json({
               success: false,
-              error: 'Category name is required'
+              error: 'Category names in all languages and slug are required'
             });
           }
 
-          const category = await prisma.category.create({
-            data: { name, description }
+          const category = await prisma.menuCategory.create({
+            data: { 
+              nameAL, 
+              nameEN, 
+              nameIT, 
+              slug,
+              displayOrder: displayOrder || 0,
+              isActive: isActive !== undefined ? isActive : true
+            }
           });
 
           return res.status(201).json({
@@ -76,11 +83,11 @@ export default async function handler(req, res) {
 
         if (req.method === 'GET') {
           // GET /api/menu-complete?path=categories,{id}
-          const category = await prisma.category.findUnique({
+          const category = await prisma.menuCategory.findUnique({
             where: { id: categoryId },
             include: {
               menuItems: {
-                orderBy: { name: 'asc' }
+                orderBy: { nameAL: 'asc' }
               }
             }
           });
@@ -98,11 +105,19 @@ export default async function handler(req, res) {
           });
         } else if (req.method === 'PUT') {
           // PUT /api/menu-complete?path=categories,{id}
-          const { name, description } = req.body;
+          const { nameAL, nameEN, nameIT, slug, displayOrder, isActive } = req.body;
 
-          const category = await prisma.category.update({
+          const updateData = {};
+          if (nameAL !== undefined) updateData.nameAL = nameAL;
+          if (nameEN !== undefined) updateData.nameEN = nameEN;
+          if (nameIT !== undefined) updateData.nameIT = nameIT;
+          if (slug !== undefined) updateData.slug = slug;
+          if (displayOrder !== undefined) updateData.displayOrder = displayOrder;
+          if (isActive !== undefined) updateData.isActive = isActive;
+
+          const category = await prisma.menuCategory.update({
             where: { id: categoryId },
-            data: { name, description }
+            data: updateData
           });
 
           return res.status(200).json({
@@ -111,7 +126,7 @@ export default async function handler(req, res) {
           });
         } else if (req.method === 'DELETE') {
           // DELETE /api/menu-complete?path=categories,{id}
-          await prisma.category.delete({
+          await prisma.menuCategory.delete({
             where: { id: categoryId }
           });
 
@@ -130,7 +145,7 @@ export default async function handler(req, res) {
             include: {
               category: true
             },
-            orderBy: { name: 'asc' }
+            orderBy: { nameAL: 'asc' }
           });
 
           return res.status(200).json({
@@ -140,17 +155,38 @@ export default async function handler(req, res) {
         }
         // POST /api/menu-complete?path=items - Create item
         else if (req.method === 'POST') {
-          const { name, description, price, categoryId } = req.body;
+          const { 
+            nameAL, nameEN, nameIT,
+            descriptionAL, descriptionEN, descriptionIT,
+            ingredientsAL, ingredientsEN, ingredientsIT,
+            price, categoryId, currency, displayOrder, isActive,
+            isVegetarian, isSpicy, isRecommended, isNew, allergens, imageUrl
+          } = req.body;
 
-          if (!name || !categoryId) {
+          if (!nameAL || !nameEN || !nameIT || !categoryId) {
             return res.status(400).json({
               success: false,
-              error: 'Item name and category are required'
+              error: 'Item names in all languages and category are required'
             });
           }
 
           const item = await prisma.menuItem.create({
-            data: { name, description, price, categoryId },
+            data: { 
+              nameAL, nameEN, nameIT,
+              descriptionAL, descriptionEN, descriptionIT,
+              ingredientsAL, ingredientsEN, ingredientsIT,
+              price: price ? parseFloat(price) : 0,
+              categoryId,
+              currency: currency || 'ALL',
+              displayOrder: displayOrder || 0,
+              isActive: isActive !== undefined ? isActive : true,
+              isVegetarian: isVegetarian || false,
+              isSpicy: isSpicy || false,
+              isRecommended: isRecommended || false,
+              isNew: isNew || false,
+              allergens,
+              imageUrl
+            },
             include: { category: true }
           });
 
@@ -183,11 +219,39 @@ export default async function handler(req, res) {
           });
         } else if (req.method === 'PUT') {
           // PUT /api/menu-complete?path=items,{id}
-          const { name, description, price, categoryId } = req.body;
+          const { 
+            nameAL, nameEN, nameIT,
+            descriptionAL, descriptionEN, descriptionIT,
+            ingredientsAL, ingredientsEN, ingredientsIT,
+            price, categoryId, currency, displayOrder, isActive,
+            isVegetarian, isSpicy, isRecommended, isNew, allergens, imageUrl
+          } = req.body;
+
+          const updateData = {};
+          if (nameAL !== undefined) updateData.nameAL = nameAL;
+          if (nameEN !== undefined) updateData.nameEN = nameEN;
+          if (nameIT !== undefined) updateData.nameIT = nameIT;
+          if (descriptionAL !== undefined) updateData.descriptionAL = descriptionAL;
+          if (descriptionEN !== undefined) updateData.descriptionEN = descriptionEN;
+          if (descriptionIT !== undefined) updateData.descriptionIT = descriptionIT;
+          if (ingredientsAL !== undefined) updateData.ingredientsAL = ingredientsAL;
+          if (ingredientsEN !== undefined) updateData.ingredientsEN = ingredientsEN;
+          if (ingredientsIT !== undefined) updateData.ingredientsIT = ingredientsIT;
+          if (price !== undefined) updateData.price = parseFloat(price);
+          if (categoryId !== undefined) updateData.categoryId = categoryId;
+          if (currency !== undefined) updateData.currency = currency;
+          if (displayOrder !== undefined) updateData.displayOrder = displayOrder;
+          if (isActive !== undefined) updateData.isActive = isActive;
+          if (isVegetarian !== undefined) updateData.isVegetarian = isVegetarian;
+          if (isSpicy !== undefined) updateData.isSpicy = isSpicy;
+          if (isRecommended !== undefined) updateData.isRecommended = isRecommended;
+          if (isNew !== undefined) updateData.isNew = isNew;
+          if (allergens !== undefined) updateData.allergens = allergens;
+          if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
 
           const item = await prisma.menuItem.update({
             where: { id: itemId },
-            data: { name, description, price, categoryId },
+            data: updateData,
             include: { category: true }
           });
 
