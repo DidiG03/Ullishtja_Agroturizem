@@ -28,7 +28,7 @@ const TimeSlotManagement = () => {
   const fetchTimeSlots = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/timeslots');
+      const response = await fetch('/api/timeslots-complete');
       const result = await response.json();
       
       if (result.success) {
@@ -45,7 +45,7 @@ const TimeSlotManagement = () => {
 
   const handleSeedSlots = async () => {
     try {
-      const response = await fetch('/api/timeslots?action=seed');
+      const response = await fetch('/api/timeslots-complete?action=seed');
       const result = await response.json();
       
       if (result.success) {
@@ -62,7 +62,7 @@ const TimeSlotManagement = () => {
 
   const handleCreateSlot = async (slotData) => {
     try {
-      const response = await fetch('/api/timeslots', {
+      const response = await fetch('/api/timeslots-complete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ const TimeSlotManagement = () => {
 
   const handleUpdateSlot = async (id, slotData) => {
     try {
-      const response = await fetch('/api/timeslots', {
+      const response = await fetch('/api/timeslots-complete', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -118,7 +118,7 @@ const TimeSlotManagement = () => {
     }
 
     try {
-      const response = await fetch('/api/timeslots', {
+      const response = await fetch('/api/timeslots-complete', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -420,7 +420,7 @@ const CapacityModal = ({ slot, onClose, onUpdate, daysOfWeek }) => {
         
         // Only create override if different from default
         if (capacity !== slot.maxCapacity) {
-          await fetch('/api/timeslots/capacity', {
+          await fetch('/api/timeslots-complete?path=capacity', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

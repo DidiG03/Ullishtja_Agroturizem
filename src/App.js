@@ -216,7 +216,7 @@ function App() {
       const apiBaseUrl = process.env.NODE_ENV === 'production' 
         ? '' 
         : process.env.REACT_APP_API_URL || 'http://localhost:3001';
-      const response = await fetch(`${apiBaseUrl}/api/timeslots/available/${date}`);
+      const response = await fetch(`${apiBaseUrl}/api/timeslots-complete?date=${date}&available=true`);
       const result = await response.json();
       
       if (result.success) {
@@ -341,7 +341,7 @@ function App() {
       const apiBaseUrl = process.env.NODE_ENV === 'production' 
         ? '' 
         : process.env.REACT_APP_API_URL || 'http://localhost:3001';
-      const capacityResponse = await fetch(`${apiBaseUrl}/api/timeslots/validate?date=${date}&time=${time}&guests=${guests}`);
+      const capacityResponse = await fetch(`${apiBaseUrl}/api/timeslots-complete?path=capacity&date=${date}&validate=true&time=${time}&guests=${guests}`);
       const capacityResult = await capacityResponse.json();
       
       if (!capacityResult.isValid) {

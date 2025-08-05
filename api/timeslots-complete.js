@@ -22,7 +22,59 @@ export default async function handler(req, res) {
       // Base timeslots operations
       if (req.method === 'GET') {
         // GET /api/timeslots-complete - Get all timeslots
-        const { date, available } = req.query;
+        const { date, available, action } = req.query;
+
+        // Handle seeding action
+        if (action === 'seed') {
+          // Create default time slots for the next 30 days
+          const today = new Date();
+          const slots = [];
+          
+          for (let i = 0; i < 30; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            
+            // Skip Sundays (day 0)
+            if (date.getDay() === 0) continue;
+            
+            // Default time slots
+            const defaultTimes = [
+              { start: '12:00', end: '14:00' },
+              { start: '14:30', end: '16:30' },
+              { start: '19:00', end: '21:00' },
+              { start: '21:30', end: '23:30' }
+            ];
+            
+            for (const time of defaultTimes) {
+              // Check if slot already exists
+              const existing = await prisma.timeSlot.findFirst({
+                where: {
+                  date: date,
+                  startTime: time.start
+                }
+              });
+              
+              if (!existing) {
+                const slot = await prisma.timeSlot.create({
+                  data: {
+                    date: date,
+                    startTime: time.start,
+                    endTime: time.end,
+                    capacity: 4,
+                    isAvailable: true
+                  }
+                });
+                slots.push(slot);
+              }
+            }
+          }
+          
+          return res.status(200).json({
+            success: true,
+            message: `Created ${slots.length} default time slots`,
+            data: slots
+          });
+        }
 
         let whereClause = {};
 
@@ -139,7 +191,67 @@ export default async function handler(req, res) {
       // Capacity management operations
       if (req.method === 'GET') {
         // GET /api/timeslots-complete?path=capacity
-        const { date } = req.query;
+        const { date, validate, time, guests } = req.query;
+
+        // Handle validation request
+        if (validate === 'true') {
+          if (!date || !time || !guests) {
+            return res.status(400).json({
+              success: false,
+              error: 'Date, time, and guests parameters are required for validation'
+            });
+          }
+
+          const targetDate = new Date(date);
+          const guestCount = parseInt(guests);
+
+          // Find the specific timeslot
+          const timeslot = await prisma.timeSlot.findFirst({
+            where: {
+              date: {
+                gte: new Date(targetDate.setHours(0, 0, 0, 0)),
+                lt: new Date(targetDate.setHours(23, 59, 59, 999))
+              },
+              startTime: time
+            },
+            include: {
+              _count: {
+                select: {
+                  reservations: {
+                    where: {
+                      status: {
+                        in: ['pending', 'confirmed']
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          });
+
+          if (!timeslot) {
+            return res.status(200).json({
+              isValid: false,
+              error: 'Time slot not available'
+            });
+          }
+
+          const currentReservations = timeslot._count.reservations;
+          const remainingCapacity = timeslot.capacity - currentReservations;
+
+          if (remainingCapacity < guestCount) {
+            return res.status(200).json({
+              isValid: false,
+              error: `Not enough capacity. Only ${remainingCapacity} spots available.`
+            });
+          }
+
+          return res.status(200).json({
+            isValid: true,
+            timeslotId: timeslot.id,
+            remainingCapacity: remainingCapacity
+          });
+        }
 
         if (!date) {
           return res.status(400).json({
@@ -223,6 +335,27 @@ export default async function handler(req, res) {
         const timeslot = await prisma.timeSlot.update({
           where: { id: timeslotId },
           data: { capacity: parseInt(capacity) }
+        });
+
+        return res.status(200).json({
+          success: true,
+          data: timeslot
+        });
+      } else if (req.method === 'POST') {
+        // POST /api/timeslots-complete?path=capacity - Create capacity override (from TimeSlotManagement)
+        const { timeSlotId, dayOfWeek, maxCapacity } = req.body;
+
+        if (!timeSlotId || dayOfWeek === undefined || !maxCapacity) {
+          return res.status(400).json({
+            success: false,
+            error: 'TimeSlot ID, dayOfWeek, and maxCapacity are required'
+          });
+        }
+
+        // Update the capacity for the specific timeslot
+        const timeslot = await prisma.timeSlot.update({
+          where: { id: timeSlotId },
+          data: { capacity: parseInt(maxCapacity) }
         });
 
         return res.status(200).json({

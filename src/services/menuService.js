@@ -12,7 +12,7 @@ class MenuService {
     try {
       // Add a small delay to ensure server is ready
       await delay(100);
-      const response = await fetch(`${API_BASE_URL}/api/menu/categories`);
+      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=categories`);
       if (!response.ok) throw new Error('Failed to fetch categories');
       const result = await response.json();
       // API already returns {success: true, data: categories}, so return as-is
@@ -25,7 +25,7 @@ class MenuService {
 
   async createCategory(categoryData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu/categories`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=categories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,8 +33,8 @@ class MenuService {
         body: JSON.stringify(categoryData),
       });
       if (!response.ok) throw new Error('Failed to create category');
-      const category = await response.json();
-      return { success: true, data: category };
+      const result = await response.json();
+      return result;
     } catch (error) {
       console.error('Error creating category:', error);
       return { success: false, error: error.message };
@@ -43,7 +43,7 @@ class MenuService {
 
   async updateCategory(id, categoryData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu/categories/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=categories,${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -51,8 +51,8 @@ class MenuService {
         body: JSON.stringify(categoryData),
       });
       if (!response.ok) throw new Error('Failed to update category');
-      const category = await response.json();
-      return { success: true, data: category };
+      const result = await response.json();
+      return result;
     } catch (error) {
       console.error('Error updating category:', error);
       return { success: false, error: error.message };
@@ -61,7 +61,7 @@ class MenuService {
 
   async deleteCategory(id) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu/categories/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=categories,${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete category');
@@ -93,8 +93,8 @@ class MenuService {
   async getMenuItems(categoryId = null) {
     try {
       const url = categoryId 
-        ? `${API_BASE_URL}/api/menu/items?categoryId=${categoryId}`
-        : `${API_BASE_URL}/api/menu/items`;
+        ? `${API_BASE_URL}/api/menu-complete?path=items&categoryId=${categoryId}`
+        : `${API_BASE_URL}/api/menu-complete?path=items`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch menu items');
       const result = await response.json();
@@ -108,7 +108,7 @@ class MenuService {
 
   async createMenuItem(itemData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu/items`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=items`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,7 +126,7 @@ class MenuService {
 
   async updateMenuItem(id, itemData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu/items/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=items,${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ class MenuService {
 
   async deleteMenuItem(id) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu/items/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=items,${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete menu item');
@@ -160,7 +160,7 @@ class MenuService {
     try {
       // Add a small delay to ensure server is ready
       await delay(100);
-      const response = await fetch(`${API_BASE_URL}/api/menu/complete`);
+      const response = await fetch(`${API_BASE_URL}/api/menu-complete`);
       if (!response.ok) throw new Error('Failed to fetch complete menu');
       const result = await response.json();
       // API already returns {success: true, data: categories}, so return as-is
