@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         include: {
           _count: {
             select: {
-              posts: {
+              blogPosts: {
                 where: {
                   isPublished: true
                 }
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
         descriptionAL: category.descriptionAL,
         descriptionEN: category.descriptionEN,
         descriptionIT: category.descriptionIT,
-        postCount: category._count.posts,
+        postCount: category._count.blogPosts,
         createdAt: category.createdAt,
         updatedAt: category.updatedAt
       }));
