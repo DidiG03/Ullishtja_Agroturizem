@@ -19,6 +19,7 @@ const reservationRoutes = require('./api/reservations');
 const googleReviewsRoutes = require('./api/googleReviews');
 const restaurantSettingsRoutes = require('./api/restaurantSettings');
 const timeslotsRoutes = require('./api/timeslots');
+const blogRoutes = require('./api/blog');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -57,6 +58,7 @@ app.use('/api/reservations', reservationRoutes);
 app.use('/api/google-reviews', googleReviewsRoutes);
 app.use('/api/restaurant-settings', restaurantSettingsRoutes);
 app.use('/api/timeslots', timeslotsRoutes);
+app.use('/api/blog', blogRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
@@ -92,5 +94,7 @@ app.listen(PORT, () => {
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
   console.log(`📝 Google Reviews API: http://localhost:${PORT}/api/google-reviews`);
   console.log(`🍽️ Menu API: http://localhost:${PORT}/api/menu/complete`);
+  console.log(`📖 Blog API: http://localhost:${PORT}/api/blog/posts`);
+  console.log(`📂 Blog Categories API: http://localhost:${PORT}/api/blog/categories`);
 });
   

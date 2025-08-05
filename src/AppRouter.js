@@ -8,6 +8,7 @@ import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 const AdminLogin = React.lazy(() => import('./components/AdminLogin'));
 const Dashboard = React.lazy(() => import('./components/Dashboard'));
 const ProtectedRoute = React.lazy(() => import('./components/ProtectedRoute'));
+const Blog = React.lazy(() => import('./components/Blog'));
 
 // Loading component for Suspense fallback
 const LoadingSpinner = () => (
@@ -79,6 +80,16 @@ const AppRouter = () => {
                     <ProtectedRoute adminOnly={true}>
                       <Dashboard />
                     </ProtectedRoute>
+                  </Suspense>
+                } 
+              />
+
+              {/* Blog route - lazy loaded */}
+              <Route 
+                path="/blog" 
+                element={
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Blog />
                   </Suspense>
                 } 
               />

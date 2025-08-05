@@ -466,6 +466,7 @@ function App() {
             <a href="#home" className="nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
             <a href="#about" className="nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
             <a href="#menu" className="nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
+            <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="nav-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
             {/* <a href="#gallery" className="nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
             <a href="#contact" className="nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
           </nav>
@@ -477,9 +478,10 @@ function App() {
               <button className="mobile-close-btn" onClick={closeMobileMenu}>×</button>
             </div>
             <nav className="mobile-nav-menu">
-                          <a href="#home" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
+            <a href="#home" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
             <a href="#about" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
             <a href="#menu" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
+            <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
             {/* <a href="#gallery" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
             <a href="#contact" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
             </nav>
@@ -1116,6 +1118,7 @@ function App() {
                   <a href="#home" className="footer-link" onClick={closeMobileMenu}>{t.nav.home}</a>
                   <a href="#about" className="footer-link" onClick={closeMobileMenu}>{t.nav.about}</a>
                   <a href="#menu" className="footer-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
+                  <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
                   {/* <a href="#gallery" className="footer-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
                   <a href="#contact" className="footer-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
                 </nav>

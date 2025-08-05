@@ -223,6 +223,91 @@ model MenuItem {
   @@map("menu_items")
 }
 
+model BlogCategory {
+  id          String     @id @default(cuid())
+  nameAL      String     // Albanian name
+  nameEN      String     // English name  
+  nameIT      String     // Italian name
+  slug        String     @unique // URL-friendly identifier (e.g., "agriculture", "sustainability")
+  descriptionAL String?  // Albanian description
+  descriptionEN String?  // English description
+  descriptionIT String?  // Italian description
+  displayOrder Int       @default(0)
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  // Relations
+  blogPosts   BlogPost[]
+  
+  @@map("blog_categories")
+}
+
+model BlogPost {
+  id          String      @id @default(cuid())
+  categoryId  String
+  slug        String      @unique // URL-friendly identifier
+  
+  // Multilingual content
+  titleAL     String      // Albanian title
+  titleEN     String      // English title
+  titleIT     String      // Italian title
+  excerptAL   String?     // Albanian excerpt/summary
+  excerptEN   String?     // English excerpt/summary
+  excerptIT   String?     // Italian excerpt/summary
+  contentAL   String      @db.Text // Albanian content (HTML/Markdown)
+  contentEN   String      @db.Text // English content (HTML/Markdown)
+  contentIT   String      @db.Text // Italian content (HTML/Markdown)
+  
+  // Meta & SEO
+  metaDescriptionAL String?
+  metaDescriptionEN String?
+  metaDescriptionIT String?
+  metaKeywordsAL String?
+  metaKeywordsEN String?
+  metaKeywordsIT String?
+  
+  // Post properties
+  featuredImageUrl String?
+  featuredImageAlt String?
+  isPublished Boolean    @default(false)
+  isFeatured  Boolean    @default(false)
+  displayOrder Int       @default(0)
+  viewCount   Int        @default(0)
+  
+  // Author info
+  authorName  String     @default("Ullishtja Agroturizem")
+  authorId    String?    // Optional link to admin/user
+  
+  // Timestamps
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  
+  // Relations
+  category    BlogCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  images      BlogImage[]
+  
+  @@map("blog_posts")
+}
+
+model BlogImage {
+  id          String   @id @default(cuid())
+  blogPostId  String?  // Optional - can be used for general blog images
+  title       String?
+  altText     String?
+  imageUrl    String
+  displayOrder Int     @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  blogPost    BlogPost? @relation(fields: [blogPostId], references: [id], onDelete: Cascade)
+  
+  @@map("blog_images")
+}
+
 // Enums
 enum ReservationStatus {
   PENDING
