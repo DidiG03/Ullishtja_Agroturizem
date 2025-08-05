@@ -19,7 +19,7 @@ class IntegratedAnalyticsService {
       vercelAnalyticsService.initialize();
 
       this.initialized = true;
-      console.log('Integrated Analytics initialized (Google Analytics + Vercel)');
+
     } catch (error) {
       console.error('Failed to initialize integrated analytics:', error);
     }

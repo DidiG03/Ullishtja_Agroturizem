@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 async function setupProduction() {
   try {
-    console.log('🚀 Starting production setup...');
+
     
     // 1. Validate environment variables
     console.log('\n📋 Checking environment variables...');

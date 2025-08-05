@@ -20,7 +20,7 @@ class VercelAnalyticsService {
           mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
           debug: process.env.REACT_APP_VERCEL_ANALYTICS_DEBUG === 'true'
         });
-        console.log('Vercel Analytics initialized');
+
       }
 
       // Initialize Speed Insights
@@ -29,7 +29,7 @@ class VercelAnalyticsService {
           framework: 'react',
           debug: process.env.REACT_APP_VERCEL_SPEED_INSIGHTS_DEBUG === 'true'
         });
-        console.log('Vercel Speed Insights initialized');
+
       }
 
       this.initialized = true;
