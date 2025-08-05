@@ -14,11 +14,11 @@ const cors = require('cors');
 const { getCorsOrigins } = require('../src/utils/corsConfig.js');
 const { applySecurityHeaders } = require('../src/utils/securityHeaders.js');
 const { globalErrorHandler, notFoundHandler } = require('../src/utils/errorHandler.js');
-const menuRoutes = require('./api/menu');
-const reservationRoutes = require('./api/reservations');
+const menuCompleteRoutes = require('./api/menu-complete');
+const reservationsCompleteRoutes = require('./api/reservations-complete');
+const timeslotsCompleteRoutes = require('./api/timeslots-complete');
 const googleReviewsRoutes = require('./api/googleReviews');
 const restaurantSettingsRoutes = require('./api/restaurantSettings');
-const timeslotsRoutes = require('./api/timeslots');
 const blogRoutes = require('./api/blog');
 
 const app = express();
@@ -53,11 +53,11 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Routes
-app.use('/api/menu', menuRoutes);
-app.use('/api/reservations', reservationRoutes);
+app.use('/api/menu-complete', menuCompleteRoutes);
+app.use('/api/reservations-complete', reservationsCompleteRoutes);
+app.use('/api/timeslots-complete', timeslotsCompleteRoutes);
 app.use('/api/google-reviews', googleReviewsRoutes);
 app.use('/api/restaurant-settings', restaurantSettingsRoutes);
-app.use('/api/timeslots', timeslotsRoutes);
 app.use('/api/blog', blogRoutes);
 
 // Health check
@@ -93,7 +93,9 @@ app.listen(PORT, () => {
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
   console.log(`📝 Google Reviews API: http://localhost:${PORT}/api/google-reviews`);
-  console.log(`🍽️ Menu API: http://localhost:${PORT}/api/menu/complete`);
+  console.log(`🍽️ Menu API: http://localhost:${PORT}/api/menu-complete`);
+  console.log(`📅 Reservations API: http://localhost:${PORT}/api/reservations-complete`);
+  console.log(`⏰ Timeslots API: http://localhost:${PORT}/api/timeslots-complete`);
   console.log(`📖 Blog API: http://localhost:${PORT}/api/blog/posts`);
   console.log(`📂 Blog Categories API: http://localhost:${PORT}/api/blog/categories`);
 });
