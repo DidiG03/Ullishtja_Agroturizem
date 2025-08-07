@@ -1,19 +1,36 @@
+/* Container to isolate positioning */
+.language-floating-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none !important;
+  z-index: 99999 !important;
+  overflow: hidden !important;
+}
+
 /* Language Floating Selector - Cookie style for desktop, persistent drawer for mobile */
 .language-floating-selector {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+  position: absolute !important;
+  bottom: 20px !important;
+  right: 20px !important;
+  top: auto !important;
+  left: auto !important;
   max-width: 360px;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(0, 0, 0, 0.1);
-  z-index: 9999; /* High z-index to ensure it stays on top */
+  z-index: 1 !important;
   font-family: inherit;
   animation: slideInFromRight 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  margin: 0 !important;
+  transform: translateZ(0) !important;
+  pointer-events: auto !important;
 }
 
 .language-floating-selector.dismissing {
@@ -219,17 +236,20 @@
 /* Mobile responsive - drawer style that stays fixed */
 @media (max-width: 768px) {
   .language-floating-selector {
-    position: fixed; /* Keep fixed positioning */
-    bottom: 0; /* Stick to viewport bottom, not document bottom */
-    left: 0;
-    right: 0;
+    position: absolute !important; /* Absolute within fixed container */
+    bottom: 0 !important; /* Stick to container bottom */
+    left: 0 !important;
+    right: 0 !important;
+    top: auto !important;
     max-width: none;
+    width: 100% !important;
     border-radius: 16px 16px 0 0;
     box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
     animation: slideInFromBottom 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     /* Ensure it doesn't interfere with page content */
-    margin: 0;
-    transform: translateZ(0); /* Force hardware acceleration */
+    margin: 0 !important;
+    transform: translateZ(0) !important; /* Force hardware acceleration */
+    z-index: 1 !important;
   }
 
   .language-floating-selector.dismissing {
