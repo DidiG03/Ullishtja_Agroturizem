@@ -571,11 +571,10 @@ function App() {
           <div className="hero-visual">
             <div className="hero-image-container">
               <div className="hero-main-image">
-                <Suspense fallback={<img src="/images/panorama.jpeg" alt="Ullishtja Agroturizem Restaurant with breathtaking 360° mountain views in Durres, Albania" className="main-img" />}>
+                <Suspense>
                   <OptimizedVideo
                     src="/images/wetransfer_ullishtja/DJI_20240806130609_0022_D.mov"
                     poster="/images/posters/hero-poster.jpg"
-                    fallbackImage="/images/panorama.jpeg"
                     alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views"
                     className="main-img"
                     autoPlay={true}
