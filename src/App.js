@@ -17,7 +17,7 @@ const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 const GooglePhotos = React.lazy(() => import('./components/GooglePhotos'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
 const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
-const LanguageModal = React.lazy(() => import('./components/LanguageModal'));
+const LanguageSelector = React.lazy(() => import('./components/LanguageSelector'));
 
 const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
 const AnalyticsTest = React.lazy(() => import('./components/AnalyticsTest'));
@@ -51,7 +51,7 @@ const isFirstVisit = () => {
 
 function App() {
   const [currentLanguage, setCurrentLanguage] = useState(getInitialLanguage());
-  const [showLanguageModal, setShowLanguageModal] = useState(isFirstVisit());
+  const [showLanguageSelector, setShowLanguageSelector] = useState(isFirstVisit());
   const analytics = useAnalyticsTracking();
 
   // Initialize Google Ads conversion tracking
@@ -203,10 +203,19 @@ function App() {
 
   const handleLanguageSelection = useCallback((selectedLanguage) => {
     setCurrentLanguage(selectedLanguage);
-    setShowLanguageModal(false);
+    setShowLanguageSelector(false);
     
     // Track initial language selection
     analytics.trackLanguageChange(selectedLanguage, 'initial');
+  }, [analytics]);
+
+  const handleLanguageSelectorDismiss = useCallback(() => {
+    setShowLanguageSelector(false);
+    // Store that user dismissed without selecting (still mark as visited)
+    localStorage.setItem('hasVisitedBefore', 'true');
+    
+    // Track dismissal
+    analytics.trackEvent('language_selector_dismissed');
   }, [analytics]);
 
   const handleGuestCountChange = useCallback((e) => {
@@ -1212,12 +1221,13 @@ function App() {
         </div>
       </footer>
 
-            {/* Language Selection Modal */}
-      {showLanguageModal && (
+            {/* Language Selector */}
+      {showLanguageSelector && (
         <Suspense fallback={null}>
-          <LanguageModal 
-            isOpen={showLanguageModal}
+          <LanguageSelector 
+            isVisible={showLanguageSelector}
             onSelectLanguage={handleLanguageSelection}
+            onDismiss={handleLanguageSelectorDismiss}
           />
         </Suspense>
       )}
