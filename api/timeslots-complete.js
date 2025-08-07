@@ -1,9 +1,7 @@
 // Consolidated Timeslots API - All timeslot operations in one function
 // Handles timeslots and capacity management
 
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+const prisma = require('../src/lib/prisma.js').default;
 
 export default async function handler(req, res) {
   // Enable CORS

@@ -4,6 +4,13 @@ class RateLimiter {
   constructor() {
     this.requests = new Map();
     this.cleanupInterval = setInterval(() => this.cleanup(), 60000); // Cleanup every minute
+    
+    // Ensure cleanup happens on process exit to prevent memory leaks
+    if (typeof window === 'undefined') {
+      process.on('exit', () => this.destroy());
+      process.on('SIGINT', () => this.destroy());
+      process.on('SIGTERM', () => this.destroy());
+    }
   }
 
   isRateLimited(ip, endpoint = 'default') {
@@ -72,6 +79,13 @@ class RateLimiter {
 
 // Create singleton instance
 const rateLimiter = new RateLimiter();
+
+// Clean up on browser unload
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', () => {
+    rateLimiter.destroy();
+  });
+}
 
 export const checkRateLimit = (req, res, endpoint = 'default') => {
   const ip = req.ip || req.connection.remoteAddress || req.socket.remoteAddress || 'unknown';

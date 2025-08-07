@@ -102,42 +102,37 @@ const ScrollControlledVideo = ({
     }
   }, [isVideoLoaded]);
 
-  // Throttled scroll handler with mobile optimizations
+  // Simplified scroll handler to prevent memory leaks
   useEffect(() => {
-    let ticking = false;
-    const isMobile = window.innerWidth <= 768;
+    let rafId = null;
+    let timeoutId = null;
     
     const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          updateVideoProgress();
-          ticking = false;
-        });
-        ticking = true;
-      }
+      if (rafId) return; // Already scheduled
+      
+      rafId = requestAnimationFrame(() => {
+        updateVideoProgress();
+        rafId = null;
+      });
     };
-
-    // More aggressive throttling on mobile for better performance
-    const throttledScroll = isMobile ? 
-      (() => {
-        let timeoutId;
-        return () => {
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(handleScroll, 16); // ~60fps
-        };
-      })() : 
-      handleScroll;
 
     // Initial calculation
     updateVideoProgress();
     
     // Add scroll listener
-    window.addEventListener('scroll', throttledScroll, { passive: true });
-    window.addEventListener('resize', updateVideoProgress, { passive: true });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleScroll, { passive: true });
     
     return () => {
-      window.removeEventListener('scroll', throttledScroll);
-      window.removeEventListener('resize', updateVideoProgress);
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleScroll);
+      
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
     };
   }, [updateVideoProgress]);
 

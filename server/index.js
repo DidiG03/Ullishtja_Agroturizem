@@ -14,13 +14,8 @@ const cors = require('cors');
 const { getCorsOrigins } = require('../src/utils/corsConfig.js');
 const { applySecurityHeaders } = require('../src/utils/securityHeaders.js');
 const { globalErrorHandler, notFoundHandler } = require('../src/utils/errorHandler.js');
-const menuCompleteRoutes = require('./api/menu-complete');
-const reservationsCompleteRoutes = require('./api/reservations-complete');
-const timeslotsCompleteRoutes = require('./api/timeslots-complete');
-const googleReviewsRoutes = require('./api/googleReviews');
-const googlePhotosRoutes = require('./api/googlePhotos');
-const restaurantSettingsRoutes = require('./api/restaurantSettings');
-const blogRoutes = require('./api/blog');
+// Note: API routes have been consolidated to Vercel serverless functions in /api/
+// This Express server now serves as a development fallback only
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -53,14 +48,8 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Routes
-app.use('/api/menu-complete', menuCompleteRoutes);
-app.use('/api/reservations-complete', reservationsCompleteRoutes);
-app.use('/api/timeslots-complete', timeslotsCompleteRoutes);
-app.use('/api/google-reviews', googleReviewsRoutes);
-app.use('/api/google-photos', googlePhotosRoutes);
-app.use('/api/restaurant-settings', restaurantSettingsRoutes);
-app.use('/api/blog', blogRoutes);
+// Routes - All API functionality moved to Vercel serverless functions
+// Express server is now only used for development health checks
 
 // Health check
 app.get('/health', (req, res) => {
@@ -94,12 +83,7 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log(`📝 Google Reviews API: http://localhost:${PORT}/api/google-reviews`);
-  console.log(`📸 Google Photos API: http://localhost:${PORT}/api/google-photos`);
-  console.log(`🍽️ Menu API: http://localhost:${PORT}/api/menu-complete`);
-  console.log(`📅 Reservations API: http://localhost:${PORT}/api/reservations-complete`);
-  console.log(`⏰ Timeslots API: http://localhost:${PORT}/api/timeslots-complete`);
-  console.log(`📖 Blog API: http://localhost:${PORT}/api/blog/posts`);
-  console.log(`📂 Blog Categories API: http://localhost:${PORT}/api/blog/categories`);
+  console.log(`\n🚀 API endpoints are served by Vercel serverless functions in /api/`);
+  console.log(`📝 All business logic moved to Vercel for better performance`);
 });
   

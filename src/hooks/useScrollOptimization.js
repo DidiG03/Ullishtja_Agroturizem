@@ -36,30 +36,34 @@ const useScrollOptimization = () => {
   }, [handleScroll]);
 
   useEffect(() => {
+    // Simplified scroll handler to prevent memory leaks
+    const handleScrollSimple = () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+      
+      rafRef.current = requestAnimationFrame(() => {
+        if (!isScrollingRef.current) {
+          isScrollingRef.current = true;
+          document.body.classList.add('is-scrolling');
+        }
+
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+
+        scrollTimeoutRef.current = setTimeout(() => {
+          isScrollingRef.current = false;
+          document.body.classList.remove('is-scrolling');
+        }, 150);
+      });
+    };
+
     // Add scroll listener with passive for better performance
-    window.addEventListener('scroll', optimizedScrollHandler, { passive: true });
-    
-    // Add CSS optimizations during scroll
-    const style = document.createElement('style');
-    style.textContent = `
-      .is-scrolling * {
-        pointer-events: none !important;
-      }
-      
-      .is-scrolling .optimized-video {
-        image-rendering: optimizeSpeed;
-        image-rendering: -webkit-optimize-contrast;
-      }
-      
-      .is-scrolling .hero-main-image {
-        animation-play-state: paused;
-      }
-    `;
-    document.head.appendChild(style);
+    window.addEventListener('scroll', handleScrollSimple, { passive: true });
 
     return () => {
-      window.removeEventListener('scroll', optimizedScrollHandler);
-      document.head.removeChild(style);
+      window.removeEventListener('scroll', handleScrollSimple);
       
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
@@ -68,8 +72,11 @@ const useScrollOptimization = () => {
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
+      
+      // Cleanup CSS class
+      document.body.classList.remove('is-scrolling');
     };
-  }, [optimizedScrollHandler]);
+  }, []); // Empty dependency array to prevent re-creation
 
   return {
     isScrolling: isScrollingRef.current

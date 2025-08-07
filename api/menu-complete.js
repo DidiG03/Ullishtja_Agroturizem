@@ -1,9 +1,7 @@
 // Consolidated Menu API - All menu operations in one function
 // Handles categories, items, and complete menu data
 
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+const prisma = require('../src/lib/prisma.js').default;
 
 export default async function handler(req, res) {
   // Enable CORS

@@ -132,3 +132,51 @@ export const validateMenuItemData = (data) => {
     }
   };
 };
+
+export const validateReservationData = (data) => {
+  const errors = [];
+  
+  // Required fields
+  if (!data.name || sanitizeString(data.name).length < 2) {
+    errors.push('Name must be at least 2 characters long');
+  }
+  
+  if (!data.email || !validateEmail(data.email)) {
+    errors.push('Valid email address is required');
+  }
+  
+  if (!data.phone || sanitizeString(data.phone).length < 10) {
+    errors.push('Valid phone number is required');
+  }
+  
+  if (!data.date || isNaN(new Date(data.date).getTime())) {
+    errors.push('Valid date is required');
+  }
+  
+  if (!data.time || !/^\d{2}:\d{2}$/.test(data.time)) {
+    errors.push('Valid time is required (HH:MM format)');
+  }
+  
+  if (!data.guests || data.guests < 1 || data.guests > 20) {
+    errors.push('Number of guests must be between 1 and 20');
+  }
+  
+  return {
+    isValid: errors.length === 0,
+    errors,
+    sanitizedData: {
+      name: sanitizeString(data.name, 100),
+      email: sanitizeEmail(data.email),
+      phone: sanitizeString(data.phone, 20),
+      date: data.date,
+      time: data.time,
+      guests: parseInt(data.guests),
+      specialRequests: sanitizeString(data.specialRequests || '', 500)
+    }
+  };
+};
+
+export const validateEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email) && email.length <= 254;
+};

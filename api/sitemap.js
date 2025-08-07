@@ -1,9 +1,7 @@
 // Dynamic Sitemap Generator for Vercel
 // Generates XML sitemap with all published blog posts
 
-const { PrismaClient } = require('@prisma/client');
-
-const prisma = new PrismaClient();
+const prisma = require('../src/lib/prisma.js').default;
 
 export default async function handler(req, res) {
   // Only allow GET requests

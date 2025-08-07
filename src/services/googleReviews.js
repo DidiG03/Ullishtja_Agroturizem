@@ -4,13 +4,10 @@
 
 class GoogleReviewsService {
   constructor() {
-    // Google Place ID and API Key from environment
-    this.placeId = process.env.REACT_APP_GOOGLE_PLACE_ID
-    this.apiKey = process.env.REACT_APP_GOOGLE_PLACES_API_KEY
-    
-    if (!this.placeId || !this.apiKey) {
-      console.error('Missing Google Places configuration. Please set REACT_APP_GOOGLE_PLACE_ID and REACT_APP_GOOGLE_PLACES_API_KEY');
-    }
+    // Note: API keys are handled server-side for security
+    // This service fetches reviews from our backend API which handles Google Places API calls
+    this.placeId = process.env.REACT_APP_GOOGLE_PLACE_ID || 'configured-server-side'
+    this.apiKey = 'configured-server-side' // API key handled server-side for security
     this.useRealData = process.env.REACT_APP_USE_REAL_REVIEWS === 'true' || true // Enable by default
   }
 
@@ -197,25 +194,38 @@ class GoogleReviewsService {
   async fetchGoogleReviews() {
     try {
       // Always try to fetch real reviews from our backend API first
+      const response = await fetch('/api/google-reviews');
       
-      // Use relative path for production, localhost for development
-      const apiBaseUrl = process.env.NODE_ENV === 'production' 
-        ? '' 
-        : process.env.REACT_APP_API_URL || 'http://localhost:3001';
-      const apiUrl = `${apiBaseUrl}/api/google-reviews`;
+      // Check if response is ok
+      if (!response.ok) {
+        console.info('Google Reviews API not available (status:', response.status, '), using mock data');
+        return this.getMockReviewsData();
+      }
       
-      const response = await fetch(apiUrl);
+      // Check if response is HTML (common in development when API routes aren't available)
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.info('Google Reviews API returned non-JSON response (likely development environment), using mock data');
+        return this.getMockReviewsData();
+      }
+      
       const result = await response.json();
       
       if (result.success && result.data) {
+        if (result.source === 'mock' || result.source === 'mock_fallback') {
+          console.info('Using mock Google Reviews data (API keys not configured)');
+        } else {
+          console.info('Successfully fetched real Google Reviews data');
+        }
         return result.data;
       } else {
-        console.warn('API response indicates failure or no data, using mock data:', result.error || 'Unknown error');
-        return this.getMockReviewsData(); // Fallback to mock data
+        console.info('API response indicates failure, using local mock data:', result.error || 'Unknown error');
+        return this.getMockReviewsData(); // Fallback to local mock data
       }
     } catch (error) {
-      console.error('Error fetching Google reviews:', error);
-      return this.getMockReviewsData(); // Fallback to mock data
+      // Only show this as info since it's expected in development without proper API setup
+      console.info('Google Reviews API not available, using mock data for development');
+      return this.getMockReviewsData(); // Fallback to local mock data
     }
   }
 

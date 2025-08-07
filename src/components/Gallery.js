@@ -69,8 +69,27 @@ const Gallery = ({ currentLanguage, translations }) => {
   }, []);
 
   // Resume auto-play after 8 seconds of no interaction
+  const resumeTimeoutRef = useRef(null);
+  
   const resumeAutoPlay = useCallback(() => {
-    setTimeout(() => setIsAutoPlaying(true), 8000);
+    // Clear any existing timeout to prevent multiple timers
+    if (resumeTimeoutRef.current) {
+      clearTimeout(resumeTimeoutRef.current);
+    }
+    
+    resumeTimeoutRef.current = setTimeout(() => {
+      setIsAutoPlaying(true);
+      resumeTimeoutRef.current = null;
+    }, 8000);
+  }, []);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (resumeTimeoutRef.current) {
+        clearTimeout(resumeTimeoutRef.current);
+      }
+    };
   }, []);
 
   // Navigation functions

@@ -140,62 +140,48 @@ const useMobileOptimizations = () => {
     // Font preloading removed - not using georgia-bold font in the design
   }, []);
 
-  // Initialize mobile optimizations
+  // Initialize mobile optimizations - simplified to avoid memory leaks
   useEffect(() => {
-    // Set up viewport height
-    setMobileViewportHeight();
-    window.addEventListener('resize', setMobileViewportHeight, { passive: true });
-    window.addEventListener('orientationchange', setMobileViewportHeight, { passive: true });
+    const isMobile = window.innerWidth <= 768;
+    if (!isMobile) return;
 
-    // Prevent overscroll
-    document.addEventListener('touchmove', preventOverscroll, { passive: false });
-    
-    // Optimize touch handling
-    document.addEventListener('touchstart', handleTouchStart, { passive: true });
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-
-    // Optimize scrolling
-    const scrollHandler = optimizeScrolling();
-    window.addEventListener('scroll', scrollHandler, { passive: true });
-
-    // Prevent zoom on inputs
-    preventZoomOnInputs();
-
-    // Optimize images
-    const imageObserver = new MutationObserver(optimizeImages);
-    imageObserver.observe(document.body, {
-      childList: true,
-      subtree: true
-    });
-
-    // Preload critical resources
-    preloadCriticalResources();
-
-    // Add mobile-specific CSS classes
-    if (window.innerWidth <= 768) {
-      document.body.classList.add('mobile-device');
-    }
-
-    // Clean up
-    return () => {
-      window.removeEventListener('resize', setMobileViewportHeight);
-      window.removeEventListener('orientationchange', setMobileViewportHeight);
-      document.removeEventListener('touchmove', preventOverscroll);
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('scroll', scrollHandler);
-      imageObserver.disconnect();
+    // Set up viewport height - simplified version
+    const setVH = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
     };
-  }, [
-    setMobileViewportHeight,
-    preventOverscroll,
-    handleTouchStart,
-    handleTouchMove,
-    optimizeScrolling,
-    preventZoomOnInputs,
-    optimizeImages,
-    preloadCriticalResources
-  ]);
+    
+    // Simple overscroll prevention
+    const handleOverscroll = (e) => {
+      if (e.target === document.body) {
+        e.preventDefault();
+      }
+    };
+
+    // Simple touch optimization
+    const handleTouchOptimization = () => {
+      document.body.style.setProperty('-webkit-overflow-scrolling', 'touch');
+      document.body.style.setProperty('overscroll-behavior', 'none');
+    };
+
+    // Apply optimizations
+    setVH();
+    handleTouchOptimization();
+    document.body.classList.add('mobile-device');
+
+    // Add simplified event listeners
+    window.addEventListener('resize', setVH, { passive: true });
+    window.addEventListener('orientationchange', setVH, { passive: true });
+    document.addEventListener('touchmove', handleOverscroll, { passive: false });
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', setVH);
+      window.removeEventListener('orientationchange', setVH);
+      document.removeEventListener('touchmove', handleOverscroll);
+      document.body.classList.remove('mobile-device');
+    };
+  }, []); // Empty dependency array - no re-creation
 
   // Enhanced scroll prevention with position preservation
   const scrollPositionRef = useRef(0);

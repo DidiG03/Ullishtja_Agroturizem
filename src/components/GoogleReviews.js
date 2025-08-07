@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import googleReviewsService from '../services/googleReviews';
 import './GoogleReviews.css';
 
@@ -15,7 +15,10 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
         const data = await googleReviewsService.fetchGoogleReviews();
         // Use new daily shuffle method instead of getHighRatingReviews
         const dailyShuffledReviews = googleReviewsService.getDailyShuffledReviews(data, 3);
-        setReviewsData(dailyShuffledReviews);
+        setReviewsData({
+          ...dailyShuffledReviews,
+          reviews: dailyShuffledReviews.reviews.slice(0, 3) // Initial 3 reviews
+        });
         setAllHighRatingReviews(dailyShuffledReviews.allHighRatingReviews || dailyShuffledReviews.reviews);
       } catch (error) {
         console.error('Error loading reviews:', error);
@@ -38,16 +41,11 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
     setDisplayCount(3);
   };
 
-  // Update displayed reviews when count changes
-  useEffect(() => {
-    if (allHighRatingReviews.length > 0) {
-      const currentReviews = allHighRatingReviews.slice(0, displayCount);
-      setReviewsData(prev => ({
-        ...prev,
-        reviews: currentReviews
-      }));
-    }
-  }, [displayCount, allHighRatingReviews]);
+  // Use useMemo to avoid unnecessary re-renders
+  const displayedReviews = useMemo(() => {
+    if (!allHighRatingReviews.length) return [];
+    return allHighRatingReviews.slice(0, displayCount);
+  }, [allHighRatingReviews, displayCount]);
 
   const toggleReviewExpansion = (reviewId) => {
     setExpandedReviews(prev => {
@@ -123,7 +121,7 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
         </div>
 
         <div className="reviews-grid">
-          {reviewsData.reviews.map((review) => (
+          {displayedReviews.map((review) => (
             <div key={review.id} className="review-card">
               <div className="review-header">
                 <div className="reviewer-info">

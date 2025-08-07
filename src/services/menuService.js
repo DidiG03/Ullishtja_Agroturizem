@@ -1,7 +1,4 @@
-// Use relative paths for production, localhost for development
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '' 
-  : process.env.REACT_APP_API_URL || 'http://localhost:3001';
+import apiClient from '../utils/apiClient.js';
 
 // Add a delay to ensure server is ready
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -12,11 +9,7 @@ class MenuService {
     try {
       // Add a small delay to ensure server is ready
       await delay(100);
-      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=categories`);
-      if (!response.ok) throw new Error('Failed to fetch categories');
-      const result = await response.json();
-      // API already returns {success: true, data: categories}, so return as-is
-      return result;
+      return await apiClient.get('/api/menu-complete', { path: 'categories' });
     } catch (error) {
       console.error('Error fetching categories:', error);
       return { success: false, error: error.message };
@@ -25,16 +18,8 @@ class MenuService {
 
   async createCategory(categoryData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=categories`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(categoryData),
-      });
-      if (!response.ok) throw new Error('Failed to create category');
-      const result = await response.json();
-      return result;
+      return await apiClient.post('/api/menu-complete?path=categories', categoryData);
+
     } catch (error) {
       console.error('Error creating category:', error);
       return { success: false, error: error.message };
@@ -43,7 +28,7 @@ class MenuService {
 
   async updateCategory(id, categoryData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=categories,${id}`, {
+      const response = await fetch(`/api/menu-complete?path=categories,${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -61,7 +46,7 @@ class MenuService {
 
   async deleteCategory(id) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=categories,${id}`, {
+      const response = await fetch(`/api/menu-complete?path=categories,${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete category');
@@ -74,7 +59,7 @@ class MenuService {
 
   async updateCategoryOrders(orders) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu/categories`, {
+      const response = await fetch(`/api/menu/categories`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -93,8 +78,8 @@ class MenuService {
   async getMenuItems(categoryId = null) {
     try {
       const url = categoryId 
-        ? `${API_BASE_URL}/api/menu-complete?path=items&categoryId=${categoryId}`
-        : `${API_BASE_URL}/api/menu-complete?path=items`;
+        ? `/api/menu-complete?path=items&categoryId=${categoryId}`
+        : `/api/menu-complete?path=items`;
       const response = await fetch(url);
       if (!response.ok) throw new Error('Failed to fetch menu items');
       const result = await response.json();
@@ -108,7 +93,7 @@ class MenuService {
 
   async createMenuItem(itemData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=items`, {
+      const response = await fetch(`/api/menu-complete?path=items`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,7 +111,7 @@ class MenuService {
 
   async updateMenuItem(id, itemData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=items,${id}`, {
+      const response = await fetch(`/api/menu-complete?path=items,${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -144,7 +129,7 @@ class MenuService {
 
   async deleteMenuItem(id) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/menu-complete?path=items,${id}`, {
+      const response = await fetch(`/api/menu-complete?path=items,${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) throw new Error('Failed to delete menu item');
@@ -160,11 +145,7 @@ class MenuService {
     try {
       // Add a small delay to ensure server is ready
       await delay(100);
-      const response = await fetch(`${API_BASE_URL}/api/menu-complete`);
-      if (!response.ok) throw new Error('Failed to fetch complete menu');
-      const result = await response.json();
-      // API already returns {success: true, data: categories}, so return as-is
-      return result;
+      return await apiClient.get('/api/menu-complete');
     } catch (error) {
       console.error('Error fetching complete menu:', error);
       return { success: false, error: error.message };

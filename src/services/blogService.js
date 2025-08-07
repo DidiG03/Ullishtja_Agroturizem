@@ -1,11 +1,11 @@
 // Blog Service
 // Frontend service for blog operations
 
+import apiClient from '../utils/apiClient.js';
+
 class BlogService {
   constructor() {
-    this.apiBaseUrl = process.env.NODE_ENV === 'production' 
-      ? '' 
-      : process.env.REACT_APP_API_URL || 'http://localhost:3001';
+    // API base URL now handled by centralized client
   }
 
   // Blog Posts API calls
@@ -31,14 +31,7 @@ class BlogService {
     if (language) params.append('language', language);
 
     try {
-      const response = await fetch(`${this.apiBaseUrl}/api/blog/posts?${params}`);
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to fetch posts');
-      }
-
-      return result;
+      return await apiClient.get('/api/blog/posts', Object.fromEntries(params));
     } catch (error) {
       console.error('Error fetching blog posts:', error);
       throw error;

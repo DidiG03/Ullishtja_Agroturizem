@@ -5,21 +5,21 @@
 // This service is available for frontend integrations if needed in the future.
 
 const WHATSAPP_CONFIG = {
-  // Option 1: Twilio WhatsApp API
+  // Option 1: Twilio WhatsApp API - Credentials moved to server-side for security
   twilio: {
-    accountSid: process.env.TWILIO_ACCOUNT_SID,
-    authToken: process.env.TWILIO_AUTH_TOKEN,
-    whatsappNumber: process.env.TWILIO_WHATSAPP_NUMBER || 'whatsapp:+14155238886', // Twilio sandbox number
+    accountSid: null, // Handled server-side only
+    authToken: null, // Handled server-side only
+    whatsappNumber: 'whatsapp:+14155238886', // Public sandbox number only
   },
   
-  // Option 2: Official WhatsApp Business API
+  // Option 2: Official WhatsApp Business API - Credentials moved to server-side for security
   whatsappBusiness: {
-    phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID,
-    accessToken: process.env.WHATSAPP_ACCESS_TOKEN,
-    businessAccountId: process.env.WHATSAPP_BUSINESS_ACCOUNT_ID,
+    phoneNumberId: null, // Handled server-side only
+    accessToken: null, // Handled server-side only
+    businessAccountId: null, // Handled server-side only
   },
   
-  // Your restaurant WhatsApp number
+  // Your restaurant WhatsApp number (public information)
   restaurantNumber: '+4407312706087'
 };
 

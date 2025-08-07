@@ -13,16 +13,12 @@ function MobileMenu({ currentLanguage, onClose }) {
   }, []);
 
   useEffect(() => {
-    // Prevent body scrolling when menu is open
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.width = '100%';
+    // Prevent body scrolling when menu is open - use CSS class instead of direct style manipulation
+    document.body.classList.add('mobile-menu-open');
     
     return () => {
       // Restore scrolling when menu closes
-      document.body.style.overflow = 'unset';
-      document.body.style.position = 'unset';
-      document.body.style.width = 'unset';
+      document.body.classList.remove('mobile-menu-open');
     };
   }, []);
 

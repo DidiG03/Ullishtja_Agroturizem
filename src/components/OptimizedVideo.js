@@ -50,93 +50,54 @@ const OptimizedVideo = ({
     }
   }, [videoId, src, priority]);
 
-  // Intersection Observer for lazy loading and viewport management
+  // Simplified Intersection Observer for better performance
   useEffect(() => {
+    if (!lazy) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         const isCurrentlyInView = entry.isIntersecting;
         setIsInView(isCurrentlyInView);
         
-        // Track user interaction for intelligent preloading
-        if (videoId && isCurrentlyInView) {
-          intelligentVideoPreloader.trackUserInteraction('video_view', videoId, {
-            viewportPercentage: entry.intersectionRatio
-          });
-        }
-        
-        // For lazy loading
-        if (lazy && isCurrentlyInView && !isVisible) {
+        // Simple lazy loading
+        if (isCurrentlyInView && !isVisible) {
           setIsVisible(true);
         }
         
-        // Enhanced video playback management based on viewport
+        // Simple video playback management
         if (videoRef.current && isLoaded) {
-          const isMobile = window.innerWidth <= 768;
-          
-          if (isCurrentlyInView) {
-            // Video is in view, play it
-            if (autoPlay && videoRef.current.paused) {
-              // Enhanced delay calculation based on device and network
-              const networkInfo = intelligentVideoPreloader.networkInfo;
-              const isSlowNetwork = networkInfo.effectiveType === '3g' || networkInfo.downlink < 3;
-              const delay = isMobile ? (isSlowNetwork ? 200 : 150) : 50;
-              
-              setTimeout(() => {
-                if (videoRef.current) {
-                  const playPromise = videoRef.current.play();
-                  if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                      // Auto-play was prevented, but that's okay
-                    });
-                  }
-                }
-              }, delay);
-            }
-          } else {
-            // Video is out of view, pause it for better performance
-            if (!videoRef.current.paused) {
-              videoRef.current.pause();
-            }
-            
-            // Enhanced memory optimization for mobile
-            if (isMobile) {
-              const deviceInfo = intelligentVideoPreloader.deviceInfo;
-              const resetThreshold = deviceInfo.isLowPower ? 3 : 5;
-              
-              if (videoRef.current.currentTime > resetThreshold) {
-                videoRef.current.currentTime = 0;
+          if (isCurrentlyInView && autoPlay && videoRef.current.paused) {
+            // Simple play with minimal delay
+            setTimeout(() => {
+              if (videoRef.current) {
+                videoRef.current.play().catch(() => {
+                  // Auto-play prevented, ignore
+                });
               }
-              
-              // More aggressive cleanup on low-power devices
-              if (deviceInfo.isLowPower) {
-                try {
-                  videoRef.current.load();
-                } catch (e) {
-                  // Ignore errors
-                }
-              }
-            }
+            }, 100);
+          } else if (!isCurrentlyInView && !videoRef.current.paused) {
+            // Pause when out of view
+            videoRef.current.pause();
           }
         }
       },
       { 
-        threshold: window.innerWidth <= 768 ? [0.25] : [0, 0.1, 0.5],
-        rootMargin: window.innerWidth <= 768 ? '75px 0px' : '50px 0px'
+        threshold: 0.1,
+        rootMargin: '50px'
       }
     );
-
-    observerRef.current = observer;
 
     if (videoRef.current) {
       observer.observe(videoRef.current);
     }
 
     return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect();
-      }
+      observer.disconnect();
     };
-  }, [lazy, isLoaded, autoPlay, videoId]);
+  }, [lazy, isLoaded, autoPlay, isVisible]);
 
   // Auto-play when video becomes visible and loaded
   useEffect(() => {
