@@ -3,6 +3,7 @@ import './App.css';
 import { translations } from './translations';
 import MenuService from './services/menuService';
 import googleReviewsService from './services/googleReviews';
+import googleAdsService from './services/googleAdsService';
 import pdfExportService from './services/pdfExportService';
 import { handleReservation, validateReservationForm } from './reservationService';
 import useScrollOptimization from './hooks/useScrollOptimization';
@@ -101,6 +102,11 @@ function App() {
     const text = getLocalizedName(item, field);
     return text || '';
   }, [getLocalizedName]);
+
+  // Handle directions click with conversion tracking
+  const handleDirectionsClick = useCallback(() => {
+    googleAdsService.trackGetDirectionsConversion();
+  }, []);
 
   // Cleanup effect for modal state
   useEffect(() => {
@@ -847,6 +853,7 @@ function App() {
                       target="_blank" 
                       rel="noopener noreferrer"
                       className="directions-link google-maps"
+                      onClick={handleDirectionsClick}
                     >
                       🗺️ Google Maps
                     </a>
@@ -1145,7 +1152,8 @@ function App() {
                 <a href="https://maps.google.com/?q=41.340278,19.433569+(Ullishtja+Agroturizem)" 
                    target="_blank" 
                    rel="noopener noreferrer"
-                   className="footer-map-link">
+                   className="footer-map-link"
+                   onClick={handleDirectionsClick}>
                   🗺️ {t.footer.directions}
                 </a>
                 <a href="tel:+35568409405" className="footer-phone-link">

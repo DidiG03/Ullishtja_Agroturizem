@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { translations } from '../translations';
 import googleReviewsService from '../services/googleReviews';
+import googleAdsService from '../services/googleAdsService';
 import '../App.css'; // Import main app styles for navbar and footer
 
 // Helper function to get language from localStorage or detect browser language
@@ -87,6 +88,11 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
 
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
+  };
+
+  // Handle directions click with conversion tracking
+  const handleDirectionsClick = () => {
+    googleAdsService.trackGetDirectionsConversion();
   };
 
   // Memoize review display components
@@ -234,7 +240,8 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
                 <a href="https://maps.google.com/?q=41.340278,19.433569+(Ullishtja+Agroturizem)" 
                    target="_blank" 
                    rel="noopener noreferrer"
-                   className="footer-map-link">
+                   className="footer-map-link"
+                   onClick={handleDirectionsClick}>
                   🗺️ {t.footer.directions}
                 </a>
                 <a href="tel:+35568409405" className="footer-phone-link">
