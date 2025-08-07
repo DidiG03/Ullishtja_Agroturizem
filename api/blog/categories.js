@@ -1,7 +1,7 @@
 // Vercel Serverless Function for Blog Categories API
 // Handles GET and POST requests for blog categories
 
-const prisma = require('../../src/lib/prisma.js').default;
+import prisma from '../../src/lib/prisma.js';
 
 export default async function handler(req, res) {
   // Enable CORS

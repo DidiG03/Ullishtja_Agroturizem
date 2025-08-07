@@ -1,7 +1,7 @@
 // Consolidated Menu API - All menu operations in one function
 // Handles categories, items, and complete menu data
 
-const prisma = require('../src/lib/prisma.js').default;
+import prisma from '../src/lib/prisma.js';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -16,8 +16,11 @@ export default async function handler(req, res) {
   const { path } = req.query;
 
   try {
+    // Parse path parameter - convert string to array if necessary
+    const pathArray = path ? (Array.isArray(path) ? path : path.split(',')) : [];
+    
     // Route based on path parameter
-    if (!path || path.length === 0) {
+    if (!pathArray || pathArray.length === 0) {
       // GET /api/menu-complete - Complete menu with categories and items
       if (req.method === 'GET') {
         const categories = await prisma.menuCategory.findMany({
@@ -34,9 +37,9 @@ export default async function handler(req, res) {
           data: categories
         });
       }
-    } else if (path[0] === 'categories') {
+    } else if (pathArray[0] === 'categories') {
       // Categories operations
-      if (path.length === 1) {
+      if (pathArray.length === 1) {
         // GET /api/menu-complete?path=categories - Get all categories
         if (req.method === 'GET') {
           const categories = await prisma.menuCategory.findMany({
@@ -75,9 +78,9 @@ export default async function handler(req, res) {
             data: category
           });
         }
-      } else if (path.length === 2) {
+      } else if (pathArray.length === 2) {
         // Operations on specific category by ID
-        const categoryId = path[1];
+        const categoryId = pathArray[1];
 
         if (req.method === 'GET') {
           // GET /api/menu-complete?path=categories,{id}
@@ -134,9 +137,9 @@ export default async function handler(req, res) {
           });
         }
       }
-    } else if (path[0] === 'items') {
+    } else if (pathArray[0] === 'items') {
       // Items operations
-      if (path.length === 1) {
+      if (pathArray.length === 1) {
         // GET /api/menu-complete?path=items - Get all items
         if (req.method === 'GET') {
           const items = await prisma.menuItem.findMany({
@@ -193,9 +196,9 @@ export default async function handler(req, res) {
             data: item
           });
         }
-      } else if (path.length === 2) {
+      } else if (pathArray.length === 2) {
         // Operations on specific item by ID
-        const itemId = path[1];
+        const itemId = pathArray[1];
 
         if (req.method === 'GET') {
           // GET /api/menu-complete?path=items,{id}

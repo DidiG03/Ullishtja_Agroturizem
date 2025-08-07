@@ -1,7 +1,7 @@
 // Consolidated Timeslots API - All timeslot operations in one function
 // Handles timeslots and capacity management
 
-const prisma = require('../src/lib/prisma.js').default;
+import prisma from '../src/lib/prisma.js';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -16,7 +16,10 @@ export default async function handler(req, res) {
   const { path } = req.query;
 
   try {
-    if (!path || path.length === 0) {
+    // Parse path parameter - convert string to array if necessary
+    const pathArray = path ? (Array.isArray(path) ? path : path.split(',')) : [];
+    
+    if (!pathArray || pathArray.length === 0) {
       // Base timeslots operations
       if (req.method === 'GET') {
         // GET /api/timeslots-complete - Get all timeslots
@@ -185,7 +188,7 @@ export default async function handler(req, res) {
           data: timeslot
         });
       }
-    } else if (path[0] === 'capacity') {
+    } else if (pathArray[0] === 'capacity') {
       // Capacity management operations
       if (req.method === 'GET') {
         // GET /api/timeslots-complete?path=capacity

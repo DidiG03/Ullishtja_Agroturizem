@@ -1,7 +1,7 @@
 // Consolidated Reservations API - All reservation operations in one function
 // Handles reservation CRUD and individual reservation operations
 
-const prisma = require('../src/lib/prisma.js').default;
+import prisma from '../src/lib/prisma.js';
 
 export default async function handler(req, res) {
   // Enable CORS
