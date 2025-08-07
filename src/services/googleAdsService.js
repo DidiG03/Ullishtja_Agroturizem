@@ -1,87 +1,154 @@
-/**
- * Google Ads Service
- * Handles Google Ads conversion tracking events
- */
+// Google Ads Conversion Tracking Service for Ullishtja Agroturizem
 
 class GoogleAdsService {
-  /**
-   * Track 'Get Directions' conversion event
-   * This tracks when users click on the directions link to Google Maps
-   */
-  trackGetDirectionsConversion() {
-    if (typeof window !== 'undefined' && window.gtag) {
-      try {
-        // Event snippet for Get directions conversion page
-        window.gtag('event', 'conversion', {
-          'send_to': 'AW-1742877024/SWLiCO6_u4EbBODctPIA'
-        });
-        console.log('Google Ads: Get Directions conversion tracked');
-      } catch (error) {
-        console.error('Error tracking Google Ads conversion:', error);
+  constructor() {
+    this.adsId = 'AW-17442877024';
+    this.isEnabled = typeof window !== 'undefined' && typeof window.gtag === 'function';
+    
+    // Conversion IDs from Google Ads
+    this.conversions = {
+      getDirections: 'AW-17442877024/SWLiC06_u4EbODctP1A',
+      reservation: 'AW-17442877024/RESERVATION_ID', // Replace with actual ID when created
+      phoneCall: 'AW-17442877024/PHONE_ID', // Replace with actual ID when created
+      contact: 'AW-17442877024/CONTACT_ID', // Replace with actual ID when created
+      menuDownload: 'AW-17442877024/MENU_ID' // Replace with actual ID when created
+    };
+  }
+
+  // Generic conversion tracking method
+  trackConversion(conversionId, conversionValue = null, currency = 'EUR') {
+    if (!this.isEnabled) {
+      console.warn('Google Ads tracking not available');
+      return;
+    }
+
+    try {
+      const conversionData = {
+        send_to: conversionId
+      };
+
+      // Add value if provided (useful for reservation tracking)
+      if (conversionValue) {
+        conversionData.value = conversionValue;
+        conversionData.currency = currency;
       }
-    } else {
-      console.warn('Google Ads gtag not available');
+
+      window.gtag('event', 'conversion', conversionData);
+      
+      console.info('Google Ads conversion tracked:', conversionId);
+    } catch (error) {
+      console.error('Error tracking Google Ads conversion:', error);
     }
   }
 
-  /**
-   * Generic conversion tracking method
-   * @param {string} conversionId - The conversion ID from Google Ads
-   * @param {Object} params - Additional parameters for the conversion
-   */
-  trackConversion(conversionId, params = {}) {
-    if (typeof window !== 'undefined' && window.gtag) {
-      try {
-        window.gtag('event', 'conversion', {
-          'send_to': conversionId,
-          ...params
-        });
-        console.log(`Google Ads: Conversion tracked for ${conversionId}`);
-      } catch (error) {
-        console.error('Error tracking Google Ads conversion:', error);
-      }
-    } else {
-      console.warn('Google Ads gtag not available');
+  // Specific conversion tracking methods
+  
+  // Track when someone makes a reservation (high value conversion)
+  trackReservation(guestCount = null, estimatedValue = null) {
+    // Estimate value based on average spend per person (adjust as needed)
+    const avgSpendPerPerson = 25; // EUR
+    const value = estimatedValue || (guestCount ? guestCount * avgSpendPerPerson : 50);
+    
+    this.trackConversion(this.conversions.reservation, value);
+    
+    // Also track as a custom event for additional insights
+    if (this.isEnabled) {
+      window.gtag('event', 'reservation_made', {
+        event_category: 'Restaurant',
+        event_label: 'Table Reservation',
+        value: value,
+        guests: guestCount
+      });
     }
   }
 
-  /**
-   * Track phone click conversion
-   * For when users click on phone number links
-   */
-  trackPhoneClickConversion() {
-    if (typeof window !== 'undefined' && window.gtag) {
-      try {
-        // You can add another conversion ID here if you set up phone tracking
-        window.gtag('event', 'conversion', {
-          'send_to': 'AW-1742877024/phone_click' // Replace with actual phone conversion ID
-        });
-        console.log('Google Ads: Phone click conversion tracked');
-      } catch (error) {
-        console.error('Error tracking phone click conversion:', error);
-      }
+  // Track when someone requests directions (good intent signal)
+  trackGetDirections() {
+    this.trackConversion(this.conversions.getDirections);
+    
+    if (this.isEnabled) {
+      window.gtag('event', 'get_directions', {
+        event_category: 'Navigation',
+        event_label: 'Directions Requested'
+      });
     }
   }
 
-  /**
-   * Track contact form submission conversion
-   * For when users submit contact or reservation forms
-   */
-  trackContactFormConversion() {
-    if (typeof window !== 'undefined' && window.gtag) {
-      try {
-        // You can add another conversion ID here if you set up form tracking
-        window.gtag('event', 'conversion', {
-          'send_to': 'AW-1742877024/form_submit' // Replace with actual form conversion ID
-        });
-        console.log('Google Ads: Contact form conversion tracked');
-      } catch (error) {
-        console.error('Error tracking contact form conversion:', error);
-      }
+  // Track phone calls (high intent)
+  trackPhoneCall() {
+    this.trackConversion(this.conversions.phoneCall);
+    
+    if (this.isEnabled) {
+      window.gtag('event', 'phone_call', {
+        event_category: 'Contact',
+        event_label: 'Phone Call Initiated'
+      });
     }
+  }
+
+  // Track contact form submissions
+  trackContactForm(formType = 'general') {
+    this.trackConversion(this.conversions.contact);
+    
+    if (this.isEnabled) {
+      window.gtag('event', 'contact_form', {
+        event_category: 'Contact',
+        event_label: `Contact Form - ${formType}`
+      });
+    }
+  }
+
+  // Track menu downloads
+  trackMenuDownload(menuType = 'complete') {
+    this.trackConversion(this.conversions.menuDownload);
+    
+    if (this.isEnabled) {
+      window.gtag('event', 'menu_download', {
+        event_category: 'Engagement',
+        event_label: `Menu Download - ${menuType}`
+      });
+    }
+  }
+
+  // Track high engagement actions
+  trackEngagement(action, category = 'Engagement') {
+    if (!this.isEnabled) return;
+
+    window.gtag('event', action, {
+      event_category: category,
+      event_label: action
+    });
+  }
+
+  // Track page views with enhanced data
+  trackPageView(pageName, pageCategory = 'Website') {
+    if (!this.isEnabled) return;
+
+    window.gtag('event', 'page_view', {
+      page_title: pageName,
+      page_category: pageCategory
+    });
+  }
+
+  // Helper method to check if Google Ads is loaded
+  isGoogleAdsLoaded() {
+    return this.isEnabled;
+  }
+
+  // Initialize enhanced tracking (call this on app start)
+  initialize() {
+    if (!this.isEnabled) {
+      console.warn('Google Ads not available - make sure gtag is loaded');
+      return;
+    }
+
+    // Track initial page load
+    this.trackPageView('Home Page', 'Landing');
+    
+    console.info('Google Ads conversion tracking initialized');
   }
 }
 
-// Create and export a singleton instance
+// Export singleton instance
 const googleAdsService = new GoogleAdsService();
 export default googleAdsService;

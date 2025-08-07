@@ -53,6 +53,11 @@ function App() {
   const [currentLanguage, setCurrentLanguage] = useState(getInitialLanguage());
   const [showLanguageModal, setShowLanguageModal] = useState(isFirstVisit());
   const analytics = useAnalyticsTracking();
+
+  // Initialize Google Ads conversion tracking
+  useEffect(() => {
+    googleAdsService.initialize();
+  }, []);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   
   // Initialize scroll optimization
@@ -106,7 +111,17 @@ function App() {
 
   // Handle directions click with conversion tracking
   const handleDirectionsClick = useCallback(() => {
-    googleAdsService.trackGetDirectionsConversion();
+    googleAdsService.trackGetDirections();
+  }, []);
+
+  // Handle phone call click with conversion tracking
+  const handlePhoneClick = useCallback(() => {
+    googleAdsService.trackPhoneCall();
+  }, []);
+
+  // Handle email click with conversion tracking
+  const handleEmailClick = useCallback(() => {
+    googleAdsService.trackContactForm('email');
   }, []);
 
   // Cleanup effect for modal state
@@ -257,11 +272,14 @@ function App() {
       // Check if we have menu data
       const menuDataForPDF = menuCategories.length > 0 ? menuCategories : [];
       
-      // Track PDF download attempt
-      analytics.trackPDFDownload(currentLanguage, menuDataForPDF.length);
-      
-      // Generate and open/download PDF
-      await pdfExportService.openPDFInNewWindow(menuDataForPDF, currentLanguage);
+          // Track PDF download attempt
+    analytics.trackPDFDownload(currentLanguage, menuDataForPDF.length);
+
+    // Track Google Ads conversion for menu download
+    googleAdsService.trackMenuDownload(currentLanguage);
+
+    // Generate and open/download PDF
+    await pdfExportService.openPDFInNewWindow(menuDataForPDF, currentLanguage);
       
     } catch (error) {
       console.error('Error exporting PDF:', error);
@@ -397,6 +415,9 @@ function App() {
           ...reservationData,
           id: result.id || Date.now().toString()
         });
+
+        // Track Google Ads conversion for reservation
+        googleAdsService.trackReservation(guests);
 
         // Clear form
         e.target.reset(); // Clear form
@@ -874,17 +895,17 @@ function App() {
                 <div className="contact-item">
                   <h4>{t.contact.info.phone.title}</h4>
                   <p>
-                    <a href="tel:+35568409405" className="contact-email-link">
-                      {t.contact.info.phone.text}
-                    </a>
+                                    <a href="tel:+35568409405" className="contact-email-link" onClick={handlePhoneClick}>
+                  {t.contact.info.phone.text}
+                </a>
                   </p>
                 </div>
                 <div className="contact-item">
                   <h4>{t.contact.info.email.title}</h4>
                   <p>
-                    <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-email-link">
-                      {t.contact.info.email.text}
-                    </a>
+                                    <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-email-link" onClick={handleEmailClick}>
+                  {t.contact.info.email.text}
+                </a>
                   </p>
                 </div>
                 <div className="contact-item">
@@ -1042,7 +1063,7 @@ function App() {
                         <div className="notice-text">
                           <strong>Large Group Reservation</strong>
                           <p>For groups of 9+ guests, please contact us directly for special arrangements:</p>
-                          <a href="tel:+35568409405" className="contact-link">📞 +355 68 409 0405</a>
+                          <a href="tel:+35568409405" className="contact-link" onClick={handlePhoneClick}>📞 +355 68 409 0405</a>
                         </div>
                       </div>
                     </div>
@@ -1103,13 +1124,13 @@ function App() {
                 </div>
                 <div className="contact-item">
                   <span className="contact-icon">📞</span>
-                  <a href="tel:+35568409405" className="contact-value contact-link">
+                  <a href="tel:+35568409405" className="contact-value contact-link" onClick={handlePhoneClick}>
                     +355 68 409 0405
                   </a>
                 </div>
                 <div className="contact-item">
                   <span className="contact-icon">📧</span>
-                  <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-value contact-link">
+                  <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-value contact-link" onClick={handleEmailClick}>
                     hi@ullishtja-agroturizem.com
                   </a>
                 </div>
@@ -1159,7 +1180,7 @@ function App() {
                    onClick={handleDirectionsClick}>
                   🗺️ {t.footer.directions}
                 </a>
-                <a href="tel:+35568409405" className="footer-phone-link">
+                <a href="tel:+35568409405" className="footer-phone-link" onClick={handlePhoneClick}>
                   📞 {t.footer.callUs}
                 </a>
                 <div className="language-selector footer-lang">
