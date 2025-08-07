@@ -71,9 +71,7 @@
   justify-content: center;
 }
 
-.photo-item.featured {
-  /* Remove spanning on desktop for uniform grid */
-}
+
 
 
 
@@ -179,9 +177,7 @@
     aspect-ratio: 1/1;
   }
   
-  .photo-item.featured {
-    /* Keep single column on tablet */
-  }
+
 }
 
 @media (max-width: 768px) {
