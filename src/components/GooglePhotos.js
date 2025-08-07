@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import googleReviewsService from '../services/googleReviews';
 import OptimizedImage from './OptimizedImage';
 import './GooglePhotos.css';
@@ -6,9 +6,6 @@ import './GooglePhotos.css';
 const GooglePhotos = ({ currentLanguage, translations }) => {
   const [photosData, setPhotosData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [showLightbox, setShowLightbox] = useState(false);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
 
   const t = translations;
@@ -42,60 +39,7 @@ const GooglePhotos = ({ currentLanguage, translations }) => {
     loadPhotos();
   }, []);
 
-  const openLightbox = useCallback((photo, index) => {
-    setSelectedPhoto(photo);
-    setCurrentIndex(index);
-    setShowLightbox(true);
-    // Prevent body scroll when lightbox is open
-    document.body.style.overflow = 'hidden';
-  }, []);
 
-  const closeLightbox = useCallback(() => {
-    setShowLightbox(false);
-    setSelectedPhoto(null);
-    // Restore body scroll
-    document.body.style.overflow = 'unset';
-  }, []);
-
-  const goToNext = useCallback(() => {
-    if (photosData && photosData.photos.length > 0) {
-      const nextIndex = (currentIndex + 1) % photosData.photos.length;
-      setCurrentIndex(nextIndex);
-      setSelectedPhoto(photosData.photos[nextIndex]);
-    }
-  }, [currentIndex, photosData]);
-
-  const goToPrevious = useCallback(() => {
-    if (photosData && photosData.photos.length > 0) {
-      const prevIndex = currentIndex === 0 ? photosData.photos.length - 1 : currentIndex - 1;
-      setCurrentIndex(prevIndex);
-      setSelectedPhoto(photosData.photos[prevIndex]);
-    }
-  }, [currentIndex, photosData]);
-
-  // Keyboard navigation
-  useEffect(() => {
-    const handleKeyPress = (e) => {
-      if (!showLightbox) return;
-      
-      switch (e.key) {
-        case 'ArrowRight':
-          goToNext();
-          break;
-        case 'ArrowLeft':
-          goToPrevious();
-          break;
-        case 'Escape':
-          closeLightbox();
-          break;
-        default:
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [showLightbox, goToNext, goToPrevious, closeLightbox]);
 
   if (loading) {
     return (
@@ -154,11 +98,7 @@ const GooglePhotos = ({ currentLanguage, translations }) => {
   const hasMorePhotos = isMobile ? photosData.photos.length > 3 : photosData.photos.length > 8;
 
   const handleViewAllClick = () => {
-    if (isMobile) {
-      setShowAllPhotos(!showAllPhotos);
-    } else {
-      openLightbox(photosData.photos[0], 0);
-    }
+    setShowAllPhotos(!showAllPhotos);
   };
 
   return (
@@ -175,14 +115,6 @@ const GooglePhotos = ({ currentLanguage, translations }) => {
               <div 
                 key={photo.id} 
                 className={`photo-item ${(index === 0 && !isMobile) ? 'featured' : ''}`}
-                onClick={() => openLightbox(photo, index)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    openLightbox(photo, index);
-                  }
-                }}
               >
                 <div className="photo-container">
                   <OptimizedImage
@@ -191,27 +123,18 @@ const GooglePhotos = ({ currentLanguage, translations }) => {
                     className="customer-photo"
                     loading={index < 4 ? "eager" : "lazy"}
                   />
-                  <div className="photo-overlay">
-                    <div className="photo-icon">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M15 3H6C5.175 3 4.5 3.675 4.5 4.5V15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M10.5 3H18C18.825 3 19.5 3.675 19.5 4.5V12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                        <path d="M19.5 16.5V18C19.5 18.825 18.825 19.5 18 19.5H6C5.175 19.5 4.5 18.825 4.5 18V6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </div>
-                  </div>
                 </div>
               </div>
             ))}
           </div>
           
-          {hasMorePhotos && (
+          {hasMorePhotos && isMobile && (
             <div className="view-more">
               <button 
                 className="view-more-btn"
                 onClick={handleViewAllClick}
               >
-                {isMobile && showAllPhotos 
+                {showAllPhotos 
                   ? (t.customerPhotos?.showLess || 'Shiko më pak') 
                   : (t.customerPhotos?.viewAll || 'Shiko të gjitha')
                 }
@@ -222,52 +145,7 @@ const GooglePhotos = ({ currentLanguage, translations }) => {
         </div>
       </section>
 
-      {/* Lightbox */}
-      {showLightbox && selectedPhoto && (
-        <div className="lightbox-overlay" onClick={closeLightbox}>
-          <div className="lightbox-container" onClick={(e) => e.stopPropagation()}>
-            <button className="lightbox-close" onClick={closeLightbox}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </button>
-            
-            <div className="lightbox-content">
-              <button className="lightbox-nav lightbox-prev" onClick={goToPrevious}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-              
-              <div className="lightbox-image-container">
-                <OptimizedImage
-                  src={selectedPhoto.highResUrl || selectedPhoto.url}
-                  alt={`Customer photo ${currentIndex + 1}`}
-                  className="lightbox-image"
-                  loading="eager"
-                />
-              </div>
-              
-              <button className="lightbox-nav lightbox-next" onClick={goToNext}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            </div>
-            
-            <div className="lightbox-info">
-              <span className="photo-counter">
-                {currentIndex + 1} / {photosData.photos.length}
-              </span>
-              {selectedPhoto.attributions && selectedPhoto.attributions.length > 0 && (
-                <div className="photo-attribution">
-                  {selectedPhoto.attributions[0]}
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+
     </>
   );
 };
