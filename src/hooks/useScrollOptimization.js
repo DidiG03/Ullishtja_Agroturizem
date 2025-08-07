@@ -9,21 +9,7 @@ const useScrollOptimization = () => {
   const handleScroll = useCallback(() => {
     if (!isScrollingRef.current) {
       isScrollingRef.current = true;
-      
-      // Add CSS class to body during scroll for performance optimizations
-      document.body.classList.add('is-scrolling');
     }
-
-    // Clear existing timeout
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-
-    // Set new timeout to detect scroll end
-    scrollTimeoutRef.current = setTimeout(() => {
-      isScrollingRef.current = false;
-      document.body.classList.remove('is-scrolling');
-    }, 150); // 150ms after scroll ends
   }, []);
 
   // Optimized scroll listener using RAF

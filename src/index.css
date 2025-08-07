@@ -107,12 +107,6 @@ code {
     transform: translate3d(0, 0, 0);
   }
   
-  /* Reduce motion blur during scrolling */
-  .is-scrolling video {
-    will-change: auto;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  }
 }
 
 /* Portrait orientation optimizations */
@@ -183,11 +177,7 @@ code {
 }
 
 /* Prefetch optimizations */
-.mobile-device video {
-  /* Enable prefetch for mobile devices */
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-}
+
 
 /* Touch interaction optimizations */
 @media (hover: none) and (pointer: coarse) {
@@ -218,13 +208,6 @@ code {
   }
 }
 
-/* Safe area optimizations for modern mobile devices */
-@supports (padding-top: env(safe-area-inset-top)) {
-  .hero-video-section {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-}
 
 /* Memory management for older devices */
 @media (max-width: 768px) {
