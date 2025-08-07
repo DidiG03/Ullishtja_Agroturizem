@@ -17,7 +17,7 @@ const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 const GooglePhotos = React.lazy(() => import('./components/GooglePhotos'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
 const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
-const LanguageSelector = React.lazy(() => import('./components/LanguageSelector'));
+const LanguageFloatingSelector = React.lazy(() => import('./components/LanguageFloatingSelector'));
 
 const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
 const AnalyticsTest = React.lazy(() => import('./components/AnalyticsTest'));
@@ -44,14 +44,10 @@ const getInitialLanguage = () => {
   return 'al';
 };
 
-// Helper function to check if user has visited before
-const isFirstVisit = () => {
-  return !localStorage.getItem('hasVisitedBefore');
-};
+// Language selector will handle its own visibility logic
 
 function App() {
   const [currentLanguage, setCurrentLanguage] = useState(getInitialLanguage());
-  const [showLanguageSelector, setShowLanguageSelector] = useState(isFirstVisit());
   const analytics = useAnalyticsTracking();
 
   // Initialize Google Ads conversion tracking
@@ -201,22 +197,15 @@ function App() {
     }
   }, [closeMobileMenu, currentLanguage, analytics]);
 
-  const handleLanguageSelection = useCallback((selectedLanguage) => {
+  const handleFloatingLanguageChange = useCallback((selectedLanguage) => {
+    const previousLanguage = currentLanguage;
     setCurrentLanguage(selectedLanguage);
-    setShowLanguageSelector(false);
     
-    // Track initial language selection
-    analytics.trackLanguageChange(selectedLanguage, 'initial');
-  }, [analytics]);
-
-  const handleLanguageSelectorDismiss = useCallback(() => {
-    setShowLanguageSelector(false);
-    // Store that user dismissed without selecting (still mark as visited)
-    localStorage.setItem('hasVisitedBefore', 'true');
-    
-    // Track dismissal
-    analytics.trackEvent('language_selector_dismissed');
-  }, [analytics]);
+    // Track language change
+    if (previousLanguage !== selectedLanguage) {
+      analytics.trackLanguageChange(selectedLanguage, previousLanguage);
+    }
+  }, [currentLanguage, analytics]);
 
   const handleGuestCountChange = useCallback((e) => {
     const guestCount = e.target.value;
@@ -1221,16 +1210,13 @@ function App() {
         </div>
       </footer>
 
-            {/* Language Selector */}
-      {showLanguageSelector && (
-        <Suspense fallback={null}>
-          <LanguageSelector 
-            isVisible={showLanguageSelector}
-            onSelectLanguage={handleLanguageSelection}
-            onDismiss={handleLanguageSelectorDismiss}
-          />
-        </Suspense>
-      )}
+      {/* Language Floating Selector */}
+      <Suspense fallback={null}>
+        <LanguageFloatingSelector 
+          currentLanguage={currentLanguage}
+          onLanguageChange={handleFloatingLanguageChange}
+        />
+      </Suspense>
 
       {/* Mobile Menu */}
       {showMobileMenu && (
