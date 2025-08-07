@@ -271,6 +271,66 @@ class GoogleReviewsService {
     // Always use the Place ID for Ullishtja Agroturizem
     return `https://search.google.com/local/writereview?placeid=${this.placeId}`;
   }
+
+  // Fetch place photos from Google Places API
+  async fetchGooglePlacePhotos() {
+    try {
+      // Use relative path for production, localhost for development
+      const apiBaseUrl = process.env.NODE_ENV === 'production' 
+        ? '' 
+        : process.env.REACT_APP_API_URL || 'http://localhost:3001';
+      const apiUrl = `${apiBaseUrl}/api/google-photos`;
+      
+      const response = await fetch(apiUrl);
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        return result.data;
+      } else {
+        console.warn('API response indicates failure or no data for photos, using mock data:', result.error || 'Unknown error');
+        return this.getMockPhotosData(); // Fallback to mock data
+      }
+    } catch (error) {
+      console.error('Error fetching Google place photos:', error);
+      return this.getMockPhotosData(); // Fallback to mock data
+    }
+  }
+
+  // Mock photos data for fallback
+  getMockPhotosData() {
+    return {
+      photos: [
+        {
+          id: "mock_1",
+          url: "/images/food.jpeg",
+          width: 1024,
+          height: 768,
+          attributions: ["Customer Photo"]
+        },
+        {
+          id: "mock_2", 
+          url: "/images/panorama.jpeg",
+          width: 1200,
+          height: 800,
+          attributions: ["Customer Photo"]
+        },
+        {
+          id: "mock_3",
+          url: "/images/logo_wall.jpeg", 
+          width: 800,
+          height: 600,
+          attributions: ["Customer Photo"]
+        },
+        {
+          id: "mock_4",
+          url: "/images/test.jpeg",
+          width: 900,
+          height: 675,
+          attributions: ["Customer Photo"]
+        }
+      ]
+    };
+  }
 }
 
 const googleReviewsService = new GoogleReviewsService();

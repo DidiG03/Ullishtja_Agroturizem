@@ -18,6 +18,7 @@ const menuCompleteRoutes = require('./api/menu-complete');
 const reservationsCompleteRoutes = require('./api/reservations-complete');
 const timeslotsCompleteRoutes = require('./api/timeslots-complete');
 const googleReviewsRoutes = require('./api/googleReviews');
+const googlePhotosRoutes = require('./api/googlePhotos');
 const restaurantSettingsRoutes = require('./api/restaurantSettings');
 const blogRoutes = require('./api/blog');
 
@@ -57,6 +58,7 @@ app.use('/api/menu-complete', menuCompleteRoutes);
 app.use('/api/reservations-complete', reservationsCompleteRoutes);
 app.use('/api/timeslots-complete', timeslotsCompleteRoutes);
 app.use('/api/google-reviews', googleReviewsRoutes);
+app.use('/api/google-photos', googlePhotosRoutes);
 app.use('/api/restaurant-settings', restaurantSettingsRoutes);
 app.use('/api/blog', blogRoutes);
 
@@ -93,6 +95,7 @@ app.listen(PORT, () => {
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`📊 Health check: http://localhost:${PORT}/health`);
   console.log(`📝 Google Reviews API: http://localhost:${PORT}/api/google-reviews`);
+  console.log(`📸 Google Photos API: http://localhost:${PORT}/api/google-photos`);
   console.log(`🍽️ Menu API: http://localhost:${PORT}/api/menu-complete`);
   console.log(`📅 Reservations API: http://localhost:${PORT}/api/reservations-complete`);
   console.log(`⏰ Timeslots API: http://localhost:${PORT}/api/timeslots-complete`);

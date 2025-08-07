@@ -14,6 +14,7 @@ import SEOHead from './components/SEOHead';
 // Lazy load components for better performance
 const MobileMenu = React.lazy(() => import('./components/MobileMenu'));
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
+const GooglePhotos = React.lazy(() => import('./components/GooglePhotos'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
 const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
 const LanguageModal = React.lazy(() => import('./components/LanguageModal'));
@@ -817,6 +818,11 @@ function App() {
       {/* Google Reviews Section */}
       <Suspense fallback={<div className="loading-section">Loading reviews...</div>}>
         <GoogleReviews currentLanguage={currentLanguage} translations={t} />
+      </Suspense>
+
+      {/* Customer Photos Section */}
+      <Suspense fallback={<div className="loading-section">Loading photos...</div>}>
+        <GooglePhotos currentLanguage={currentLanguage} translations={t} />
       </Suspense>
 
       {/* Contact Section */}

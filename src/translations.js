@@ -130,6 +130,13 @@ export const translations = {
       olives: "Ullishtat",
       kitchen: "Kuzhina Jonë"
     },
+    // Customer Photos Section
+    customerPhotos: {
+      title: "Fotot e Mysafirëve",
+      subtitle: "Shihni çfarë po ndajnë vizitorët tanë",
+      viewAll: "Shiko të gjitha",
+      showLess: "Shiko më pak"
+    },
     // Contact Section
     contact: {
       title: "Na Vizitoni",
@@ -997,6 +1004,13 @@ export const translations = {
       views: "360° Views",
       olives: "Olive Groves",
       kitchen: "Our Kitchen"
+    },
+    // Customer Photos Section
+    customerPhotos: {
+      title: "Customer Photos",
+      subtitle: "See what our guests are sharing",
+      viewAll: "View All Photos",
+      showLess: "Show Less"
     },
     // Contact Section
     contact: {
@@ -1866,7 +1880,13 @@ export const translations = {
       olives: "Uliveti",
       kitchen: "La Nostra Cucina"
     },
-
+    // Customer Photos Section
+    customerPhotos: {
+      title: "Foto dei Clienti",
+      subtitle: "Guarda cosa condividono i nostri ospiti",
+      viewAll: "Vedi Tutte le Foto",
+      showLess: "Mostra Meno"
+    },
     // Contact Section
     contact: {
       title: "Visitateci",
