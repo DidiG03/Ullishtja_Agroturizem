@@ -14,9 +14,7 @@ const CRITICAL_VIDEOS = [
 // All poster images for instant loading
 const POSTER_IMAGES = [
   '/videos/dji-20240806130059-0020-d-poster.jpg',
-  '/videos/dji-20240806130609-0022-d-poster.jpg',
-  '/videos/dji-20240806124740-0003-d-poster.jpg',
-  '/videos/img-4999-poster.jpg'
+  '/videos/dji-20240806130609-0022-d-poster.jpg'
 ];
 
 // Utility functions
