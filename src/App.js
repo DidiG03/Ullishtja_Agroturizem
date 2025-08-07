@@ -675,11 +675,10 @@ function App() {
               </div>
             </div>
             <div className="section-image">
-              <Suspense fallback={<img src="/images/food.jpeg" alt="Albanian wedding venue and events space with mountain views at Ullishtja Agroturizem" className="section-img" />}>
+              <Suspense>
                 <OptimizedVideo
                   src="/images/wetransfer_ullishtja/DJI_20240806124740_0003_D.mov"
                   poster="/images/posters/events-poster.jpg"
-                  fallbackImage="/images/food.jpeg"
                   alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
                   className="section-img"
                   autoPlay={true}
@@ -705,11 +704,10 @@ function App() {
         <div className="container">
           <div className="section-grid reverse">
             <div className="section-image">
-              <Suspense fallback={<img src="/images/food.jpeg" alt="Traditional Albanian a la carte menu with farm-to-table ingredients at Ullishtja Agroturizem" className="section-img" />}>
+              <Suspense>
                 <OptimizedVideo
                   src="/images/wetransfer_ullishtja/IMG_4999.mov"
                   poster="/images/posters/alacarte-poster.jpg"
-                  fallbackImage="/images/food.jpeg"
                   alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
                   className="section-img"
                   autoPlay={true}
