@@ -103,6 +103,7 @@ h2::after {
 .logo-container .logo {
   height: 60px;
   width: auto;
+  aspect-ratio: 2 / 1;
 }
 
 .nav-menu {
@@ -1954,6 +1955,7 @@ body.scroll-locked {
 
   .logo {
     height: 50px;
+    aspect-ratio: 2 / 1;
   }
 
   /* Hero Section - Mobile Optimized */

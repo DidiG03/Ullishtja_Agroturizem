@@ -39,22 +39,21 @@ export const useGoogleAnalytics = () => {
     pageStartTime.current = Date.now();
   }, [location]);
 
-  // Track scroll depth
+  // Track scroll depth (RAF-throttled to avoid forced reflow)
   useEffect(() => {
     let maxScrollDepth = 0;
     const trackScrollThreshold = [25, 50, 75, 90, 100];
     const trackedDepths = new Set();
+    let rafId = null;
 
-    const handleScroll = () => {
+    const computeScroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const docHeight = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       const scrollPercent = Math.round((scrollTop / docHeight) * 100);
 
       if (scrollPercent > maxScrollDepth) {
         maxScrollDepth = scrollPercent;
-        
-        // Track milestone scroll depths
-        trackScrollThreshold.forEach(threshold => {
+        trackScrollThreshold.forEach((threshold) => {
           if (scrollPercent >= threshold && !trackedDepths.has(threshold)) {
             trackedDepths.add(threshold);
             integratedAnalyticsService.trackScrollDepth(threshold);
@@ -63,8 +62,19 @@ export const useGoogleAnalytics = () => {
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        computeScroll();
+        rafId = null;
+      });
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [location]);
 
   return integratedAnalyticsService;

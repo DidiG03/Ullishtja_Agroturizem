@@ -102,9 +102,10 @@
     </script>
 
     <!-- Performance and Loading Optimization -->
+    <!-- Preload and fetch-prioritize the LCP assets used in the hero and navbar -->
+    <link rel="preload" href="/images/ullishtja_logo.jpeg" as="image" imagesrcset="/images/ullishtja_logo.jpeg" fetchpriority="high">
+    <link rel="preload" href="/images/posters/hero-poster.jpg" as="image" fetchpriority="high">
     <link rel="preload" href="/videos/dji-20240806130059-0020-d-poster.jpg" as="image">
-    <link rel="preload" href="/images/ullishtja_logo.jpeg" as="image">
-    <link rel="preload" href="/images/posters/hero-poster.jpg" as="image">
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//www.google-analytics.com">
     <link rel="dns-prefetch" href="//maps.googleapis.com">
@@ -114,8 +115,8 @@
     <link rel="preconnect" href="https://ucarecdn.com" crossorigin>
     
     <!-- Resource Hints for better performance -->
-    <link rel="prefetch" href="/images/posters/alacarte-poster.jpg">
-    <link rel="prefetch" href="/images/posters/events-poster.jpg">
+    <link rel="prefetch" href="/images/posters/alacarte-poster.jpg" as="image">
+    <link rel="prefetch" href="/images/posters/events-poster.jpg" as="image">
     
     <!-- Manifest -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />

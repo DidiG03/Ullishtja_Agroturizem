@@ -518,7 +518,15 @@ function App() {
       <header className="navbar">
         <div className="nav-container">
           <div className="logo-container">
-            <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Authentic Albanian Restaurant Logo" className="logo" />
+            <img
+              src="/images/ullishtja_logo.jpeg"
+              alt="Ullishtja Agroturizem - Authentic Albanian Restaurant Logo"
+              className="logo"
+              fetchPriority="high"
+              decoding="sync"
+              width="120"
+              height="60"
+            />
           </div>
           
           {/* Desktop Navigation */}
@@ -534,7 +542,15 @@ function App() {
           {/* Mobile Navigation */}
           <div className={`mobile-nav ${mobileMenuOpen ? 'active' : ''}`}>
             <div className="mobile-nav-header">
-              <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Mobile Logo" className="mobile-logo" />
+              <img
+                src="/images/ullishtja_logo.jpeg"
+                alt="Ullishtja Agroturizem - Albanian Restaurant Mobile Logo"
+                className="mobile-logo"
+                fetchPriority="high"
+                decoding="sync"
+                width="120"
+                height="60"
+              />
               <button className="mobile-close-btn" onClick={closeMobileMenu}>×</button>
             </div>
             <nav className="mobile-nav-menu">
@@ -653,8 +669,9 @@ function App() {
             <div className="hero-image-container">
               <div className="hero-main-image">
                 <Suspense>
-                  <OptimizedVideo
-                    src="/images/wetransfer_ullishtja/DJI_20240806130609_0022_D.mov"
+                <OptimizedVideo
+                    src="/videos/dji-20240806130609-0022-d-desktop.mp4"
+                    videoId="dji-20240806130609-0022-d"
                     poster="/images/posters/hero-poster.jpg"
                     mobilePoster="/images/posters/hero-poster-mobile.png"
                     alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views"
@@ -664,6 +681,7 @@ function App() {
                     loop={true}
                     playsInline={true}
                     lazy={true}
+                    priority="high"
                   />
                 </Suspense>
                 <div className="image-decoration decoration-1"></div>
@@ -758,9 +776,10 @@ function App() {
             <div className="section-image">
               <Suspense>
                 <OptimizedVideo
-                  src="/images/wetransfer_ullishtja/DJI_20240806124740_0003_D.mov"
-                    poster="/images/posters/events-poster.jpg"
-                    mobilePoster="/images/posters/events-poster.jpg"
+                  src="/videos/dji-20240806124740-0003-d-desktop.mp4"
+                  videoId="dji-20240806124740-0003-d"
+                  poster="/images/posters/events-poster.jpg"
+                  mobilePoster="/images/posters/events-poster.jpg"
                   alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
                   className="section-img"
                   autoPlay={true}
@@ -768,6 +787,7 @@ function App() {
                   loop={true}
                   playsInline={true}
                   lazy={true}
+                  priority="normal"
                 />
               </Suspense>
               <div className="image-overlay">
@@ -788,9 +808,10 @@ function App() {
             <div className="section-image">
               <Suspense>
                 <OptimizedVideo
-                  src="/images/wetransfer_ullishtja/IMG_4999.mov"
-                    poster="/images/posters/alacarte-poster.jpg"
-                    mobilePoster="/images/posters/alacarte-poster.jpg"
+                  src="/videos/img-4999-desktop.mp4"
+                  videoId="img-4999"
+                  poster="/images/posters/alacarte-poster.jpg"
+                  mobilePoster="/images/posters/alacarte-poster.jpg"
                   alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
                   className="section-img"
                   autoPlay={true}
@@ -798,6 +819,7 @@ function App() {
                   loop={true}
                   playsInline={true}
                   lazy={true}
+                  priority="normal"
                 />
               </Suspense>
               <div className="image-overlay">
@@ -1135,7 +1157,7 @@ function App() {
             <div className="footer-main">
               {/* Company Info */}
               <div className="footer-section footer-company">
-                <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Footer Logo" className="footer-logo" />
+                <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Footer Logo" className="footer-logo" loading="lazy" width="120" height="60" />
                 <p className="footer-description">{t.footer.tagline}</p>
                 <div className="footer-rating">
                   <div className="rating-stars">

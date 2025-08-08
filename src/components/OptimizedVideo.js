@@ -189,7 +189,9 @@ const OptimizedVideo = ({
             src={posterSrc}
             alt={alt}
             className="poster-image"
-            loading="lazy"
+            loading={priority === 'high' ? 'eager' : 'lazy'}
+            decoding={priority === 'high' ? 'sync' : 'async'}
+            fetchpriority={priority === 'high' ? 'high' : undefined}
           />
         </div>
       )}
