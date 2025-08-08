@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkullishtja_agroturizem=self.webpackChunkullishtja_agroturizem||[]).push([[609],{7609:(e,i,t)=>{t.r(i),t.d(i,{default:()=>a});var s=t(5043),u=t(8527);t(579);const a=()=>{const[e,i]=(0,s.useState)({initialized:!1,services:{}});(0,s.useEffect)(()=>{u.A.initialize(),setTimeout(()=>{i({initialized:u.A.isInitialized(),services:u.A.getActiveServices()})},1e3)},[]);return null}}}]);
-//# sourceMappingURL=609.0572d381.chunk.js.map

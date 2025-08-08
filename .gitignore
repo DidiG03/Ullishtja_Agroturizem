@@ -5,3 +5,11 @@ node_modules
 /src/generated/prisma
 .vercel
 public/images/wetransfer_ullishtja/
+
+# Ignore build artifacts
+build/
+dist/
+coverage/
+
+# macOS metadata
+.DS_Store
