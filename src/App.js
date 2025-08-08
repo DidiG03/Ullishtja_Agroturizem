@@ -525,7 +525,7 @@ function App() {
           <nav className="nav-menu desktop-nav">
             <a href="#home" className="nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
             <a href="#about" className="nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
-            <a href="#menu" className="nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
+            <a href="#alacarte" className="nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
             <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="nav-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
             {/* <a href="#gallery" className="nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
             <a href="#contact" className="nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
@@ -540,7 +540,7 @@ function App() {
             <nav className="mobile-nav-menu">
             <a href="#home" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
             <a href="#about" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
-            <a href="#menu" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
+            <a href="#alacarte" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
             <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
             {/* <a href="#gallery" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
             <a href="#contact" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
@@ -614,7 +614,7 @@ function App() {
                 <span className="btn-text">{t.hero.cta}</span>
                 <span className="btn-arrow">→</span>
               </a>
-              <a href="#menu" className="cta-button secondary" onClick={closeMobileMenu}>
+          <a href="#alacarte" className="cta-button secondary" onClick={closeMobileMenu}>
                 <span className="btn-icon">🍽️</span>
                 <span className="btn-text">{t.hero.viewMenu}</span>
               </a>
@@ -803,62 +803,31 @@ function App() {
                   <span className="feature-text">{t.alacarte.features.wine}</span>
                 </div>
               </div>
+
+              {/* Moved CTAs here: show green on desktop/tablet, orange on mobile */}
+              <div className="menu-cta-container alacarte-cta">
+                <button className="mobile-menu-btn show-desktop-tablet" onClick={openNewMobileMenu}>
+                  {currentLanguage === 'al'
+                    ? 'Shiko Menunë A La Carte'
+                    : currentLanguage === 'en'
+                    ? 'View A La Carte Menu'
+                    : 'Visualizza Menu A La Carte'}
+                </button>
+                <button className="pdf-export-btn show-mobile" onClick={handlePDFExport}>
+                  <span className="btn-icon">📄</span>
+                  {currentLanguage === 'al'
+                    ? 'Shiko Menunë A La Carte'
+                    : currentLanguage === 'en'
+                    ? 'View A La Carte Menu'
+                    : 'Visualizza Menu A La Carte'}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Menu Section */}
-      <section id="menu" className="menu">
-        <div className="container">
-          <h2 id="menu-heading">{t.menu.title}</h2>
-
-          {menuCategories.length > 0 && (
-            <div className="menu-grid">
-              {(Array.isArray(menuCategories) ? menuCategories : [])
-                .sort((a, b) => a.displayOrder - b.displayOrder)
-                .slice(0, 3) // Show first 3 categories
-                .map((category) => (
-                  <div key={category.id} className="menu-category">
-                    <h3>{getLocalizedName(category)}</h3>
-                    {(Array.isArray(category.menuItems) ? category.menuItems : [])
-                      .sort((a, b) => a.displayOrder - b.displayOrder)
-                      .slice(0, 3) // Show first 3 items per category
-                      .map((item) => (
-                        <div key={item.id} className="menu-item">
-                          <h4>{getLocalizedName(item)}</h4>
-                          {getLocalizedText(item, 'description') && (
-                            <p>{getLocalizedText(item, 'description')}</p>
-                          )}
-                          <span className="price">
-                            {item.price} {item.currency}
-                          </span>
-                        </div>
-                      ))}
-                  </div>
-                ))}
-            </div>
-          )}
-
-          <div className="menu-cta-container">
-            <button className="mobile-menu-btn" onClick={openNewMobileMenu}>
-              {currentLanguage === 'al'
-                ? 'Shiko Menunë e Plotë'
-                : currentLanguage === 'en'
-                ? 'View Full Menu'
-                : 'Visualizza Menu Completo'}
-            </button>
-            <button className="pdf-export-btn" onClick={handlePDFExport}>
-              <span className="btn-icon">📄</span>
-              {currentLanguage === 'al'
-                ? 'Shkarkoni Menunë'
-                : currentLanguage === 'en'
-                ? 'Download Menu'
-                : 'Scarica Menu'}
-            </button>
-          </div>
-        </div>
-      </section>
+      
 
       {/* Gallery Section - Temporarily Disabled */}
       {/* <Suspense fallback={<div className="loading-section">Loading gallery...</div>}>
@@ -1180,7 +1149,7 @@ function App() {
                 <nav className="footer-nav">
                   <a href="#home" className="footer-link" onClick={closeMobileMenu}>{t.nav.home}</a>
                   <a href="#about" className="footer-link" onClick={closeMobileMenu}>{t.nav.about}</a>
-                  <a href="#menu" className="footer-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
+          <a href="#alacarte" className="footer-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
                   <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
                   {/* <a href="#gallery" className="footer-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
                   <a href="#contact" className="footer-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
