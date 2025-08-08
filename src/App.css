@@ -1961,7 +1961,8 @@ body.scroll-locked {
   /* Hero Section - Mobile Optimized */
   .hero {
     min-height: 90vh;
-    padding: 120px 0 60px;
+    /* Add extra top padding so the fixed navbar doesn't cover content */
+    padding: 150px 0 60px;
   }
 
   .hero-container {
@@ -2545,7 +2546,8 @@ body.scroll-locked {
   /* Hero Section - Small Mobile */
   .hero {
     min-height: 85vh;
-    padding: 100px 0 40px;
+    /* Extra top padding for smaller devices */
+    padding: 130px 0 40px;
   }
 
   .hero-container {
