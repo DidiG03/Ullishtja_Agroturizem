@@ -618,6 +618,34 @@ function App() {
                 <span className="btn-icon">🍽️</span>
                 <span className="btn-text">{t.hero.viewMenu}</span>
               </a>
+
+                {/* Compact language selector below "Shiko Menunë" on small screens */}
+                <div className="lang-switcher-compact">
+                  <button
+                    type="button"
+                    className={`lang-circle-btn ${currentLanguage === 'al' ? 'active' : ''}`}
+                    onClick={() => changeLanguage('al')}
+                    aria-label="Switch language to Albanian"
+                  >
+                    AL
+                  </button>
+                  <button
+                    type="button"
+                    className={`lang-circle-btn ${currentLanguage === 'en' ? 'active' : ''}`}
+                    onClick={() => changeLanguage('en')}
+                    aria-label="Switch language to English"
+                  >
+                    EN
+                  </button>
+                  <button
+                    type="button"
+                    className={`lang-circle-btn ${currentLanguage === 'it' ? 'active' : ''}`}
+                    onClick={() => changeLanguage('it')}
+                    aria-label="Switch language to Italian"
+                  >
+                    IT
+                  </button>
+                </div>
             </div>
           </div>
 
