@@ -6,6 +6,7 @@ const OptimizedVideo = ({
   src, 
   videoId, // New prop for intelligent loading
   poster, 
+  mobilePoster, // Optional poster used only on small screens
   fallbackImage, 
   alt = "Video", 
   className = "", 
@@ -25,6 +26,36 @@ const OptimizedVideo = ({
   const [preloadedVideo, setPreloadedVideo] = useState(null);
   const videoRef = useRef(null);
   const observerRef = useRef(null);
+  const [posterSrc, setPosterSrc] = useState(poster);
+
+  // Choose poster based on screen size (mobile vs desktop/tablet)
+  useEffect(() => {
+    // If a mobile-specific poster is provided, use it on small screens
+    const mediaQuery = '(max-width: 768px)';
+    try {
+      const mql = window.matchMedia(mediaQuery);
+      const updatePoster = () => {
+        if (mobilePoster && mql.matches) {
+          setPosterSrc(mobilePoster);
+        } else {
+          setPosterSrc(poster);
+        }
+      };
+      updatePoster();
+
+      // Listen for viewport changes
+      if (mql.addEventListener) {
+        mql.addEventListener('change', updatePoster);
+        return () => mql.removeEventListener('change', updatePoster);
+      } else if (mql.addListener) {
+        mql.addListener(updatePoster);
+        return () => mql.removeListener(updatePoster);
+      }
+    } catch (_) {
+      // Fallback if matchMedia is unavailable
+      setPosterSrc(poster);
+    }
+  }, [poster, mobilePoster]);
 
   // Initialize video sources and check for preloaded videos
   useEffect(() => {
@@ -140,7 +171,7 @@ const OptimizedVideo = ({
     return (
       <div ref={videoRef} className={`optimized-video-container ${className}`} style={style}>
         <img
-          src={fallbackImage || poster}
+          src={fallbackImage || posterSrc}
           alt={alt}
           className="video-fallback-image"
           loading="lazy"
@@ -152,10 +183,10 @@ const OptimizedVideo = ({
   return (
     <div ref={videoRef} className={`optimized-video-container ${className}`} style={style}>
       {/* Poster image - no loading spinner */}
-      {!isLoaded && poster && (
+      {!isLoaded && posterSrc && (
         <div className="video-poster">
           <img
-            src={poster}
+            src={posterSrc}
             alt={alt}
             className="poster-image"
             loading="lazy"
@@ -167,7 +198,7 @@ const OptimizedVideo = ({
       {isVisible && (
         <video
           ref={videoRef}
-          poster={poster}
+          poster={posterSrc}
           className={`optimized-video ${isLoaded ? 'loaded' : 'loading'}`}
           autoPlay={false} // Controlled by intersection observer
           muted={muted}
@@ -190,7 +221,7 @@ const OptimizedVideo = ({
           
           {/* Fallback content for browsers that don't support video */}
           <img
-            src={fallbackImage || poster}
+            src={fallbackImage || posterSrc}
             alt={alt}
             className="video-fallback"
           />

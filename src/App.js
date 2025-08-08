@@ -628,6 +628,7 @@ function App() {
                   <OptimizedVideo
                     src="/images/wetransfer_ullishtja/DJI_20240806130609_0022_D.mov"
                     poster="/images/posters/hero-poster.jpg"
+                    mobilePoster="/images/posters/hero-poster-mobile.png"
                     alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views"
                     className="main-img"
                     autoPlay={true}
@@ -730,7 +731,8 @@ function App() {
               <Suspense>
                 <OptimizedVideo
                   src="/images/wetransfer_ullishtja/DJI_20240806124740_0003_D.mov"
-                  poster="/images/posters/events-poster.jpg"
+                    poster="/images/posters/events-poster.jpg"
+                    mobilePoster="/images/posters/events-poster.jpg"
                   alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
                   className="section-img"
                   autoPlay={true}
@@ -759,7 +761,8 @@ function App() {
               <Suspense>
                 <OptimizedVideo
                   src="/images/wetransfer_ullishtja/IMG_4999.mov"
-                  poster="/images/posters/alacarte-poster.jpg"
+                    poster="/images/posters/alacarte-poster.jpg"
+                    mobilePoster="/images/posters/alacarte-poster.jpg"
                   alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
                   className="section-img"
                   autoPlay={true}
