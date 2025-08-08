@@ -101,8 +101,8 @@ h2::after {
 }
 
 .logo-container .logo {
-  height: 60px;
-  width: auto;
+  height: 80px;
+  width: 100px;
   aspect-ratio: 2 / 1;
 }
 

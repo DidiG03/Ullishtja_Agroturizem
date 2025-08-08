@@ -524,8 +524,6 @@ function App() {
               className="logo"
               fetchPriority="high"
               decoding="sync"
-              width="120"
-              height="60"
             />
           </div>
           
