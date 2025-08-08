@@ -17,58 +17,80 @@ const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 const GooglePhotos = React.lazy(() => import('./components/GooglePhotos'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
 const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
-const LanguageSelectionModal = React.lazy(() => import('./components/LanguageSelectionModal'));
+  
 
 
 const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
 const AnalyticsTest = React.lazy(() => import('./components/AnalyticsTest'));
 
 
-// Helper function to check if user is visiting for the first time
-const isFirstTimeVisitor = () => {
-  return !localStorage.getItem('hasVisited') && !localStorage.getItem('preferredLanguage');
-};
+//
 
 // Helper function to get language from localStorage or detect browser language
 const getInitialLanguage = () => {
-  // Check if user has a stored preference
+  // Use saved preference if available
   const storedLanguage = localStorage.getItem('preferredLanguage');
   if (storedLanguage && ['al', 'en', 'it'].includes(storedLanguage)) {
     return storedLanguage;
   }
 
-  // If no stored preference, try to detect browser language
-  const browserLang = navigator.language || navigator.languages[0];
+  // Quick, offline guess from browser settings as a temporary value
+  const browserLang = navigator.language || navigator.languages?.[0];
   if (browserLang) {
     const langCode = browserLang.toLowerCase();
-    if (langCode.startsWith('sq') || langCode.startsWith('al')) return 'al'; // Albanian
-    if (langCode.startsWith('it')) return 'it'; // Italian
-    if (langCode.startsWith('en')) return 'en'; // English
+    if (langCode.startsWith('sq') || langCode.startsWith('al')) return 'al';
+    if (langCode.startsWith('it')) return 'it';
   }
 
-  // Default to Albanian
-  return 'al';
+  // Default to English until geo-detection refines it
+  return 'en';
 };
 
 // Language selector will handle its own visibility logic
 
 function App() {
   const [currentLanguage, setCurrentLanguage] = useState(getInitialLanguage());
-  const [showLanguageModal, setShowLanguageModal] = useState(isFirstTimeVisitor());
   const analytics = useAnalyticsTracking();
 
-  // Handle language selection from the modal
-  const handleLanguageSelection = useCallback((selectedLanguage) => {
-    setCurrentLanguage(selectedLanguage);
-    setShowLanguageModal(false);
-    
-    // Store the preference and mark as visited
-    localStorage.setItem('preferredLanguage', selectedLanguage);
-    localStorage.setItem('hasVisited', 'true');
-    
-    // Track language selection
-    analytics.trackLanguageChange(selectedLanguage, 'first-visit');
+  // Refine language using IP geolocation (first visit only)
+  useEffect(() => {
+    const saved = localStorage.getItem('preferredLanguage');
+    if (saved && ['al', 'en', 'it'].includes(saved)) {
+      return;
+    }
+
+    let isCancelled = false;
+    const abortController = new AbortController();
+
+    const detectLanguageByCountry = async () => {
+      try {
+        const response = await fetch('https://ipapi.co/json/', { signal: abortController.signal });
+        if (!response.ok) throw new Error('Geo IP request failed');
+        const data = await response.json();
+        const countryCode = (data.country || data.country_code || data.countryCode || '').toUpperCase();
+
+        let detectedLanguage = 'en';
+        if (countryCode === 'AL') detectedLanguage = 'al';
+        else if (countryCode === 'IT') detectedLanguage = 'it';
+
+        if (!isCancelled) {
+          setCurrentLanguage(detectedLanguage);
+          localStorage.setItem('preferredLanguage', detectedLanguage);
+          analytics.trackLanguageChange(detectedLanguage, 'geo-detect');
+        }
+      } catch (error) {
+        // Silent fallback: keep browser-derived language
+      }
+    };
+
+    detectLanguageByCountry();
+    return () => {
+      isCancelled = true;
+      abortController.abort();
+    };
   }, [analytics]);
+
+  
 
   // Initialize Google Ads conversion tracking
   useEffect(() => {
@@ -1247,15 +1269,7 @@ function App() {
         </Suspense>
       )}
       
-      {/* Language Selection Modal - First Time Visitors */}
-      {showLanguageModal && (
-        <Suspense fallback={null}>
-          <LanguageSelectionModal 
-            isVisible={showLanguageModal}
-            onLanguageSelect={handleLanguageSelection}
-          />
-        </Suspense>
-      )}
+      
 
       {/* Analytics Test Component - Development Only */}
       {process.env.NODE_ENV === 'development' && (
