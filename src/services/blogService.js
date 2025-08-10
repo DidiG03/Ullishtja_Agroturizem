@@ -6,6 +6,8 @@ import apiClient from '../utils/apiClient.js';
 class BlogService {
   constructor() {
     // API base URL now handled by centralized client
+    // Keep a local reference for places still using fetch directly
+    this.apiBaseUrl = apiClient.baseUrl;
   }
 
   // Blog Posts API calls
