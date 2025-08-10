@@ -1,8 +1,6 @@
-// POS Menu API - Optimized JSON for external POS/Electron apps
-// Query params:
-// - lang: al | en | it (default: al)
-// - flat: true | false (default: false) - return flattened items with category info
-// - includeInactive: true | false (default: false) - include inactive categories/items
+// Consolidated POS API for external apps
+// Menu: GET /api/pos?resource=menu&lang=al&flat=false&includeInactive=false
+// Staff: GET /api/pos?resource=staff&includeInactive=false
 
 import prisma from '../src/lib/prisma.js';
 
@@ -29,7 +27,6 @@ function parseAllergens(allergens) {
     const parsed = JSON.parse(allergens);
     return Array.isArray(parsed) ? parsed : [];
   } catch (e) {
-    // Fallback: comma-separated string
     return String(allergens)
       .split(',')
       .map((s) => s.trim())
@@ -38,7 +35,7 @@ function parseAllergens(allergens) {
 }
 
 export default async function handler(req, res) {
-  // CORS for external apps (Electron)
+  // CORS for external apps
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -46,22 +43,43 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
-
   if (req.method !== 'GET') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   }
 
-  const { lang = 'al', flat = 'false', includeInactive = 'false' } = req.query || {};
-  const language = String(lang).toLowerCase();
-  const isFlat = coerceBoolean(flat, false);
-  const includeInactiveBool = coerceBoolean(includeInactive, false);
-
-  // Build language preference order, fallback chain
-  // e.g. lang=en -> ['EN','AL','IT'] so we always return something
-  const suffix = language === 'it' ? 'IT' : language === 'en' ? 'EN' : 'AL';
-  const langOrder = suffix === 'EN' ? ['EN', 'AL', 'IT'] : suffix === 'IT' ? ['IT', 'AL', 'EN'] : ['AL', 'EN', 'IT'];
+  const { resource = 'menu' } = req.query || {};
 
   try {
+    if (resource === 'staff') {
+      const { includeInactive = 'false' } = req.query || {};
+      const includeInactiveBool = coerceBoolean(includeInactive, false);
+      const staff = await prisma.staff.findMany({
+        where: includeInactiveBool ? undefined : { isActive: true },
+        orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+      });
+      const data = staff.map((s) => ({
+        id: s.id,
+        firstName: s.firstName,
+        lastName: s.lastName,
+        fullName: `${s.firstName} ${s.lastName}`.trim(),
+        posPin: s.posPin,
+        isActive: s.isActive,
+        updatedAt: s.updatedAt,
+        createdAt: s.createdAt,
+      }));
+      res.setHeader('Cache-Control', 'no-store');
+      return res.status(200).json({ success: true, source: 'pos-staff', updatedAt: new Date().toISOString(), data });
+    }
+
+    // Default: menu
+    const { lang = 'al', flat = 'false', includeInactive = 'false' } = req.query || {};
+    const language = String(lang).toLowerCase();
+    const isFlat = coerceBoolean(flat, false);
+    const includeInactiveBool = coerceBoolean(includeInactive, false);
+
+    const suffix = language === 'it' ? 'IT' : language === 'en' ? 'EN' : 'AL';
+    const langOrder = suffix === 'EN' ? ['EN', 'AL', 'IT'] : suffix === 'IT' ? ['IT', 'AL', 'EN'] : ['AL', 'EN', 'IT'];
+
     const categories = await prisma.menuCategory.findMany({
       where: includeInactiveBool ? undefined : { isActive: true },
       orderBy: [{ displayOrder: 'asc' }, { nameAL: 'asc' }],
@@ -73,7 +91,6 @@ export default async function handler(req, res) {
       },
     });
 
-    // Transform categories and items to POS-friendly structure
     const transformedCategories = categories.map((cat) => {
       const categoryName = pickLocalized(cat, 'name', langOrder) || cat.nameAL || cat.nameEN || cat.nameIT || '';
       const items = (cat.menuItems || []).map((item) => {
@@ -122,32 +139,15 @@ export default async function handler(req, res) {
       const flatItems = transformedCategories.flatMap((c) =>
         c.items.map((i) => ({
           ...i,
-          category: {
-            id: c.id,
-            slug: c.slug,
-            name: c.name,
-            displayOrder: c.displayOrder,
-          },
+          category: { id: c.id, slug: c.slug, name: c.name, displayOrder: c.displayOrder },
         })),
       );
-      return res.status(200).json({
-        success: true,
-        source: 'pos-menu',
-        language: suffix,
-        updatedAt: nowIso,
-        data: flatItems,
-      });
+      return res.status(200).json({ success: true, source: 'pos-menu', language: suffix, updatedAt: nowIso, data: flatItems });
     }
 
-    return res.status(200).json({
-      success: true,
-      source: 'pos-menu',
-      language: suffix,
-      updatedAt: nowIso,
-      data: transformedCategories,
-    });
+    return res.status(200).json({ success: true, source: 'pos-menu', language: suffix, updatedAt: nowIso, data: transformedCategories });
   } catch (error) {
-    console.error('POS Menu API error:', error);
+    console.error('POS API error:', error);
     return res.status(500).json({ success: false, error: 'Internal server error' });
   } finally {
     await prisma.$disconnect();

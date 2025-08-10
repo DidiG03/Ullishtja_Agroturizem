@@ -33,7 +33,7 @@ class BlogService {
     if (language) params.append('language', language);
 
     try {
-      return await apiClient.get('/api/blog/posts', Object.fromEntries(params));
+      return await apiClient.get('/api/blog', Object.fromEntries(params));
     } catch (error) {
       console.error('Error fetching blog posts:', error);
       throw error;
@@ -42,7 +42,7 @@ class BlogService {
 
   async getPost(id, language = 'al') {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/api/blog/posts?id=${id}&language=${language}`);
+      const response = await fetch(`${this.apiBaseUrl}/api/blog?id=${id}&language=${language}`);
       const result = await response.json();
 
       if (!response.ok) {
@@ -58,7 +58,7 @@ class BlogService {
 
   async createPost(postData) {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/api/blog/posts`, {
+      const response = await fetch(`${this.apiBaseUrl}/api/blog`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ class BlogService {
 
   async updatePost(id, postData) {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/api/blog/posts?id=${id}`, {
+      const response = await fetch(`${this.apiBaseUrl}/api/blog?id=${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ class BlogService {
 
   async deletePost(id) {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/api/blog/posts?id=${id}`, {
+      const response = await fetch(`${this.apiBaseUrl}/api/blog?id=${id}`, {
         method: 'DELETE'
       });
 
@@ -131,12 +131,13 @@ class BlogService {
     } = options;
 
     const params = new URLSearchParams();
+    params.append('resource', 'categories');
     if (active !== undefined) params.append('active', active);
     if (language) params.append('language', language);
     if (includePosts) params.append('includePosts', includePosts);
 
     try {
-      const response = await fetch(`${this.apiBaseUrl}/api/blog/categories?${params}`);
+      const response = await fetch(`${this.apiBaseUrl}/api/blog?${params}`);
       const result = await response.json();
 
       if (!response.ok) {
@@ -152,7 +153,7 @@ class BlogService {
 
   async createCategory(categoryData) {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/api/blog/categories`, {
+      const response = await fetch(`${this.apiBaseUrl}/api/blog?resource=categories`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -175,7 +176,7 @@ class BlogService {
 
   async updateCategory(id, categoryData) {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/api/blog/categories?id=${id}`, {
+      const response = await fetch(`${this.apiBaseUrl}/api/blog?resource=categories&id=${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -198,7 +199,7 @@ class BlogService {
 
   async deleteCategory(id) {
     try {
-      const response = await fetch(`${this.apiBaseUrl}/api/blog/categories?id=${id}`, {
+      const response = await fetch(`${this.apiBaseUrl}/api/blog?resource=categories&id=${id}`, {
         method: 'DELETE'
       });
 

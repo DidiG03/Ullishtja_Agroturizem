@@ -20,7 +20,7 @@ class StaffService {
 
   // POS fetch helper
   async listForPos(includeInactive = false) {
-    return apiClient.get('/api/pos-staff', { includeInactive });
+    return apiClient.get('/api/pos', { resource: 'staff', includeInactive });
   }
 }
 
