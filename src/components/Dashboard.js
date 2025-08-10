@@ -7,6 +7,7 @@ import MenuManagement from './MenuManagement';
 import RestaurantLayout from './RestaurantLayout';
 import TimeSlotManagement from './TimeSlotManagement';
 import BlogManagement from './BlogManagement';
+import StaffManagement from './StaffManagement';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -487,6 +488,8 @@ const Dashboard = () => {
         
       case 'blog':
         return <BlogManagement />;
+      case 'staff':
+        return <StaffManagement />;
         
       case 'timeslots':
         return <TimeSlotManagement />;
@@ -748,6 +751,18 @@ const Dashboard = () => {
                 <polyline points="10,9 9,9 8,9"/>
               </svg>
               {!sidebarCollapsed && <span className="nav-text">Blog</span>}
+            </button>
+            <button 
+              className={`nav-tab ${activeTab === 'staff' ? 'active' : ''}`}
+              onClick={() => setActiveTab('staff')}
+              title="Staff"
+            >
+              <svg className="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M20 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M4 21v-2a4 4 0 0 1 3-3.87" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span className="nav-label">Staff</span>
             </button>
             <button 
               className={`nav-tab ${activeTab === 'timeslots' ? 'active' : ''}`}

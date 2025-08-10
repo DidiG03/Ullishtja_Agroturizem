@@ -317,6 +317,20 @@ enum ReservationStatus {
   NO_SHOW
 }
 
+// Staff members who can access the POS
+model Staff {
+  id         String   @id @default(cuid())
+  firstName  String
+  lastName   String
+  posPin     String   @unique
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([lastName, firstName])
+  @@map("staff")
+}
+
 enum ReviewStatus {
   PENDING
   APPROVED
