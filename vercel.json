@@ -85,6 +85,14 @@
   ],
   "rewrites": [
     {
+      "source": "/api/pos-menu",
+      "destination": "/api/pos"
+    },
+    {
+      "source": "/api/pos-menu/(.*)",
+      "destination": "/api/pos"
+    },
+    {
       "source": "/api/(.*)",
       "destination": "/api/$1"
     },
