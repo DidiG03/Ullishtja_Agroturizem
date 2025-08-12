@@ -92,13 +92,16 @@ export default async function handler(req, res) {
 
     // Posts resource
     if (req.method === 'GET') {
-      const { category, featured, published = 'true' } = req.query || {};
+      const { category, featured, published = 'true', language = 'al', id } = req.query || {};
+      const lang = String(language).toLowerCase();
+      const suffix = lang === 'it' ? 'IT' : lang === 'en' ? 'EN' : 'AL';
       const whereClause = {};
       if (published === 'true') whereClause.isPublished = true;
       else if (published === 'false') whereClause.isPublished = false;
       if (category && category !== 'all') whereClause.category = { slug: category };
       if (featured !== undefined) whereClause.isFeatured = String(featured) === 'true';
 
+      const whereIdClause = id ? { id: String(id) } : {};
       const posts = await prisma.blogPost.findMany({
         where: whereClause,
         include: {
@@ -107,37 +110,38 @@ export default async function handler(req, res) {
         orderBy: [{ isFeatured: 'desc' }, { publishedAt: 'desc' }, { createdAt: 'desc' }],
       });
 
-      const transformed = posts.map((post) => ({
-        id: post.id,
-        titleAL: post.titleAL,
-        titleEN: post.titleEN,
-        titleIT: post.titleIT,
-        excerptAL: post.excerptAL,
-        excerptEN: post.excerptEN,
-        excerptIT: post.excerptIT,
-        contentAL: post.contentAL,
-        contentEN: post.contentEN,
-        contentIT: post.contentIT,
-        slug: post.slug,
-        featuredImageUrl: post.featuredImageUrl,
-        featuredImageAlt: post.featuredImageAlt,
-        author: post.author,
-        isFeatured: post.isFeatured,
-        isPublished: post.isPublished,
-        publishedAt: post.publishedAt,
-        createdAt: post.createdAt,
-        updatedAt: post.updatedAt,
-        metaDescription: post.metaDescription,
-        metaKeywords: post.metaKeywords,
-        category: {
-          id: post.category.id,
-          name: post.category.nameAL,
-          nameAL: post.category.nameAL,
-          nameEN: post.category.nameEN,
-          nameIT: post.category.nameIT,
-          slug: post.category.slug,
-        },
-      }));
+      const transformed = posts.map((post) => {
+        const pick = (base) => {
+          const map = { title: ['titleAL', 'titleEN', 'titleIT'], excerpt: ['excerptAL', 'excerptEN', 'excerptIT'], content: ['contentAL', 'contentEN', 'contentIT'] };
+          if (base === 'title') return suffix === 'IT' ? post.titleIT : suffix === 'EN' ? post.titleEN : post.titleAL;
+          if (base === 'excerpt') return suffix === 'IT' ? (post.excerptIT || '') : suffix === 'EN' ? (post.excerptEN || '') : (post.excerptAL || '');
+          if (base === 'content') return suffix === 'IT' ? post.contentIT : suffix === 'EN' ? post.contentEN : post.contentAL;
+          return null;
+        };
+        return {
+          id: post.id,
+          slug: post.slug,
+          title: pick('title'),
+          excerpt: pick('excerpt'),
+          content: pick('content'),
+          featuredImageUrl: post.featuredImageUrl,
+          featuredImageAlt: post.featuredImageAlt,
+          isFeatured: post.isFeatured,
+          isPublished: post.isPublished,
+          publishedAt: post.publishedAt,
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
+          publishDate: post.publishedAt || post.createdAt,
+          category: {
+            id: post.category.id,
+            name: suffix === 'IT' ? post.category.nameIT : suffix === 'EN' ? post.category.nameEN : post.category.nameAL,
+            nameAL: post.category.nameAL,
+            nameEN: post.category.nameEN,
+            nameIT: post.category.nameIT,
+            slug: post.category.slug,
+          },
+        };
+      });
 
       return res.status(200).json({ success: true, data: transformed });
     }
@@ -193,7 +197,7 @@ export default async function handler(req, res) {
           contentIT,
           featuredImageUrl,
           featuredImageAlt,
-          author,
+          authorName: author || undefined,
           isFeatured,
           isPublished,
           displayOrder,

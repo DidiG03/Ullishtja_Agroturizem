@@ -112,6 +112,7 @@ export default async function handler(req, res) {
             isSpicy: item.isSpicy,
             isRecommended: item.isRecommended,
             isNew: item.isNew,
+            isKg: item.isKg,
           },
           allergens: parseAllergens(item.allergens),
           imageUrl: item.imageUrl || null,

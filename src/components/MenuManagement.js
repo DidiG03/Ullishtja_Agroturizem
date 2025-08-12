@@ -41,7 +41,8 @@ function MenuManagement() {
     isRecommended: false,
     isNew: false,
     imageUrl: '',
-    displayOrder: 0
+    displayOrder: 0,
+    isKg: false
   });
 
   const loadMenuItems = useCallback(async (categoryId = selectedCategory) => {
@@ -227,7 +228,8 @@ function MenuManagement() {
       isRecommended: item.isRecommended,
       isNew: item.isNew,
       imageUrl: item.imageUrl || '',
-      displayOrder: item.displayOrder
+      displayOrder: item.displayOrder,
+      isKg: item.isKg || false
     });
     setShowItemForm(true);
   };
@@ -261,7 +263,8 @@ function MenuManagement() {
       isRecommended: false,
       isNew: false,
       imageUrl: '',
-      displayOrder: 0
+      displayOrder: 0,
+      isKg: false
     });
     setEditingItem(null);
     setShowItemForm(false);
@@ -639,6 +642,14 @@ function MenuManagement() {
                       onChange={(e) => setItemForm({...itemForm, isNew: e.target.checked})}
                     />
                     New Item 🆕
+                  </label>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={itemForm.isKg}
+                      onChange={(e) => setItemForm({...itemForm, isKg: e.target.checked})}
+                    />
+                    Kg ⚖️
                   </label>
                 </div>
               </div>

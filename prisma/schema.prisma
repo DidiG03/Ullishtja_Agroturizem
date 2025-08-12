@@ -212,6 +212,7 @@ model MenuItem {
   isSpicy     Boolean     @default(false)
   isRecommended Boolean   @default(false)
   isNew       Boolean     @default(false)
+  isKg        Boolean     @default(false)
   allergens   String?     // JSON array of allergen codes
   imageUrl    String?     // Optional dish image
   createdAt   DateTime    @default(now())

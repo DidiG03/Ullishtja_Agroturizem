@@ -185,6 +185,7 @@ export default async function handler(req, res) {
               isSpicy: isSpicy || false,
               isRecommended: isRecommended || false,
               isNew: isNew || false,
+              isKg: req.body?.isKg === true || req.body?.isKg === 'true',
               allergens,
               imageUrl
             },
@@ -225,7 +226,7 @@ export default async function handler(req, res) {
             descriptionAL, descriptionEN, descriptionIT,
             ingredientsAL, ingredientsEN, ingredientsIT,
             price, categoryId, currency, displayOrder, isActive,
-            isVegetarian, isSpicy, isRecommended, isNew, allergens, imageUrl
+            isVegetarian, isSpicy, isRecommended, isNew, allergens, imageUrl, isKg
           } = req.body;
 
           const updateData = {};
@@ -247,6 +248,7 @@ export default async function handler(req, res) {
           if (isSpicy !== undefined) updateData.isSpicy = isSpicy;
           if (isRecommended !== undefined) updateData.isRecommended = isRecommended;
           if (isNew !== undefined) updateData.isNew = isNew;
+          if (isKg !== undefined) updateData.isKg = Boolean(isKg);
           if (allergens !== undefined) updateData.allergens = allergens;
           if (imageUrl !== undefined) updateData.imageUrl = imageUrl;
 

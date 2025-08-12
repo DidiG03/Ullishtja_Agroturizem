@@ -51,7 +51,7 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
   useEffect(() => {
     const loadReviews = async () => {
       try {
-        const data = await googleReviewsService.getReviews();
+        const data = await googleReviewsService.fetchGoogleReviews();
         setReviewsData(data);
       } catch (error) {
         console.error('Failed to load reviews:', error);
