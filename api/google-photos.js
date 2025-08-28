@@ -8,19 +8,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const placeId = process.env.REACT_APP_GOOGLE_PLACE_ID;
-    const apiKey = process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
+    const placeId = process.env.GOOGLE_PLACE_ID || process.env.REACT_APP_GOOGLE_PLACE_ID;
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
 
     if (!placeId || !apiKey) {
       console.error('Missing Google Places configuration. Please set REACT_APP_GOOGLE_PLACE_ID and REACT_APP_GOOGLE_PLACES_API_KEY');
     }
 
     if (!apiKey || !placeId) {
-      console.error('Missing API key or Place ID');
-      return res.status(500).json({ 
-        error: 'Server configuration error',
-        fallback: true 
-      });
+      console.warn('Missing API key or Place ID for Google Photos. Returning mock data.');
+      return res.status(200).json({ success: true, data: getMockPhotosData(), source: 'mock' });
     }
 
     // Fetch place details with photos from Google Places API
@@ -52,17 +49,22 @@ export default async function handler(req, res) {
       });
     } else {
       console.warn('Google Places API error:', data.status, data.error_message);
-      return res.status(500).json({ 
-        error: 'Failed to fetch photos from Google',
-        details: data.error_message,
-        fallback: true 
-      });
+      return res.status(200).json({ success: true, data: getMockPhotosData(), source: 'mock_fallback_api_error' });
     }
   } catch (error) {
     console.error('Error fetching Google place photos:', error);
-    return res.status(500).json({ 
-      error: 'Server error fetching photos',
-      fallback: true 
-    });
+    return res.status(200).json({ success: true, data: getMockPhotosData(), source: 'mock_fallback' });
   }
+}
+
+// Local mock used by server when Google API unavailable
+function getMockPhotosData() {
+  return {
+    photos: [
+      { id: 'mock_1', url: '/images/food.jpeg', width: 1024, height: 768, attributions: ['Customer Photo'] },
+      { id: 'mock_2', url: '/images/panorama.jpeg', width: 1200, height: 800, attributions: ['Customer Photo'] },
+      { id: 'mock_3', url: '/images/logo_wall.jpeg', width: 800, height: 600, attributions: ['Customer Photo'] },
+      { id: 'mock_4', url: '/images/posters/hero-poster.jpg', width: 1200, height: 800, attributions: ['Customer Photo'] },
+    ],
+  };
 }
