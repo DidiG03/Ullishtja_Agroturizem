@@ -667,20 +667,7 @@ function App() {
             <div className="hero-image-container">
               <div className="hero-main-image">
                 <Suspense>
-                <OptimizedVideo
-                    src="/videos/dji-20240806130609-0022-d-desktop.mp4"
-                    videoId="dji-20240806130609-0022-d"
-                    poster="/images/posters/hero-poster.jpg"
-                    mobilePoster="/images/posters/hero-poster-mobile.png"
-                    alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views"
-                    className="main-img"
-                    autoPlay={true}
-                    muted={true}
-                    loop={true}
-                    playsInline={true}
-                    lazy={true}
-                    priority="high"
-                  />
+                  <img src="/images/posters/hero-poster.jpg" alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views" className="main-img" />
                 </Suspense>
                 <div className="image-decoration decoration-1"></div>
                 <div className="image-decoration decoration-2"></div>
@@ -773,20 +760,7 @@ function App() {
             </div>
             <div className="section-image">
               <Suspense>
-                <OptimizedVideo
-                  src="/videos/dji-20240806124740-0003-d-desktop.mp4"
-                  videoId="dji-20240806124740-0003-d"
-                  poster="/images/posters/events-poster.jpg"
-                  mobilePoster="/images/posters/events-poster.jpg"
-                  alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
-                  className="section-img"
-                  autoPlay={true}
-                  muted={true}
-                  loop={true}
-                  playsInline={true}
-                  lazy={true}
-                  priority="normal"
-                />
+                <img src="/images/posters/events-poster.jpg" alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop" className="section-img" />
               </Suspense>
               <div className="image-overlay">
                 <div className="overlay-content">
@@ -805,20 +779,7 @@ function App() {
           <div className="section-grid reverse">
             <div className="section-image">
               <Suspense>
-                <OptimizedVideo
-                  src="/videos/img-4999-desktop.mp4"
-                  videoId="img-4999"
-                  poster="/images/posters/alacarte-poster.jpg"
-                  mobilePoster="/images/posters/alacarte-poster.jpg"
-                  alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
-                  className="section-img"
-                  autoPlay={true}
-                  muted={true}
-                  loop={true}
-                  playsInline={true}
-                  lazy={true}
-                  priority="normal"
-                />
+                <img src="/images/posters/alacarte-poster.jpg" alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem" className="section-img" />
               </Suspense>
               <div className="image-overlay">
                 <div className="overlay-content">
