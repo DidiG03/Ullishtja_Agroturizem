@@ -91,11 +91,12 @@ const GooglePhotos = ({ currentLanguage, translations }) => {
         return selectedIndices.map(index => photosData.photos[index]);
       }
     }
-    return photosData.photos.slice(0, 8);
+    // Desktop/tablet: show more by default, allow View All to expand further
+    return showAllPhotos ? photosData.photos : photosData.photos.slice(0, 12);
   };
 
   const photosToShow = getPhotosToShow();
-  const hasMorePhotos = isMobile ? photosData.photos.length > 3 : photosData.photos.length > 8;
+  const hasMorePhotos = isMobile ? photosData.photos.length > 3 : photosData.photos.length > 12;
 
   const handleViewAllClick = () => {
     setShowAllPhotos(!showAllPhotos);
@@ -128,7 +129,7 @@ const GooglePhotos = ({ currentLanguage, translations }) => {
             ))}
           </div>
           
-          {hasMorePhotos && isMobile && (
+          {hasMorePhotos && (
             <div className="view-more">
               <button 
                 className="view-more-btn"

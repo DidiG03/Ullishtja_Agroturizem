@@ -289,7 +289,8 @@ class GoogleReviewsService {
       const apiBaseUrl = process.env.NODE_ENV === 'production' 
         ? '' 
         : process.env.REACT_APP_API_URL || 'http://localhost:3001';
-      const apiUrl = `${apiBaseUrl}/api/google-photos`;
+      const desiredLimit = 30; // ask for more photos than before
+      const apiUrl = `${apiBaseUrl}/api/google-photos?limit=${desiredLimit}`;
       
       const response = await fetch(apiUrl);
       const result = await response.json();

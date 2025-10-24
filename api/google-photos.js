@@ -8,6 +8,9 @@ export default async function handler(req, res) {
   }
 
   try {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const limitParam = url.searchParams.get('limit');
+    const limit = Math.min(Math.max(parseInt(limitParam || '0', 10) || 0, 0), 60) || 24; // default 24, cap at 60
     const placeId = process.env.GOOGLE_PLACE_ID || process.env.REACT_APP_GOOGLE_PLACE_ID;
     const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
 
@@ -29,7 +32,7 @@ export default async function handler(req, res) {
     if (data.status === 'OK' && data.result) {
       // Process the photos data
       const processedData = {
-        photos: (data.result.photos || []).slice(0, 12).map((photo, index) => ({
+        photos: (data.result.photos || []).slice(0, limit).map((photo, index) => ({
           id: `photo_${index}`,
           photoReference: photo.photo_reference,
           width: photo.width,
