@@ -3122,6 +3122,49 @@ body {
   }
 }
 
+/* Tablet and laptop layout for Visit Us (Contact) */
+@media (min-width: 768px) {
+  /* Allow full-width container for this section */
+  .contact .container {
+    max-width: 100%;
+    width: 100%;
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+
+  /* Spread content horizontally */
+  .contact-grid {
+    /* Single centered column while reservation form is disabled */
+    grid-template-columns: minmax(0, 1000px);
+    justify-content: center;
+    gap: 3rem;
+  }
+
+  /* Inside the info card, arrange items into two columns */
+  .contact .contact-items-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.75rem;
+  }
+
+  .contact .contact-item {
+    border-bottom: none;
+    padding: 1.75rem 2rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  }
+
+  /* Make the map occupy the full row on top */
+  .contact .contact-items-container .contact-item:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .map-container iframe {
+    height: 420px;
+  }
+}
+
 /* Desktop-specific optimizations for larger screens */
 @media (min-width: 1024px) {
   .contact {
@@ -3155,8 +3198,8 @@ body {
     margin-bottom: 2.5rem;
   }
 
-  .contact-item {
-    padding: 2rem 0;
+  .contact .contact-item {
+    padding: 2rem 2rem; /* add horizontal padding on desktop */
     flex: 1;
     display: flex;
     flex-direction: column;
