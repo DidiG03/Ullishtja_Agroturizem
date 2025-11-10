@@ -115,21 +115,7 @@ function App() {
   // Memoize translations to avoid recalculating on every render
   const t = useMemo(() => translations[currentLanguage], [currentLanguage]);
 
-  // Memoize localization helpers
-  const getLocalizedName = useCallback((item, field = 'name') => {
-    switch (currentLanguage) {
-      case 'al':
-        return item[`${field}AL`];
-      case 'en':
-        return item[`${field}EN`];
-      case 'it':
-        return item[`${field}IT`];
-      default:
-        return item[`${field}AL`];
-    }
-  }, [currentLanguage]);
-
-  // Removed unused localization helper to satisfy CI lint
+  // Removed localization helpers (unused)
 
   // Handle directions click with conversion tracking
   const handleDirectionsClick = useCallback(() => {

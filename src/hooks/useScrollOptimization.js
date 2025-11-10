@@ -1,16 +1,9 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 
 const useScrollOptimization = () => {
   const isScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef(null);
   const rafRef = useRef(null);
-
-  // Throttled scroll handler
-  const handleScroll = useCallback(() => {
-    if (!isScrollingRef.current) {
-      isScrollingRef.current = true;
-    }
-  }, []);
 
   // (removed unused optimizedScrollHandler to satisfy CI lint)
 

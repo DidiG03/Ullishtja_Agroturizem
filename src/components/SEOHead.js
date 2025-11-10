@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { translations } from '../translations';
+import { useEffect, useCallback } from 'react';
 
 const SEOHead = ({ 
   currentLanguage = 'al', 
@@ -135,8 +134,8 @@ const SEOHead = ({
 
   }, [title, description, keywords, image, pageSection, currentLanguage]);
 
-  // Generate structured data for the current section
-  const getStructuredData = () => {
+  // Generate structured data for the current section (memoized)
+  const getStructuredData = useCallback(() => {
     const baseStructuredData = {
       "@context": "https://schema.org",
       "@type": "Restaurant",
@@ -182,7 +181,7 @@ const SEOHead = ({
     }
 
     return baseStructuredData;
-  };
+  }, [description, image, pageSection]);
 
   // Add structured data script to head
   useEffect(() => {
