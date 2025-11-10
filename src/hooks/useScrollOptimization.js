@@ -12,14 +12,7 @@ const useScrollOptimization = () => {
     }
   }, []);
 
-  // Optimized scroll listener using RAF
-  const optimizedScrollHandler = useCallback(() => {
-    if (rafRef.current) {
-      cancelAnimationFrame(rafRef.current);
-    }
-    
-    rafRef.current = requestAnimationFrame(handleScroll);
-  }, [handleScroll]);
+  // (removed unused optimizedScrollHandler to satisfy CI lint)
 
   useEffect(() => {
     // Simplified scroll handler to prevent memory leaks

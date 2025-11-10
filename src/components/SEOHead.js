@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { translations } from '../translations';
 
 const SEOHead = ({ 
@@ -9,7 +9,7 @@ const SEOHead = ({
   customKeywords = null,
   customImage = null
 }) => {
-  const t = translations[currentLanguage] || translations.al;
+  // const t = translations[currentLanguage] || translations.al; // not needed here
   
   // SEO data for different sections and languages
   const seoData = {
@@ -203,7 +203,7 @@ const SEOHead = ({
         scriptToRemove.remove();
       }
     };
-  }, [pageSection, currentLanguage, description, image]);
+  }, [pageSection, currentLanguage, description, image, getStructuredData]);
 
   // This component doesn't render anything visible
   return null;

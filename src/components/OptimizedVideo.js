@@ -25,7 +25,6 @@ const OptimizedVideo = ({
   const [videoSources, setVideoSources] = useState([]);
   const [preloadedVideo, setPreloadedVideo] = useState(null);
   const videoRef = useRef(null);
-  const observerRef = useRef(null);
   const [posterSrc, setPosterSrc] = useState(poster);
 
   // Choose poster based on screen size (mobile vs desktop/tablet)

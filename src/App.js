@@ -5,7 +5,6 @@ import MenuService from './services/menuService';
 import googleReviewsService from './services/googleReviews';
 import googleAdsService from './services/googleAdsService';
 import pdfExportService from './services/pdfExportService';
-import { handleReservation, validateReservationForm } from './reservationService';
 import useScrollOptimization from './hooks/useScrollOptimization';
 import useMobileOptimizations from './hooks/useMobileOptimizations';
 import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
@@ -16,7 +15,6 @@ const MobileMenu = React.lazy(() => import('./components/MobileMenu'));
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 const GooglePhotos = React.lazy(() => import('./components/GooglePhotos'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
-const OptimizedVideo = React.lazy(() => import('./components/OptimizedVideo'));
   
 
 
@@ -105,13 +103,6 @@ function App() {
   const { preventBodyScroll, enableBodyScroll } = useMobileOptimizations();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLargeGroup, setIsLargeGroup] = useState(false);
-  const [reservationStatus, setReservationStatus] = useState({
-    loading: false,
-    success: false,
-    error: null,
-    message: ''
-  });
   
   // Dynamic menu state
   const [menuCategories, setMenuCategories] = useState([]);
@@ -119,11 +110,7 @@ function App() {
   // Google Reviews state
   const [reviewsData, setReviewsData] = useState(null);
   
-  // Time slots state
-  const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedGuests, setSelectedGuests] = useState(1);
-  const [loadingTimeSlots, setLoadingTimeSlots] = useState(false);
+  // Reservation form temporarily disabled; remove related state to avoid unused warnings
   
   // Memoize translations to avoid recalculating on every render
   const t = useMemo(() => translations[currentLanguage], [currentLanguage]);
@@ -142,10 +129,7 @@ function App() {
     }
   }, [currentLanguage]);
 
-  const getLocalizedText = useCallback((item, field) => {
-    const text = getLocalizedName(item, field);
-    return text || '';
-  }, [getLocalizedName]);
+  // Removed unused localization helper to satisfy CI lint
 
   // Handle directions click with conversion tracking
   const handleDirectionsClick = useCallback(() => {
@@ -241,51 +225,10 @@ function App() {
 
 
 
-  const handleGuestCountChange = useCallback((e) => {
-    const guestCount = e.target.value;
-    setIsLargeGroup(guestCount === '9+');
-    setSelectedGuests(guestCount === '9+' ? 9 : parseInt(guestCount));
-    
-    // Clear any existing reservation status when guest count changes
-    if (guestCount === '9+') {
-      setReservationStatus({
-        loading: false,
-        success: false,
-        error: null,
-        message: ''
-      });
-    }
-  }, []);
+  // Reservation form handlers removed while form is disabled
 
   // Fetch available time slots for a specific date
-  const fetchAvailableTimeSlots = useCallback(async (date) => {
-    if (!date) {
-      setAvailableTimeSlots([]);
-      return;
-    }
-
-    try {
-      setLoadingTimeSlots(true);
-      // Use correct API base URL for development
-      const apiBaseUrl = process.env.NODE_ENV === 'production' 
-        ? '' 
-        : process.env.REACT_APP_API_URL || 'http://localhost:3001';
-      const response = await fetch(`${apiBaseUrl}/api/timeslots-complete?date=${date}&available=true`);
-      const result = await response.json();
-      
-      if (result.success) {
-        setAvailableTimeSlots(result.data);
-      } else {
-        console.error('Failed to fetch available time slots:', result.error);
-        setAvailableTimeSlots([]);
-      }
-    } catch (error) {
-      console.error('Error fetching available time slots:', error);
-      setAvailableTimeSlots([]);
-    } finally {
-      setLoadingTimeSlots(false);
-    }
-  }, []);
+  // Removed time slot fetcher to avoid unused warnings
 
   const openNewMobileMenu = useCallback(() => {
     setShowMobileMenu(true);
@@ -356,136 +299,12 @@ function App() {
         alert(errorMessage);
       }
     }
-  }, [menuCategories, currentLanguage]);
+  }, [menuCategories, currentLanguage, analytics]);
 
-  const handleReservationSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    
-    // Check if it's a large group
-    if (isLargeGroup) {
-      setReservationStatus({
-        loading: false,
-        success: false,
-        error: t.contact.reservation.largeGroupError || 'For groups of 9+ guests, please contact us directly.',
-        message: ''
-      });
-      return;
-    }
-
-    setReservationStatus({ loading: true, success: false, error: null, message: '' });
-
-    const formData = new FormData(e.target);
-    
-    // Validate form
-    const validation = validateReservationForm(formData);
-    if (!validation.isValid) {
-      setReservationStatus({
-        loading: false,
-        success: false,
-        error: validation.errors.join(', '),
-        message: ''
-      });
-      return;
-    }
-
-    // Validate time slot capacity
-    const date = formData.get('date');
-    const time = formData.get('time');
-    const guests = parseInt(formData.get('guests'));
-    
-    try {
-      // Use correct API base URL for development
-      const apiBaseUrl = process.env.NODE_ENV === 'production' 
-        ? '' 
-        : process.env.REACT_APP_API_URL || 'http://localhost:3001';
-      const capacityResponse = await fetch(`${apiBaseUrl}/api/timeslots-complete?path=capacity&date=${date}&validate=true&time=${time}&guests=${guests}`);
-      const capacityResult = await capacityResponse.json();
-      
-      if (!capacityResult.isValid) {
-        setReservationStatus({
-          loading: false,
-          success: false,
-          error: capacityResult.error || 'Time slot is not available',
-          message: ''
-        });
-        return;
-      }
-    } catch (error) {
-      console.error('Error validating time slot:', error);
-      setReservationStatus({
-        loading: false,
-        success: false,
-        error: 'Error validating time slot availability',
-        message: ''
-      });
-      return;
-    }
-
-    try {
-      // Track reservation attempt
-      const reservationData = {
-        guests: guests,
-        date: date,
-        time: time,
-        language: currentLanguage
-      };
-      analytics.trackReservationAttempt(reservationData);
-      
-      // Handle reservation - send email notification to restaurant
-      const result = await handleReservation(formData, 'email');
-      
-      if (result.success) {
-        setReservationStatus({
-          loading: false,
-          success: true,
-          error: null,
-          message: t.contact.reservation.confirmationMessage
-        });
-
-        // Track successful reservation
-        analytics.trackReservationSuccess({
-          ...reservationData,
-          id: result.id || Date.now().toString()
-        });
-
-        // Track Google Ads conversion for reservation
-        googleAdsService.trackReservation(guests);
-
-        // Clear form
-        e.target.reset(); // Clear form
-        setSelectedDate('');
-        setAvailableTimeSlots([]);
-        setSelectedGuests(1);
-        setIsLargeGroup(false);
-      } else {
-        throw new Error(result.error || 'Reservation failed');
-      }
-    } catch (error) {
-      console.error('Reservation error:', error);
-      setReservationStatus({
-        loading: false,
-        success: false,
-        error: error.message || t.contact.reservation.errorMessage,
-        message: ''
-      });
-    }
-  }, [isLargeGroup, t.contact.reservation.largeGroupError, t.contact.reservation.confirmationMessage, t.contact.reservation.errorMessage, currentLanguage, analytics]);
+  // Reservation submission removed while form is disabled
 
   // Memoize complex computations
-  const formattedTimeSlots = useMemo(() => {
-    return availableTimeSlots.map(slot => {
-      const [hours, minutes] = slot.time.split(':');
-      const hour = parseInt(hours);
-      const ampm = hour >= 12 ? 'PM' : 'AM';
-      const displayHour = hour % 12 || 12;
-      const displayTime = `${displayHour}:${minutes} ${ampm}`;
-      
-      return {
-        ...slot,
-        displayTime
-      };
-    });
-  }, [availableTimeSlots]);
+  // Removed formatted time slots memo
 
   // Memoize review display components
   const reviewsDisplay = useMemo(() => {
@@ -499,7 +318,7 @@ function App() {
   }, [reviewsData]);
 
   // Memoize minimum date for date input
-  const minDate = useMemo(() => new Date().toISOString().split('T')[0], []);
+  // Removed minDate memo (unused)
 
   return (
     <div className="App">
