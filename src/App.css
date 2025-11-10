@@ -170,11 +170,11 @@ h2::after {
 
 /* Hero Section - Modern & Dynamic - Mobile First */
 .hero {
-  min-height: 100vh;
-  min-height: calc(var(--vh, 1vh) * 100);
+  min-height: 90vh;
+  min-height: calc(var(--vh, 1vh) * 90);
   position: relative;
   overflow: hidden;
-  padding-top: 80px; /* Smaller padding on mobile */
+  padding-top: 60px; /* Smaller padding on mobile */
   display: flex;
   align-items: center;
   
@@ -355,9 +355,9 @@ h2::after {
 }
 
 .title-main {
-  font-size: 4.5rem;
+  font-size: 4rem;
   color: var(--primary-forest);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.08);
   animation: titleSlide 1s ease-out 0.3s both;
 }
 
@@ -1960,16 +1960,16 @@ body.scroll-locked {
 
   /* Hero Section - Mobile Optimized */
   .hero {
-    min-height: 90vh;
-    /* Add extra top padding so the fixed navbar doesn't cover content */
-    padding: 150px 0 60px;
+    min-height: 70vh;
+    /* Ensure content is visible below fixed navbar */
+    padding: 96px 0 24px;
   }
 
   .hero-container {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 1.5rem;
     text-align: center;
-    padding: 0 15px;
+    padding: 0 16px;
   }
 
   .hero-content {
@@ -1985,15 +1985,16 @@ body.scroll-locked {
 
   .hero-badge {
     justify-content: center;
-    margin: 0 auto 2rem;
+    margin: 0 auto 1.25rem;
   }
 
   .title-main {
-    font-size: 3.2rem;
+    font-size: 2.2rem;
+    text-shadow: none;
   }
 
   .title-accent {
-    font-size: 2.8rem;
+    font-size: 2rem;
   }
 
   .hero-highlights {
@@ -2007,7 +2008,7 @@ body.scroll-locked {
   }
 
   .hero-description {
-    font-size: 1.1rem;
+    font-size: 1rem;
     max-width: 100%;
   }
 
@@ -2031,12 +2032,20 @@ body.scroll-locked {
   }
 
   .hero-image-container {
-    height: 280px; /* Slightly smaller on mobile for better proportion */
+    height: 240px; /* Smaller on mobile for better proportion */
   }
 
   .hero-main-image {
-    height: 280px; /* Slightly smaller on mobile for better proportion */
-    margin-top: 1rem; /* Add top margin for better visual separation */
+    height: 220px; /* Smaller on mobile for better proportion */
+    margin-top: 0.75rem; /* Add top margin for better visual separation */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    animation: none;
+  }
+
+  /* Reduce decorative elements on mobile for performance */
+  .image-decoration,
+  .floating-elements {
+    display: none;
   }
 
   .floating-card {
@@ -3384,15 +3393,20 @@ body {
 }
 
 .lang-circle-btn {
-  width: 40px;
-  height: 40px;
+  /* Allow full language names instead of fixed-size circles */
+  height: 36px;
+  padding: 0 12px;
   border-radius: 9999px;
   border: 2px solid var(--olive-green);
   background: #fff;
   color: var(--primary-forest);
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.2px;
   box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .lang-circle-btn.active {

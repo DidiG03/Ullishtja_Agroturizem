@@ -113,7 +113,7 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
         <div className="nav-container">
           <div className="logo-container">
             <a href="/">
-              <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Authentic Albanian Restaurant Logo" className="logo" />
+              <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Authentic Albanian Restaurant Logo" className="logo" loading="eager" decoding="async" fetchpriority="high" width="100" height="50" />
             </a>
           </div>
           
@@ -129,7 +129,7 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
           {/* Mobile Navigation */}
           <div className={`mobile-nav ${mobileMenuOpen ? 'active' : ''}`}>
             <div className="mobile-nav-header">
-              <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Mobile Logo" className="mobile-logo" />
+              <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Mobile Logo" className="mobile-logo" loading="eager" decoding="async" width="100" height="50" />
               <button className="mobile-close-btn" onClick={closeMobileMenu}>×</button>
             </div>
             <nav className="mobile-nav-menu">
@@ -252,19 +252,19 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
                     className={`lang-btn ${currentLanguage === 'al' ? 'active' : ''}`}
                     onClick={() => changeLanguage('al')}
                   >
-                    AL
+                    Albanian
                   </button>
                   <button 
                     className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
                     onClick={() => changeLanguage('en')}
                   >
-                    EN
+                    English
                   </button>
                   <button 
                     className={`lang-btn ${currentLanguage === 'it' ? 'active' : ''}`}
                     onClick={() => changeLanguage('it')}
                   >
-                    IT
+                    Italian
                   </button>
                 </div>
                 <div className="admin-link-container">

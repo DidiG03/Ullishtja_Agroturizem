@@ -628,11 +628,15 @@ function App() {
                 <span className="btn-text">{t.hero.cta}</span>
                 <span className="btn-arrow">→</span>
               </a>
-          <a href="#alacarte" className="cta-button secondary" onClick={closeMobileMenu}>
+              <a href="#alacarte" className="cta-button secondary" onClick={closeMobileMenu}>
                 <span className="btn-icon">🍽️</span>
                 <span className="btn-text">{t.hero.viewMenu}</span>
               </a>
-
+              <a href="#contact" className="cta-button secondary" onClick={closeMobileMenu}>
+                <span className="btn-icon">🗺️</span>
+                <span className="btn-text">{t.footer.directions}</span>
+              </a>
+              
                 {/* Compact language selector below "Shiko Menunë" on small screens */}
                 <div className="lang-switcher-compact">
                   <button
@@ -641,7 +645,7 @@ function App() {
                     onClick={() => changeLanguage('al')}
                     aria-label="Switch language to Albanian"
                   >
-                    AL
+                    Albanian
                   </button>
                   <button
                     type="button"
@@ -649,7 +653,7 @@ function App() {
                     onClick={() => changeLanguage('en')}
                     aria-label="Switch language to English"
                   >
-                    EN
+                    English
                   </button>
                   <button
                     type="button"
@@ -657,7 +661,7 @@ function App() {
                     onClick={() => changeLanguage('it')}
                     aria-label="Switch language to Italian"
                   >
-                    IT
+                    Italian
                   </button>
                 </div>
             </div>
@@ -667,7 +671,22 @@ function App() {
             <div className="hero-image-container">
               <div className="hero-main-image">
                 <Suspense>
-                  <img src="/images/posters/hero-poster.jpg" alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views" className="main-img" />
+                  <picture>
+                    {/* Mobile-first source */}
+                    <source
+                      srcSet="/images/posters/hero-poster-mobile.png"
+                      media="(max-width: 600px)"
+                    />
+                    {/* Default JPG */}
+                    <img
+                      src="/images/posters/hero-poster.jpg"
+                      alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views"
+                      className="main-img"
+                      loading="eager"
+                      decoding="async"
+                      fetchpriority="high"
+                    />
+                  </picture>
                 </Suspense>
                 <div className="image-decoration decoration-1"></div>
                 <div className="image-decoration decoration-2"></div>
@@ -760,7 +779,14 @@ function App() {
             </div>
             <div className="section-image">
               <Suspense>
-                <img src="/images/posters/events-poster.jpg" alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop" className="section-img" />
+                <img
+                  src="/images/posters/events-poster.jpg"
+                  alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
+                  className="section-img"
+                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="low"
+                />
               </Suspense>
               <div className="image-overlay">
                 <div className="overlay-content">
@@ -779,7 +805,14 @@ function App() {
           <div className="section-grid reverse">
             <div className="section-image">
               <Suspense>
-                <img src="/images/posters/alacarte-poster.jpg" alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem" className="section-img" />
+                <img
+                  src="/images/posters/alacarte-poster.jpg"
+                  alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
+                  className="section-img"
+                  loading="lazy"
+                  decoding="async"
+                  fetchpriority="low"
+                />
               </Suspense>
               <div className="image-overlay">
                 <div className="overlay-content">
@@ -822,16 +855,16 @@ function App() {
                   {currentLanguage === 'al'
                     ? 'Shiko Menunë A La Carte'
                     : currentLanguage === 'en'
-                    ? 'View A La Carte Menu'
-                    : 'Visualizza Menu A La Carte'}
+                    ? 'Menu'
+                    : 'Menu'}
                 </button>
                 <button className="pdf-export-btn show-mobile" onClick={handlePDFExport}>
                   <span className="btn-icon">📄</span>
                   {currentLanguage === 'al'
-                    ? 'Shiko Menunë A La Carte'
+                    ? 'Shiko Menu'
                     : currentLanguage === 'en'
-                    ? 'View A La Carte Menu'
-                    : 'Visualizza Menu A La Carte'}
+                    ? 'View Menu'
+                    : 'VisualizzaMenu'}
                 </button>
               </div>
             </div>
@@ -1201,19 +1234,19 @@ function App() {
                     className={`lang-btn ${currentLanguage === 'al' ? 'active' : ''}`}
                     onClick={() => changeLanguage('al')}
                   >
-                    AL
+                    Albanian
                   </button>
                   <button 
                     className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
                     onClick={() => changeLanguage('en')}
                   >
-                    EN
+                    English
                   </button>
                   <button 
                     className={`lang-btn ${currentLanguage === 'it' ? 'active' : ''}`}
                     onClick={() => changeLanguage('it')}
                   >
-                    IT
+                    Italian
                   </button>
                 </div>
                 <div className="admin-link-container">

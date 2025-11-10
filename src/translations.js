@@ -11,10 +11,10 @@ export const translations = {
     },
     // Hero Section
     hero: {
-      title: "Mirë se vini tek Ullishtja Agriturizem",
+      title: "Ullishtja Agroturizem",
       badge: "Përvojë Autentike Shqiptare",
       description: "Zbuloni shijen e traditës në zemrën e Shqipërisë. Përbërës të freskët, receta të vjetra dhe mikpritje e ngrohtë që nga viti 2021.",
-      cta: "Rezervoni Tavolinën Tuaj",
+      cta: "Rezervime",
       viewMenu: "Shiko Menunë",
       highlights: {
         farmFresh: "Përbërës të Freskët",
@@ -886,11 +886,11 @@ export const translations = {
     },
     // Hero Section
     hero: {
-      title: "Welcome to Ullishtja Agriturizem",
+      title: "Ullishtja Agroturizem",
       badge: "Authentic Albanian Experience",
       description: "Discover the taste of tradition in the heart of Albania. Fresh ingredients, time-honored recipes, and warm hospitality since 2021.",
-      cta: "Reserve Your Table",
-      viewMenu: "View Menu",
+      cta: "Reservations",
+      viewMenu: "Menu",
       highlights: {
         farmFresh: "Fresh Ingredients",
         traditionalRecipes: "Traditional Recipes",
@@ -1761,11 +1761,11 @@ export const translations = {
     },
     // Hero Section
     hero: {
-      title: "Benvenuti a Ullishtja Agriturizem",
+      title: "Ullishtja Agroturizem",
       badge: "Autentica Esperienza Albanese",
       description: "Scoprite il sapore della tradizione nel cuore dell'Albania. Ingredienti freschi, ricette antiche e calorosa ospitalità dal 2021.",
-      cta: "Prenota il Tuo Tavolo",
-      viewMenu: "Vedi Menu",
+      cta: "Prenotazioni",
+      viewMenu: "Menu",
       highlights: {
         farmFresh: "Ingredienti Freschi",
         traditionalRecipes: "Ricette Tradizionali",

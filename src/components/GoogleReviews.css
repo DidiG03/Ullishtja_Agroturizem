@@ -152,7 +152,17 @@
   object-fit: cover;
   border: 2px solid #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  /* Removed transition for better performance */
+  /* Friendly loading effect */
+  filter: blur(8px);
+  transform: scale(1.03);
+  opacity: 0.6;
+  transition: filter 240ms ease, transform 240ms ease, opacity 240ms ease;
+}
+
+.reviewer-photo.loaded {
+  filter: none;
+  transform: none;
+  opacity: 1;
 }
 
 /* Removed hover effect for better performance */
@@ -184,13 +194,26 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.18), transparent);
   transform: rotate(45deg);
-  /* Removed transition for better performance */
+  animation: placeholderShimmer 1.2s ease-in-out infinite;
 }
 
 /* Removed hover effect for better performance */
 
+.reviewer-photo-placeholder::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+}
+
+@keyframes placeholderShimmer {
+  0% { transform: translateX(-50%) rotate(45deg); opacity: 0.4; }
+  50% { transform: translateX(0) rotate(45deg); opacity: 0.8; }
+  100% { transform: translateX(50%) rotate(45deg); opacity: 0.4; }
+}
 .reviewer-details {
   display: flex;
   flex-direction: column;

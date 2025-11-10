@@ -109,6 +109,17 @@
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//www.google-analytics.com">
     <link rel="dns-prefetch" href="//maps.googleapis.com">
+    
+    <!-- Inline critical CSS for faster first paint on mobile -->
+    <style>
+      /* Minimal above-the-fold styles */
+      :root{--primary-forest:#2d4a36}
+      body{background:#fafafa;color:var(--primary-forest);-webkit-font-smoothing:antialiased}
+      .navbar{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);padding:.8rem 0;box-shadow:0 1px 6px rgba(0,0,0,.06);z-index:1000}
+      .hero{min-height:70vh;padding:96px 0 24px}
+      .hero-title{font-size:2.2rem;line-height:1.2;margin-bottom:1rem}
+      @media (min-width:769px){.hero{min-height:90vh;padding-top:100px}.hero-title{font-size:3rem}}
+    </style>
     <link rel="dns-prefetch" href="//ucarecdn.com">
     <link rel="dns-prefetch" href="//vercel-insights.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

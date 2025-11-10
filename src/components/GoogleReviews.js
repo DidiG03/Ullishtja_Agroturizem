@@ -114,7 +114,7 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
               rel="noopener noreferrer"
               className="google-link"
             >
-              <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" />
+              <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google" loading="lazy" decoding="async" width="20" height="20" />
               {translations.googleReviews.viewOnGoogle}
             </a>
           </div>
@@ -130,6 +130,16 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
                       src={review.authorPhotoUrl} 
                       alt={review.authorName} 
                       className="reviewer-photo"
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                      onLoad={(e) => {
+                        // Smoothly reveal the image and hide the placeholder
+                        e.currentTarget.classList.add('loaded');
+                        if (e.currentTarget.nextSibling) {
+                          e.currentTarget.nextSibling.style.display = 'none';
+                        }
+                      }}
                       onError={(e) => {
                         e.target.style.display = 'none';
                         e.target.nextSibling.style.display = 'flex';
@@ -138,7 +148,7 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
                   ) : null}
                   <div 
                     className="reviewer-photo-placeholder"
-                    style={{ display: review.authorPhotoUrl ? 'none' : 'flex' }}
+                    style={{ display: 'flex' }}
                   >
                     {review.authorName.charAt(0).toUpperCase()}
                   </div>
