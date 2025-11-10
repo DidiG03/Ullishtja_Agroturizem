@@ -40,8 +40,8 @@ const getInitialLanguage = () => {
     if (langCode.startsWith('it')) return 'it';
   }
 
-  // Default to English until geo-detection refines it
-  return 'en';
+  // Default to Albanian
+  return 'al';
 };
 
 // Language selector will handle its own visibility logic
@@ -67,14 +67,11 @@ function App() {
         const data = await response.json();
         const countryCode = (data.country || data.country_code || data.countryCode || '').toUpperCase();
 
-        let detectedLanguage = 'en';
-        if (countryCode === 'AL') detectedLanguage = 'al';
-        else if (countryCode === 'IT') detectedLanguage = 'it';
-
-        if (!isCancelled) {
-          setCurrentLanguage(detectedLanguage);
-          localStorage.setItem('preferredLanguage', detectedLanguage);
-          analytics.trackLanguageChange(detectedLanguage, 'geo-detect');
+        // Only switch to Albanian based on geo; otherwise keep default Albanian
+        if (countryCode === 'AL' && !isCancelled) {
+          setCurrentLanguage('al');
+          localStorage.setItem('preferredLanguage', 'al');
+          analytics.trackLanguageChange('al', 'geo-detect');
         }
       } catch (error) {
         // Silent fallback: keep browser-derived language
