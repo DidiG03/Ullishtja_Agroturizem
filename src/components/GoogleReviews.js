@@ -5,7 +5,7 @@ import './GoogleReviews.css';
 const GoogleReviews = ({ currentLanguage, translations }) => {
   const [reviewsData, setReviewsData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [displayCount, setDisplayCount] = useState(3);
+  const [displayCount, setDisplayCount] = useState(6);
   const [expandedReviews, setExpandedReviews] = useState(new Set());
   const [allHighRatingReviews, setAllHighRatingReviews] = useState([]);
 
@@ -13,13 +13,26 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
     const loadReviews = async () => {
       try {
         const data = await googleReviewsService.fetchGoogleReviews();
-        // Use new daily shuffle method instead of getHighRatingReviews
-        const dailyShuffledReviews = googleReviewsService.getDailyShuffledReviews(data, 3);
+        // Prefer 5-star reviews, newest first
+        const fiveStarSorted = (data.reviews || [])
+          .filter((r) => r.rating === 5)
+          .sort((a, b) => {
+            const ta = new Date(a.time).getTime();
+            const tb = new Date(b.time).getTime();
+            return tb - ta;
+          });
+        // Fallback: if no 5-star available, use 4-5 star newest first
+        const highRatingSorted = fiveStarSorted.length > 0
+          ? fiveStarSorted
+          : (data.reviews || [])
+              .filter((r) => r.rating >= 4)
+              .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
+
         setReviewsData({
-          ...dailyShuffledReviews,
-          reviews: dailyShuffledReviews.reviews.slice(0, 3) // Initial 3 reviews
+          ...data,
+          reviews: highRatingSorted.slice(0, 6)
         });
-        setAllHighRatingReviews(dailyShuffledReviews.allHighRatingReviews || dailyShuffledReviews.reviews);
+        setAllHighRatingReviews(highRatingSorted);
       } catch (error) {
         console.error('Error loading reviews:', error);
       } finally {
