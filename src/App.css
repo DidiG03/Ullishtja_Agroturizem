@@ -3132,11 +3132,11 @@ body {
   }
   .floating-card {
     top: 20px;
-    right: 10px; /* prevent overflow off-screen */
+    right: -16px; /* nudge slightly outside image to reveal more photo */
     padding: 1rem 1.25rem;
   }
   .floating-rating {
-    left: 10px; /* keep inside viewport */
+    left: -12px; /* create separation from photo edge */
     bottom: 20px;
     padding: 0.9rem 1.1rem;
   }
