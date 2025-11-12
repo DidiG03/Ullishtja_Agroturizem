@@ -3122,6 +3122,26 @@ body {
   }
 }
 
+/* iPad/tablet layout fixes for hero chips */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .hero-image-container {
+    height: 360px;
+  }
+  .hero-main-image {
+    height: 320px;
+  }
+  .floating-card {
+    top: 20px;
+    right: 10px; /* prevent overflow off-screen */
+    padding: 1rem 1.25rem;
+  }
+  .floating-rating {
+    left: 10px; /* keep inside viewport */
+    bottom: 20px;
+    padding: 0.9rem 1.1rem;
+  }
+}
+
 /* Tablet and laptop layout for Visit Us (Contact) */
 @media (min-width: 768px) {
   /* Allow full-width container for this section */
