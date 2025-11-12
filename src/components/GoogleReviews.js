@@ -5,7 +5,7 @@ import './GoogleReviews.css';
 const GoogleReviews = ({ currentLanguage, translations }) => {
   const [reviewsData, setReviewsData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [displayCount, setDisplayCount] = useState(6);
+  const [displayCount, setDisplayCount] = useState(20);
   const [expandedReviews, setExpandedReviews] = useState(new Set());
   const [allHighRatingReviews, setAllHighRatingReviews] = useState([]);
 
@@ -13,23 +13,16 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
     const loadReviews = async () => {
       try {
         const data = await googleReviewsService.fetchGoogleReviews();
-        // Prefer 5-star reviews, newest first
+        // Prefer ONLY 5-star reviews, newest first
         const fiveStarSorted = (data.reviews || [])
           .filter((r) => Number(r.rating) === 5)
           .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
 
-        // Then use 4-star reviews (newest first) to fill remaining slots
-        const fourStarSorted = (data.reviews || [])
-          .filter((r) => Number(r.rating) === 4)
-          .sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime());
-
-        const combinedSorted = [...fiveStarSorted, ...fourStarSorted];
-
         setReviewsData({
           ...data,
-          reviews: combinedSorted.slice(0, 6)
+          reviews: fiveStarSorted.slice(0, 20)
         });
-        setAllHighRatingReviews(combinedSorted);
+        setAllHighRatingReviews(fiveStarSorted);
       } catch (error) {
         console.error('Error loading reviews:', error);
       } finally {
