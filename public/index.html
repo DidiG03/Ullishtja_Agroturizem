@@ -91,6 +91,17 @@
     <meta name="msapplication-wide310x150logo" content="%PUBLIC_URL%/logo192.png" />
     <meta name="msapplication-square310x310logo" content="%PUBLIC_URL%/logo512.png" />
     
+    <script>
+      window.addEventListener('load', function() {
+          document.addEventListener('click', function(e) {
+        if (e.target.closest('[href*="tel:"]')) {
+             gtag('event', 'conversion', {'send_to': 'AW-17442877024/5cBuCOq0tr8bEODctP1A'});
+        }
+      }, {capture: true});
+      })
+    </script>
+    
+
     <!-- Google Ads tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17442877024"></script>
     <script>
