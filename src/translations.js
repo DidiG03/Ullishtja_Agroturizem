@@ -54,7 +54,7 @@ export const translations = {
     // Events Section
     events: {
       title: "Eventet dhe Festimet",
-      subtitle: "Krijoni Kujtrime të Përhershme",
+      subtitle: "Krijoni Kujtime të Përhershme",
       text1: "Ullishtja Agriturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga fejesat tradicionale shqiptare te eventet korporative dhe festimet familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
       text2: "Stafi ynë i dedikuar bashkëpunon me ju për të planifikuar çdo detaj, nga menuja e personalizuar me specialitete lokale te dekorimi dhe koordinimi i plotë i eveentit.",
       features: {
@@ -66,7 +66,7 @@ export const translations = {
     },
     // A la Carte Section
     alacarte: {
-      title: "Menuja A la Carte",
+      title: "Menuja",
       subtitle: "Përjetoni Shijen e Vërtetë Shqiptare",
       text1: "Zbuloni një risi shijesh në menunë tonë të plotë a la carte, ku çdo pjatë tregon një histori të trashëgimisë kulinare shqiptare. Përbërësit tanë të freskët vijnë direkt nga fermat lokale dhe kopshtet tona.",
       text2: "Nga antipastat tradicionale me djathë të bardhë dhe ullinje, te pjatat kryesore si Tavë Kosi dhe Qofte të Fërguara, çdo vakt përgatitet me kujdesin dhe dashurinë e traditës familjare.",
@@ -941,7 +941,7 @@ export const translations = {
     },
     // A la Carte Section
     alacarte: {
-      title: "A la Carte Menu",
+      title: "Menu",
       subtitle: "Experience Authentic Albanian Flavors",
       text1: "Discover a wealth of flavors in our complete a la carte menu, where every dish tells a story of Albanian culinary heritage. Our fresh ingredients come directly from local farms and our own gardens.",
       text2: "From traditional appetizers with white cheese and olives, to main courses like Tavë Kosi and Qofte të Fërguara, every meal is prepared with the care and love of family tradition.",
@@ -1816,7 +1816,7 @@ export const translations = {
     },
     // A la Carte Section
     alacarte: {
-      title: "Menu A la Carte",
+      title: "Menu",
       subtitle: "Scoprite i Sapori Autentici Albanesi",
       text1: "Scoprite una ricchezza di sapori nel nostro menu completo a la carte, dove ogni piatto racconta una storia del patrimonio culinario albanese. I nostri ingredienti freschi provengono direttamente dalle fattorie locali e dai nostri orti.",
       text2: "Dagli antipasti tradizionali con formaggio bianco e olive, ai piatti principali come Tavë Kosi e Qofte të Fërguara, ogni pasto è preparato con la cura e l'amore della tradizione familiare.",

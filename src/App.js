@@ -379,7 +379,15 @@ function App() {
       </header>
 
       {/* Hero Section */}
-      <section id="home" className="hero">
+      <section
+        id="home"
+        className="hero"
+        style={{
+          backgroundImage: "url('/images/posters/hero-poster-mobile.png')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
         {/* Animated Background */}
         <div className="hero-background">
           <div className="hero-bg-image"></div>
@@ -395,30 +403,15 @@ function App() {
 
         <div className="hero-container">
           <div className="hero-content">
-            <div className="hero-badge">
+            {/* <div className="hero-badge">
               <span className="badge-icon">⭐</span>
               <span className="badge-text">{t.hero.badge}</span>
               <span className="badge-icon">⭐</span>
-            </div>
+            </div> */}
             
             <h1 className="hero-title">
               <span className="title-line title-main">{t.hero.title}</span>
             </h1>
-            
-            <div className="hero-highlights">
-              <div className="highlight-item">
-                <span className="highlight-icon">🌱</span>
-                <span className="highlight-text">{t.hero.highlights.farmFresh}</span>
-              </div>
-              <div className="highlight-item">
-                <span className="highlight-icon">👨‍🍳</span>
-                <span className="highlight-text">{t.hero.highlights.traditionalRecipes}</span>
-              </div>
-              <div className="highlight-item">
-                <span className="highlight-icon">🏔️</span>
-                <span className="highlight-text">{t.hero.highlights.mountainViews}</span>
-              </div>
-            </div>
 
             <p className="hero-description">
               {t.hero.description}
@@ -426,16 +419,13 @@ function App() {
 
             <div className="hero-actions">
               <a href="#contact" className="cta-button primary" onClick={closeMobileMenu}>
-                <span className="btn-icon">📅</span>
                 <span className="btn-text">{t.hero.cta}</span>
                 <span className="btn-arrow">→</span>
               </a>
               <a href="#alacarte" className="cta-button secondary" onClick={closeMobileMenu}>
-                <span className="btn-icon">🍽️</span>
                 <span className="btn-text">{t.hero.viewMenu}</span>
               </a>
               <a href="#contact" className="cta-button secondary" onClick={closeMobileMenu}>
-                <span className="btn-icon">🗺️</span>
                 <span className="btn-text">{t.footer.directions}</span>
               </a>
               
@@ -550,52 +540,50 @@ function App() {
       {/* Events Section */}
       <section id="events" className="events-section">
         <div className="container">
-          <div className="section-grid">
-            <div className="section-content">
-              <h2 id="events-heading">{t.events.title}</h2>
-              <h3 className="section-subtitle">{t.events.subtitle}</h3>
-              <p className="section-text">
-                {t.events.text1}
-              </p>
-              <p className="section-text">
-                {t.events.text2}
-              </p>
-              <div className="features-list">
-                <div className="feature-item">
-                  <span className="feature-icon">💒</span>
-                  <span className="feature-text">{t.events.features.weddings}</span>
-                </div>
-                <div className="feature-item">
-                  <span className="feature-icon">🏢</span>
-                  <span className="feature-text">{t.events.features.corporate}</span>
-                </div>
-                <div className="feature-item">
-                  <span className="feature-icon">🎉</span>
-                  <span className="feature-text">{t.events.features.family}</span>
-                </div>
-                <div className="feature-item">
-                  <span className="feature-icon">👥</span>
-                  <span className="feature-text">{t.events.features.capacity}</span>
-                </div>
+          <div className="section-content">
+            <h2 id="events-heading">{t.events.title}</h2>
+            <h3 className="section-subtitle">{t.events.subtitle}</h3>
+            <p className="section-text">
+              {t.events.text1}
+            </p>
+            <p className="section-text">
+              {t.events.text2}
+            </p>
+            {/* <div className="features-list">
+              <div className="feature-item">
+                <span className="feature-icon">💒</span>
+                <span className="feature-text">{t.events.features.weddings}</span>
               </div>
-            </div>
-            <div className="section-image">
-              <Suspense>
-                <img
-                  src="/images/posters/events-poster.jpg"
-                  alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
-                  className="section-img"
-                  loading="lazy"
-                  decoding="async"
-                  fetchpriority="low"
-                />
-              </Suspense>
-              <div className="image-overlay">
-                <div className="overlay-content">
-                  <span className="overlay-icon">🎊</span>
-                  <span className="overlay-text">Special Events</span>
-                </div>
+              <div className="feature-item">
+                <span className="feature-icon">🏢</span>
+                <span className="feature-text">{t.events.features.corporate}</span>
               </div>
+              <div className="feature-item">
+                <span className="feature-icon">🎉</span>
+                <span className="feature-text">{t.events.features.family}</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">👥</span>
+                <span className="feature-text">{t.events.features.capacity}</span>
+              </div>
+            </div> */}
+          </div>
+        </div>
+        <div className="section-image section-image-breakout">
+          <Suspense>
+            <img
+              src="/images/posters/events-poster.jpg"
+              alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
+              className="section-img"
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+            />
+          </Suspense>
+          <div className="image-overlay">
+            <div className="overlay-content">
+              <span className="overlay-icon">🎊</span>
+              <span className="overlay-text">Special Events</span>
             </div>
           </div>
         </div>
@@ -632,7 +620,7 @@ function App() {
               <p className="section-text">
                 {t.alacarte.text2}
               </p>
-              <div className="features-list">
+              {/* <div className="features-list">
                 <div className="feature-item">
                   <span className="feature-icon">🌱</span>
                   <span className="feature-text">{t.alacarte.features.fresh}</span>
@@ -649,7 +637,7 @@ function App() {
                   <span className="feature-icon">🍷</span>
                   <span className="feature-text">{t.alacarte.features.wine}</span>
                 </div>
-              </div>
+              </div> */}
 
               {/* Moved CTAs here: show green on desktop/tablet, orange on mobile */}
               <div className="menu-cta-container alacarte-cta">
@@ -697,7 +685,7 @@ function App() {
           <h2 id="contact-heading">{t.contact.title}</h2>
           <div className="contact-grid">
             <div className="contact-info">
-              <h3>{t.contact.info.title}</h3>
+              {/* <h3>{t.contact.info.title}</h3> */}
               
               <div className="contact-items-container">
                 {/* Interactive Map */}
