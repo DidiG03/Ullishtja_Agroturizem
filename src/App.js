@@ -383,7 +383,7 @@ function App() {
         id="home"
         className="hero"
         style={{
-          backgroundImage: "url('/images/posters/hero-poster-mobile.png')",
+          backgroundImage: "url('/images/posters/hero-poster-mobile.png?v=20251114')",
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
