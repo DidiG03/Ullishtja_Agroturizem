@@ -648,13 +648,12 @@ function App() {
                     ? 'Menu'
                     : 'Menu'}
                 </button>
-                <button className="pdf-export-btn show-mobile" onClick={handlePDFExport}>
-                  <span className="btn-icon">📄</span>
+                <button className="mobile-menu-btn show-mobile" onClick={openNewMobileMenu}>
                   {currentLanguage === 'al'
-                    ? 'Shiko Menu'
+                    ? 'Shiko Menunë A La Carte'
                     : currentLanguage === 'en'
-                    ? 'View Menu'
-                    : 'VisualizzaMenu'}
+                    ? 'Menu'
+                    : 'Menu'}
                 </button>
               </div>
             </div>
