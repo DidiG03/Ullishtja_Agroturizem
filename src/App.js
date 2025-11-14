@@ -214,6 +214,11 @@ function App() {
   // Removed time slot fetcher to avoid unused warnings
 
   const openNewMobileMenu = useCallback(() => {
+    // Scroll to the top so the overlay is fully visible
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    // Lock body scroll
+    document.body.classList.add('mobile-menu-open');
+
     setShowMobileMenu(true);
     // Track menu view
     analytics.trackMenuView(currentLanguage, 'full-menu');
@@ -221,6 +226,8 @@ function App() {
 
   const closeNewMobileMenu = useCallback(() => {
     setShowMobileMenu(false);
+    // Restore body scroll
+    document.body.classList.remove('mobile-menu-open');
   }, []);
 
   const handlePDFExport = useCallback(async () => {
@@ -422,7 +429,15 @@ function App() {
                 <span className="btn-text">{t.hero.cta}</span>
                 <span className="btn-arrow">→</span>
               </a>
-              <a href="#alacarte" className="cta-button secondary" onClick={closeMobileMenu}>
+              <a
+                href="#alacarte"
+                className="cta-button secondary"
+                onClick={(e) => {
+                  e.preventDefault();
+                  closeMobileMenu();
+                  openNewMobileMenu();
+                }}
+              >
                 <span className="btn-text">{t.hero.viewMenu}</span>
               </a>
               <a href="#contact" className="cta-button secondary" onClick={closeMobileMenu}>
