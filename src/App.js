@@ -230,6 +230,7 @@ function App() {
     document.body.classList.remove('mobile-menu-open');
   }, []);
 
+  // eslint-disable-next-line no-unused-vars
   const handlePDFExport = useCallback(async () => {
     
     
