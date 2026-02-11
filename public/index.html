@@ -39,12 +39,12 @@
     <meta property="place:location:longitude" content="19.433569" />
     
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://ullishtja-agroturizem.com/" />
-    <meta property="twitter:title" content="Ullishtja Agroturizem - Authentic Albanian Restaurant & Farm-to-Table Experience" />
-    <meta property="twitter:description" content="Experience authentic Albanian cuisine with fresh farm-to-table ingredients, traditional recipes, and breathtaking 360° mountain views in Durres, Albania." />
-    <meta property="twitter:image" content="https://ullishtja-agroturizem.com/images/posters/hero-poster.jpg" />
-    <meta property="twitter:image:alt" content="Ullishtja Agroturizem restaurant with mountain views and traditional Albanian cuisine" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://ullishtja-agroturizem.com/" />
+    <meta name="twitter:title" content="Ullishtja Agroturizem - Authentic Albanian Restaurant & Farm-to-Table Experience" />
+    <meta name="twitter:description" content="Experience authentic Albanian cuisine with fresh farm-to-table ingredients, traditional recipes, and breathtaking 360° mountain views in Durres, Albania." />
+    <meta name="twitter:image" content="https://ullishtja-agroturizem.com/images/posters/hero-poster.jpg" />
+    <meta name="twitter:image:alt" content="Ullishtja Agroturizem restaurant with mountain views and traditional Albanian cuisine" />
     
     <!-- Language alternates -->
     <link rel="alternate" hreflang="sq" href="https://ullishtja-agroturizem.com/?lang=al" />
@@ -53,7 +53,7 @@
     <link rel="alternate" hreflang="x-default" href="https://ullishtja-agroturizem.com/" />
     
     <!-- Mobile and App -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#2d4a36" />
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -91,24 +91,12 @@
     <meta name="msapplication-wide310x150logo" content="%PUBLIC_URL%/logo192.png" />
     <meta name="msapplication-square310x310logo" content="%PUBLIC_URL%/logo512.png" />
     
-    <script>
-      window.addEventListener('load', function() {
-          document.addEventListener('click', function(e) {
-        if (e.target.closest('[href*="tel:"]')) {
-             gtag('event', 'conversion', {'send_to': 'AW-17442877024/5cBuCOq0tr8bEODctP1A'});
-        }
-      }, {capture: true});
-      })
-    </script>
-    
-
-    <!-- Google Ads tag (gtag.js) -->
+    <!-- Google Ads tag (gtag.js) - async to avoid render-blocking -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17442877024"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'AW-17442877024');
     </script>
 
@@ -123,13 +111,44 @@
     
     <!-- Inline critical CSS for faster first paint on mobile -->
     <style>
-      /* Minimal above-the-fold styles */
-      :root{--primary-forest:#2d4a36}
-      body{background:#fafafa;color:var(--primary-forest);-webkit-font-smoothing:antialiased}
+      /* Critical above-the-fold + static pre-render styles */
+      :root{--primary-forest:#2d4a36;--secondary-terracotta:#C4602D;--accent-gold:#D4AF37;--cream:#fafafa}
+      *,*::before,*::after{box-sizing:border-box}
+      body{margin:0;background:var(--cream);color:var(--primary-forest);font-family:Georgia,'Times New Roman',serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
       .navbar{position:fixed;top:0;left:0;right:0;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);padding:.8rem 0;box-shadow:0 1px 6px rgba(0,0,0,.06);z-index:1000}
-      .hero{min-height:70vh;padding:96px 0 24px}
-      .hero-title{font-size:2.2rem;line-height:1.2;margin-bottom:1rem}
-      @media (min-width:769px){.hero{min-height:90vh;padding-top:100px}.hero-title{font-size:3rem}}
+      .nav-container{max-width:1200px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between}
+      .logo{height:50px;width:auto}
+      .desktop-nav{display:none}
+      @media(min-width:769px){.desktop-nav{display:flex;gap:1.5rem}.nav-link{color:var(--primary-forest);text-decoration:none;font-size:.95rem;font-weight:500}}
+      .hero{min-height:70vh;padding:96px 0 24px;background-size:cover;background-position:center;position:relative}
+      .hero-container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+      .hero-title{font-size:2.2rem;line-height:1.2;margin-bottom:1rem;color:var(--primary-forest)}
+      .hero-description{font-size:1.05rem;line-height:1.7;color:#555;max-width:500px}
+      .hero-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.5rem}
+      .cta-button{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.8rem;border-radius:50px;text-decoration:none;font-weight:600;font-size:.95rem;transition:all .3s}
+      .cta-button.primary{background:var(--primary-forest);color:#fff}
+      .cta-button.secondary{background:transparent;color:var(--primary-forest);border:2px solid var(--primary-forest)}
+      .container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
+      .about,.contact{padding:4rem 0}
+      .about h2,.contact h2,.events-section h2,.alacarte-section h2{font-size:2rem;margin-bottom:1rem}
+      .about p,.section-text{font-size:1.05rem;line-height:1.8;color:#555}
+      .contact-items-container{display:grid;gap:1.5rem}
+      .contact-item h4{margin:0 0 .5rem}
+      .contact-email-link{color:var(--primary-forest);text-decoration:none}
+      .directions-container{display:flex;gap:1rem;margin-top:.75rem;flex-wrap:wrap}
+      .directions-link{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.2rem;border-radius:25px;text-decoration:none;font-size:.9rem;font-weight:500;background:var(--primary-forest);color:#fff}
+      .footer{background:var(--primary-forest);color:#fff;padding:3rem 0 1.5rem}
+      .footer-logo{height:50px;width:auto;filter:brightness(0) invert(1)}
+      .footer-title{font-size:1.1rem;margin-bottom:1rem}
+      .footer .contact-value,.footer .contact-link{color:rgba(255,255,255,.8);text-decoration:none}
+      .footer-bottom{border-top:1px solid rgba(255,255,255,.15);margin-top:2rem;padding-top:1.5rem;text-align:center;font-size:.85rem;color:rgba(255,255,255,.6)}
+      .events-section,.alacarte-section{padding:4rem 0}
+      .section-subtitle{color:var(--secondary-terracotta);font-size:1.1rem;margin-bottom:1rem}
+      .address-text{margin:.75rem 0;font-size:1rem;line-height:1.6}
+      .noscript-banner{background:var(--primary-forest);color:#fff;text-align:center;padding:10px 15px;font-size:14px}
+      .hamburger-btn{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:5px}
+      .hamburger-line{width:24px;height:2px;background:var(--primary-forest);transition:all .3s}
+      @media(min-width:769px){.hero{min-height:90vh;padding-top:100px}.hero-title{font-size:3rem}.hero-container{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:3rem}.hamburger-btn{display:none}.contact-items-container{grid-template-columns:1fr 1fr}.footer-main{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem}}
     </style>
     <link rel="dns-prefetch" href="//ucarecdn.com">
     <link rel="dns-prefetch" href="//vercel-insights.com">
@@ -147,7 +166,7 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Restaurant",
+      "@type": ["Restaurant", "LocalBusiness"],
       "name": "Ullishtja Agroturizem",
       "alternateName": "Ullishtja Agri Turizëm",
       "description": "Authentic Albanian restaurant offering farm-to-table cuisine with traditional recipes and fresh ingredients in a beautiful mountain setting.",
@@ -173,6 +192,14 @@
         "longitude": 19.433569
       },
       "openingHours": "Mo-Su 11:00-22:00",
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+          "opens": "11:00",
+          "closes": "22:00"
+        }
+      ],
       "priceRange": "$$",
       "servesCuisine": ["Albanian", "Mediterranean", "Farm-to-table"],
       "hasMenu": "https://ullishtja-agroturizem.com/#menu",
@@ -314,17 +341,266 @@
     </script>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <noscript>
+      <div class="noscript-banner">
+        Kjo faqe funksionon m&euml; mir&euml; me JavaScript t&euml; aktivizuar. &mdash; This page works best with JavaScript enabled.
+      </div>
+    </noscript>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+    <div id="root">
+      <!--
+        Pre-rendered static HTML for SEO crawlers and non-JS users.
+        React will replace this content when the application boots.
+      -->
+      <div class="App">
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+        <!-- Navigation -->
+        <header class="navbar">
+          <div class="nav-container">
+            <div class="logo-container">
+              <img
+                src="/images/ullishtja_logo.jpeg"
+                alt="Ullishtja Agroturizem - Authentic Albanian Restaurant Logo"
+                class="logo"
+                width="120"
+                height="60"
+                fetchpriority="high"
+              />
+            </div>
+            <nav class="nav-menu desktop-nav">
+              <a href="#home" class="nav-link">Sht&euml;pia</a>
+              <a href="#about" class="nav-link">Rreth Nesh</a>
+              <a href="#alacarte" class="nav-link">Menuja</a>
+              <a href="/blog" class="nav-link">Blogu</a>
+              <a href="#contact" class="nav-link">Kontakti</a>
+            </nav>
+            <button class="hamburger-btn" aria-label="Toggle mobile menu">
+              <span class="hamburger-line"></span>
+              <span class="hamburger-line"></span>
+              <span class="hamburger-line"></span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section id="home" class="hero" style="background-image:url('/images/posters/hero-poster-mobile.png?v=20251114');background-size:cover;background-position:center">
+          <div class="hero-container">
+            <div class="hero-content">
+              <h1 class="hero-title">
+                <span class="title-line title-main">Ullishtja Agroturizem</span>
+              </h1>
+              <p class="hero-description">
+                Zbuloni shijen e tradit&euml;s n&euml; zem&euml;r t&euml; Shqip&euml;ris&euml;. P&euml;rb&euml;r&euml;s t&euml; fresk&euml;t, receta t&euml; vjetra dhe mikpritje e ngroht&euml; q&euml; nga viti 2021.
+              </p>
+              <div class="hero-actions">
+                <a href="#contact" class="cta-button primary">
+                  <span class="btn-text">Rezervime</span>
+                  <span class="btn-arrow">&rarr;</span>
+                </a>
+                <a href="#alacarte" class="cta-button secondary">
+                  <span class="btn-text">Shiko Menun&euml;</span>
+                </a>
+                <a href="#contact" class="cta-button secondary">
+                  <span class="btn-text">Drejtime</span>
+                </a>
+              </div>
+            </div>
+            <div class="hero-visual">
+              <div class="hero-image-container">
+                <div class="hero-main-image">
+                  <picture>
+                    <source srcset="/images/posters/hero-poster-mobile.png" media="(max-width: 600px)" />
+                    <img
+                      src="/images/posters/hero-poster.jpg"
+                      alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views"
+                      class="main-img"
+                      fetchpriority="high"
+                      width="600"
+                      height="400"
+                    />
+                  </picture>
+                </div>
+                <div class="floating-card">
+                  <div class="card-content">
+                    <div class="card-icon">&#127861;</div>
+                    <div class="card-text">
+                      <div class="card-title">Hapur &Ccedil;do Dit&euml;</div>
+                      <div class="card-subtitle">11:00 - 22:00</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about">
+          <div class="container">
+            <div class="about-content">
+              <div class="about-text">
+                <h2 id="about-heading">Historia Jon&euml;</h2>
+                <p>
+                  E vendosur n&euml; qytetin e bukur dhe antik shqiptar t&euml; Durr&euml;sit, Ullishtja Agriturizem ofron nj&euml; p&euml;rvoj&euml; autentike nga ferma n&euml; tavolin&euml;. Restoranti yn&euml; kremton traditat e pasura kulinare t&euml; Shqip&euml;ris&euml;, duke p&euml;rdorur p&euml;rb&euml;r&euml;s t&euml; fresk&euml;t nga kopshtet tona dhe fermat lokale.
+                </p>
+                <p>
+                  E themeluar n&euml; vitin 2021, ne krenohemi q&euml; sh&euml;rbejm&euml; ushqime tradicionale shqiptare t&euml; p&euml;rgatitura me dashuri dhe kujdes, ashtu si i b&euml;nin t&euml; par&euml;t tan&euml;. &Ccedil;do vakt tregon nj&euml; histori t&euml; trash&euml;gimis&euml; son&euml; dhe lidhjes me tok&euml;n.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Events Section -->
+        <section id="events" class="events-section">
+          <div class="container">
+            <div class="section-content">
+              <h2 id="events-heading">Eventet dhe Festimet</h2>
+              <h3 class="section-subtitle">Krijoni Kujtime t&euml; P&euml;rhershme</h3>
+              <p class="section-text">
+                Ullishtja Agriturizem ofron hap&euml;sira t&euml; bukura dhe atmosfer&euml; t&euml; ngroht&euml; p&euml;r t&euml; gjitha ngjarjet tuaja speciale. Nga fejesat tradicionale shqiptare te eventet korporative dhe festimet familjare, ne sigurojm&euml; q&euml; &ccedil;do moment t&euml; jet&euml; i paharruesh&euml;m.
+              </p>
+            </div>
+          </div>
+          <div class="section-image section-image-breakout">
+            <img
+              src="/images/posters/events-poster.jpg"
+              alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
+              class="section-img"
+              loading="lazy"
+              width="800"
+              height="500"
+            />
+          </div>
+        </section>
+
+        <!-- A la Carte / Menu Section -->
+        <section id="alacarte" class="alacarte-section">
+          <div class="container">
+            <div class="section-grid reverse">
+              <div class="section-image">
+                <img
+                  src="/images/posters/alacarte-poster.jpg"
+                  alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
+                  class="section-img"
+                  loading="lazy"
+                  width="800"
+                  height="500"
+                />
+              </div>
+              <div class="section-content">
+                <h2 id="alacarte-heading">Menuja</h2>
+                <h3 class="section-subtitle">P&euml;rjetoni Shijen e V&euml;rtet&euml; Shqiptare</h3>
+                <p class="section-text">
+                  Zbuloni nj&euml; risi shijesh n&euml; menun&euml; ton&euml; t&euml; plot&euml; a la carte, ku &ccedil;do pjat&euml; tregon nj&euml; histori t&euml; trash&euml;gimis&euml; kulinare shqiptare. P&euml;rb&euml;r&euml;sit tan&euml; t&euml; fresk&euml;t vijn&euml; direkt nga fermat lokale dhe kopshtet tona.
+                </p>
+                <p class="section-text">
+                  Nga antipastat tradicionale me djath&euml; t&euml; bardh&euml; dhe ullinje, te pjatat kryesore si Tav&euml; Kosi dhe Qofte t&euml; F&euml;rguara, &ccedil;do vakt p&euml;rgatitet me kujdesin dhe dashurin&euml; e tradit&euml;s familjare.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact">
+          <div class="container">
+            <h2 id="contact-heading">Na Vizitoni</h2>
+            <div class="contact-grid">
+              <div class="contact-info">
+                <div class="contact-items-container">
+                  <div class="contact-item">
+                    <h4>&#128205; Adresa</h4>
+                    <p class="address-text">
+                      Ullishtja Agroturizem<br />
+                      Durres, Albania
+                    </p>
+                    <div class="directions-container">
+                      <a href="https://maps.google.com/?q=41.340278,19.433569+(Ullishtja+Agroturizem)" target="_blank" rel="noopener noreferrer" class="directions-link google-maps">
+                        &#128506; Google Maps
+                      </a>
+                      <a href="http://maps.apple.com/?daddr=41.340278,19.433569&amp;q=Ullishtja+Agroturizem" target="_blank" rel="noopener noreferrer" class="directions-link apple-maps">
+                        &#127822; Apple Maps
+                      </a>
+                    </div>
+                  </div>
+                  <div class="contact-item">
+                    <h4>&#128222; Telefoni</h4>
+                    <p><a href="tel:+35568409405" class="contact-email-link">+355 68 409 0405</a></p>
+                  </div>
+                  <div class="contact-item">
+                    <h4>&#128231; Email</h4>
+                    <p><a href="mailto:hi@ullishtja-agroturizem.com" class="contact-email-link">hi@ullishtja-agroturizem.com</a></p>
+                  </div>
+                  <div class="contact-item">
+                    <h4>&#128339; Oraret</h4>
+                    <p><span class="contact-email-link">&Ccedil;do dit&euml;: 11:00 - 22:00</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+          <div class="container">
+            <div class="footer-content">
+              <div class="footer-main">
+                <div class="footer-section footer-company">
+                  <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem" class="footer-logo" loading="lazy" width="120" height="60" />
+                </div>
+                <div class="footer-section footer-contact">
+                  <h4 class="footer-title">Na Vizitoni</h4>
+                  <div class="contact-item">
+                    <span class="contact-icon">&#128205;</span>
+                    <span class="contact-value">Ullishtja Agroturizem, Durres, Albania</span>
+                  </div>
+                  <div class="contact-item">
+                    <span class="contact-icon">&#128222;</span>
+                    <a href="tel:+35568409405" class="contact-value contact-link">+355 68 409 0405</a>
+                  </div>
+                  <div class="contact-item">
+                    <span class="contact-icon">&#128231;</span>
+                    <a href="mailto:hi@ullishtja-agroturizem.com" class="contact-value contact-link">hi@ullishtja-agroturizem.com</a>
+                  </div>
+                  <div class="contact-item">
+                    <span class="contact-icon">&#128339;</span>
+                    <span class="contact-value">&Ccedil;do dit&euml;: 11:00 - 22:00</span>
+                  </div>
+                </div>
+                <div class="footer-section footer-links">
+                  <h4 class="footer-title">Linqe t&euml; Shpejta</h4>
+                  <nav class="footer-nav">
+                    <a href="#home" class="footer-link">Sht&euml;pia</a>
+                    <a href="#about" class="footer-link">Rreth Nesh</a>
+                    <a href="#alacarte" class="footer-link">Menuja</a>
+                    <a href="/blog" class="footer-link">Blogu</a>
+                    <a href="#contact" class="footer-link">Kontakti</a>
+                  </nav>
+                </div>
+              </div>
+              <div class="footer-bottom">
+                <div class="footer-copyright">
+                  <p>&copy; 2025 Ullishtja Agroturizem. T&euml; gjitha t&euml; drejtat e rezervuara.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+
+    <!-- Deferred: Google Ads phone-call conversion tracking (non-critical) -->
+    <script>
+      window.addEventListener('load', function() {
+        document.addEventListener('click', function(e) {
+          if (e.target.closest('[href*="tel:"]')) {
+            gtag('event', 'conversion', {'send_to': 'AW-17442877024/5cBuCOq0tr8bEODctP1A'});
+          }
+        }, {capture: true});
+      });
+    </script>
   </body>
 </html>

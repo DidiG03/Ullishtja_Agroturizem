@@ -112,10 +112,10 @@ const SEOHead = ({
     updateMetaTag('og:url', `https://ullishtja-agroturizem.com/${pageSection !== 'home' ? '#' + pageSection : ''}`, 'property');
     updateMetaTag('og:locale', getOGLocale(currentLanguage), 'property');
 
-    // Update Twitter tags
-    updateMetaTag('twitter:title', title, 'property');
-    updateMetaTag('twitter:description', description, 'property');
-    updateMetaTag('twitter:image', image, 'property');
+    // Update Twitter tags (Twitter uses name, not property)
+    updateMetaTag('twitter:title', title, 'name');
+    updateMetaTag('twitter:description', description, 'name');
+    updateMetaTag('twitter:image', image, 'name');
 
     // Update language-specific canonical URL
     const canonicalLink = document.querySelector('link[rel="canonical"]');
