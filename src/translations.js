@@ -157,6 +157,10 @@ export const translations = {
         hours: {
           title: "🕒 Orari",
           text: "E Hënë - E Diel\n11:00 - 22:00"
+        },
+        whatsapp: {
+          title: "💬 WhatsApp",
+          text: "+355 68 409 0405"
         }
       },
       reservation: {
@@ -1032,6 +1036,10 @@ export const translations = {
         hours: {
           title: "🕒 Hours",
           text: "Monday - Sunday\n10:00 AM - 10:00 PM"
+        },
+        whatsapp: {
+          title: "💬 WhatsApp",
+          text: "+355 68 409 0405"
         }
       },
       reservation: {
@@ -1907,6 +1915,10 @@ export const translations = {
         hours: {
           title: "🕒 Orari",
           text: "Lunedì - Domenica\n11:00 - 22:00"
+        },
+        whatsapp: {
+          title: "💬 WhatsApp",
+          text: "+355 68 409 0405"
         }
       },
       reservation: {

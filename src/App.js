@@ -391,7 +391,7 @@ function App() {
         id="home"
         className="hero"
         style={{
-          backgroundImage: "url('/images/posters/hero-poster-mobile.png?v=20251114')",
+          backgroundImage: "url('/images/posters/hero-poster-mobile.png')",
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
@@ -417,9 +417,17 @@ function App() {
               <span className="badge-icon">⭐</span>
             </div> */}
             
+            <div className="hero-eyebrow">
+              <span className="eyebrow-line"></span>
+              <span className="eyebrow-text">Est. 2021 &middot; Durr&euml;s, Albania</span>
+              <span className="eyebrow-line"></span>
+            </div>
+            
             <h1 className="hero-title">
               <span className="title-line title-main">{t.hero.title}</span>
             </h1>
+
+            <div className="hero-gold-divider"></div>
 
             <p className="hero-description">
               {t.hero.description}
@@ -770,6 +778,23 @@ function App() {
                         </span>
                       ))}
                     </span>
+                  </p>
+                </div>
+                <div className="contact-item">
+                  <h4>{t.contact.info.whatsapp.title}</h4>
+                  <p>
+                    <a
+                      href="https://wa.me/35568409405"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="contact-email-link whatsapp-link"
+                      onClick={() => {
+                        googleAdsService.trackContactForm('whatsapp');
+                        analytics.trackEvent('contact', 'whatsapp_click', 'contact_section');
+                      }}
+                    >
+                      {t.contact.info.whatsapp.text}
+                    </a>
                   </p>
                 </div>
               </div>
