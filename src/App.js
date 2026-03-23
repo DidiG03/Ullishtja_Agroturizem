@@ -622,102 +622,99 @@ function App() {
       </Suspense>
 
       {/* Contact Section */}
-      <section id="contact" className="contact">
+      <section id="contact" className="contact contact-premium">
         <div className="container">
-          <h2 id="contact-heading">{t.contact.title}</h2>
-          <div className="contact-grid">
-            <div className="contact-info">
-              {/* <h3>{t.contact.info.title}</h3> */}
-              
-              <div className="contact-items-container">
-                {/* Interactive Map */}
-                <div className="contact-item">
-                  <h4>{t.contact.info.address.title}</h4>
-                  <div className="map-container">
-                    <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2995.456!2d19.4335694!3d41.3402778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDIwJzI1LjAiTiAxOcKwMjYnMDEuMCJF!5e0!3m2!1sen!2s!4v1699000000000!5m2!1sen!2s"
-                      width="100%"
-                      height="300"
-                      style={{ border: 0, borderRadius: '15px' }}
-                      allowFullScreen=""
-                      loading="lazy"
-                      referrerPolicy="no-referrer-when-downgrade"
-                      title="Ullishtja Agroturizem Location Map - Authentic Albanian Restaurant in Durres, Albania - Directions and Contact"
-                    ></iframe>
-                  </div>
-                  <p className="address-text">
-                    Ullishtja Agroturizem<br />
-                    Durres, Albania
-                  </p>
-                  <div className="directions-container">
-                    <a 
-                      href="https://maps.google.com/?q=41.340278,19.433569+(Ullishtja+Agroturizem)" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="directions-link google-maps"
-                      onClick={handleDirectionsClick}
-                    >
-                      🗺️ Google Maps
-                    </a>
-                    <a 
-                      href="http://maps.apple.com/?daddr=41.340278,19.433569&q=Ullishtja+Agroturizem" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="directions-link apple-maps"
-                    >
-                      🍎 Apple Maps
-                    </a>
-                  </div>
-                </div>
-                
-                <div className="contact-item">
-                  <h4>{t.contact.info.phone.title}</h4>
-                  <p>
-                                    <a href="tel:+35568409405" className="contact-email-link" onClick={handlePhoneClick}>
+          <div className="contact-premium-header">
+            <h2 id="contact-heading">{t.contact.title}</h2>
+            <p className="contact-premium-subtitle">{t.contact.info.title}</p>
+          </div>
+
+          <div className="contact-premium-layout">
+            <article className="contact-map-card">
+              <h3 className="contact-block-title">{t.contact.info.address.title}</h3>
+              <div className="contact-map-wrap">
+                <iframe
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2995.456!2d19.4335694!3d41.3402778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDIwJzI1LjAiTiAxOcKwMjYnMDEuMCJF!5e0!3m2!1sen!2s!4v1699000000000!5m2!1sen!2s"
+                  width="100%"
+                  height="340"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  title="Ullishtja Agroturizem Location Map - Authentic Albanian Restaurant in Durres, Albania - Directions and Contact"
+                ></iframe>
+              </div>
+
+              <p className="contact-location-copy">
+                Ullishtja Agroturizem<br />
+                Durres, Albania
+              </p>
+
+              <div className="contact-map-actions">
+                <a
+                  href="https://maps.google.com/?q=41.340278,19.433569+(Ullishtja+Agroturizem)"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="contact-map-btn contact-map-btn-primary"
+                  onClick={handleDirectionsClick}
+                >
+                  Google Maps
+                </a>
+                <a
+                  href="http://maps.apple.com/?daddr=41.340278,19.433569&q=Ullishtja+Agroturizem"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="contact-map-btn contact-map-btn-secondary"
+                >
+                  Apple Maps
+                </a>
+              </div>
+            </article>
+
+            <div className="contact-info-grid">
+              <article className="contact-info-card">
+                <h3 className="contact-block-title">{t.contact.info.phone.title}</h3>
+                <a href="tel:+35568409405" className="contact-info-value" onClick={handlePhoneClick}>
                   {t.contact.info.phone.text}
                 </a>
-                  </p>
-                </div>
-                <div className="contact-item">
-                  <h4>{t.contact.info.email.title}</h4>
-                  <p>
-                                    <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-email-link" onClick={handleEmailClick}>
+              </article>
+
+              <article className="contact-info-card">
+                <h3 className="contact-block-title">{t.contact.info.email.title}</h3>
+                <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-info-value" onClick={handleEmailClick}>
                   {t.contact.info.email.text}
                 </a>
-                  </p>
-                </div>
-                <div className="contact-item">
-                  <h4>{t.contact.info.hours.title}</h4>
-                  <p>
-                    <span className="contact-email-link">
-                      {t.contact.info.hours.text.split('\n').map((line, index) => (
-                        <span key={index}>
-                          {line}
-                          {index < t.contact.info.hours.text.split('\n').length - 1 && <br />}
-                        </span>
-                      ))}
+              </article>
+
+              <article className="contact-info-card">
+                <h3 className="contact-block-title">{t.contact.info.hours.title}</h3>
+                <p className="contact-info-value contact-info-hours">
+                  {t.contact.info.hours.text.split('\n').map((line, index) => (
+                    <span key={index}>
+                      {line}
+                      {index < t.contact.info.hours.text.split('\n').length - 1 && <br />}
                     </span>
-                  </p>
-                </div>
-                <div className="contact-item">
-                  <h4>{t.contact.info.whatsapp.title}</h4>
-                  <p>
-                    <a
-                      href="https://wa.me/35568409405"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="contact-email-link whatsapp-link"
-                      onClick={() => {
-                        googleAdsService.trackContactForm('whatsapp');
-                        analytics.trackEvent('contact', 'whatsapp_click', 'contact_section');
-                      }}
-                    >
-                      {t.contact.info.whatsapp.text}
-                    </a>
-                  </p>
-                </div>
-              </div>
+                  ))}
+                </p>
+              </article>
+
+              <article className="contact-info-card">
+                <h3 className="contact-block-title">{t.contact.info.whatsapp.title}</h3>
+                <a
+                  href="https://wa.me/35568409405"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="contact-info-value"
+                  onClick={() => {
+                    googleAdsService.trackContactForm('whatsapp');
+                    analytics.trackEvent('contact', 'whatsapp_click', 'contact_section');
+                  }}
+                >
+                  {t.contact.info.whatsapp.text}
+                </a>
+              </article>
             </div>
+          </div>
             {/* Reservation Form - Temporarily Disabled */}
             {/* <div className="reservation-form">
               <h3>{t.contact.reservation.title}</h3>
@@ -886,7 +883,6 @@ function App() {
                 </button>
               </form>
             </div> */}
-          </div>
         </div>
       </section>
 

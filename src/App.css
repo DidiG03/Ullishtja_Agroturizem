@@ -3694,3 +3694,200 @@ body {
 @media (max-width: 768px) {
   .lang-switcher-compact { display: flex; }
 }
+
+/* Contact section redesign — premium dark style */
+.contact-premium {
+  background:
+    radial-gradient(1200px 500px at 8% 0%, rgba(201, 169, 110, 0.08), transparent 55%),
+    radial-gradient(900px 420px at 95% 100%, rgba(74, 103, 65, 0.12), transparent 55%),
+    linear-gradient(180deg, #0d1b12 0%, #112419 100%);
+  color: rgba(255, 255, 255, 0.92);
+  padding: 6rem 0;
+  border-top: 1px solid rgba(201, 169, 110, 0.14);
+  border-bottom: 1px solid rgba(201, 169, 110, 0.14);
+}
+
+.contact-premium .container {
+  max-width: 1240px;
+}
+
+.contact-premium .contact-premium-header {
+  text-align: center;
+  margin-bottom: 2.4rem;
+}
+
+.contact-premium h2 {
+  color: #ffffff;
+  margin-bottom: 0.45rem;
+}
+
+.contact-premium .contact-premium-subtitle {
+  margin: 0;
+  color: rgba(201, 169, 110, 0.82);
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.72rem;
+}
+
+.contact-premium .contact-premium-layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 1.25rem;
+}
+
+.contact-premium .contact-map-card,
+.contact-premium .contact-info-card {
+  background: linear-gradient(180deg, rgba(18, 37, 26, 0.86), rgba(14, 31, 22, 0.92));
+  border: 1px solid rgba(201, 169, 110, 0.2);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28);
+  border-radius: 6px;
+}
+
+.contact-premium .contact-map-card {
+  padding: 1.35rem;
+}
+
+.contact-premium .contact-block-title {
+  margin: 0 0 0.95rem;
+  color: #fff;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  line-height: 1.15;
+}
+
+.contact-premium .contact-map-wrap {
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid rgba(201, 169, 110, 0.2);
+}
+
+.contact-premium .contact-map-wrap iframe {
+  display: block;
+}
+
+.contact-premium .contact-location-copy {
+  margin: 1rem 0 1.15rem;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+
+.contact-premium .contact-map-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.contact-premium .contact-map-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.95rem 1rem;
+  border-radius: 0;
+  transition: all 0.25s ease;
+}
+
+.contact-premium .contact-map-btn-primary {
+  background: var(--accent-gold);
+  border: 1px solid var(--accent-gold);
+  color: #111;
+}
+
+.contact-premium .contact-map-btn-primary:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.contact-premium .contact-map-btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(201, 169, 110, 0.5);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.contact-premium .contact-map-btn-secondary:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  transform: translateY(-1px);
+}
+
+.contact-premium .contact-info-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: 1fr;
+}
+
+.contact-premium .contact-info-card {
+  padding: 1.1rem 1.2rem;
+}
+
+.contact-premium .contact-info-value {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+  font-size: 1.08rem;
+  line-height: 1.6;
+  display: inline-block;
+  border-bottom: 1px solid transparent;
+  transition: all 0.25s ease;
+}
+
+.contact-premium a.contact-info-value:hover {
+  color: var(--accent-gold);
+  border-bottom-color: rgba(201, 169, 110, 0.45);
+}
+
+.contact-premium .contact-info-hours {
+  color: rgba(255, 255, 255, 0.84);
+}
+
+@media (max-width: 1024px) {
+  .contact-premium .contact-premium-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-premium .contact-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-premium {
+    padding: 4.2rem 0;
+  }
+
+  .contact-premium .contact-premium-header {
+    margin-bottom: 1.6rem;
+  }
+
+  .contact-premium .contact-map-card,
+  .contact-premium .contact-info-card {
+    border-radius: 4px;
+  }
+
+  .contact-premium .contact-map-card {
+    padding: 1rem;
+  }
+
+  .contact-premium .contact-block-title {
+    font-size: 1.3rem;
+  }
+
+  .contact-premium .contact-map-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-premium .contact-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-premium .contact-info-value {
+    font-size: 1rem;
+  }
+}
