@@ -6,7 +6,9 @@ const SEOHead = ({
   customTitle = null,
   customDescription = null,
   customKeywords = null,
-  customImage = null
+  customImage = null,
+  blogPost = null,
+  customRobots = null
 }) => {
   // const t = translations[currentLanguage] || translations.al; // not needed here
   
@@ -62,6 +64,23 @@ const SEOHead = ({
         description: "Organizza il tuo evento perfetto presso Ullishtja Agroturizem. Matrimoni tradizionali albanesi, eventi aziendali e celebrazioni familiari. Capacità fino a 120 ospiti con vista sulle montagne.",
         keywords: "location matrimoni Durazzo, eventi aziendali Albania, venue celebrazioni familiari, organizzazione matrimoni Durazzo, location eventi Albania"
       }
+    },
+    blog: {
+      al: {
+        title: "Blog | Ullishtja Agroturizem",
+        description: "Artikuj për agroturizmin, kuzhinën tradicionale shqiptare, receta sezonale dhe jetën në fermë tek Ullishtja Agroturizem.",
+        keywords: "blog agroturizem, blog kuzhine shqiptare, receta tradicionale, fermë në tavolinë, ullishtja blog"
+      },
+      en: {
+        title: "Blog | Ullishtja Agroturizem",
+        description: "Stories about Albanian agritourism, traditional cuisine, seasonal recipes, and farm-to-table life at Ullishtja Agroturizem.",
+        keywords: "agritourism blog, Albanian cuisine blog, traditional recipes, farm to table stories, ullishtja blog"
+      },
+      it: {
+        title: "Blog | Ullishtja Agroturizem",
+        description: "Approfondimenti su agriturismo albanese, cucina tradizionale, ricette stagionali e vita in fattoria da Ullishtja Agroturizem.",
+        keywords: "blog agriturismo, blog cucina albanese, ricette tradizionali, storie dalla fattoria, ullishtja blog"
+      }
     }
   };
 
@@ -73,6 +92,29 @@ const SEOHead = ({
   const description = customDescription || currentSeoData.description;
   const keywords = customKeywords || currentSeoData.keywords;
   const image = customImage || "https://ullishtja-agroturizem.com/images/posters/hero-poster.jpg";
+  const robotsContent =
+    customRobots || 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
+
+  const ensureAbsoluteUrl = useCallback((url) => {
+    if (!url) return null;
+    if (/^https?:\/\//i.test(url)) return url;
+    return `https://ullishtja-agroturizem.com${url.startsWith('/') ? '' : '/'}${url}`;
+  }, []);
+
+  const getLangParam = useCallback((lang) => {
+    return lang === 'al' ? '' : `?lang=${lang}`;
+  }, []);
+
+  const getCanonicalUrl = useCallback(() => {
+    const url = new URL(window.location.href);
+    url.hash = '';
+    if (currentLanguage === 'al') {
+      url.searchParams.delete('lang');
+    } else {
+      url.searchParams.set('lang', currentLanguage);
+    }
+    return url.toString();
+  }, [currentLanguage]);
 
   // Language-specific Open Graph locale
   const getOGLocale = (lang) => {
@@ -83,6 +125,7 @@ const SEOHead = ({
       default: return 'sq_AL';
     }
   };
+  const locale = getOGLocale(currentLanguage);
 
   // Update meta tags dynamically
   useEffect(() => {
@@ -104,23 +147,56 @@ const SEOHead = ({
     updateMetaTag('description', description);
     updateMetaTag('keywords', keywords);
     updateMetaTag('title', title);
+    updateMetaTag('robots', robotsContent);
 
     // Update Open Graph tags
     updateMetaTag('og:title', title, 'property');
     updateMetaTag('og:description', description, 'property');
-    updateMetaTag('og:image', image, 'property');
-    updateMetaTag('og:url', `https://ullishtja-agroturizem.com/${pageSection !== 'home' ? '#' + pageSection : ''}`, 'property');
-    updateMetaTag('og:locale', getOGLocale(currentLanguage), 'property');
+    updateMetaTag('og:image', ensureAbsoluteUrl(image), 'property');
+    updateMetaTag('og:url', getCanonicalUrl(), 'property');
+    updateMetaTag('og:locale', locale, 'property');
+    updateMetaTag('og:type', blogPost ? 'article' : 'website', 'property');
 
     // Update Twitter tags (Twitter uses name, not property)
     updateMetaTag('twitter:title', title, 'name');
     updateMetaTag('twitter:description', description, 'name');
-    updateMetaTag('twitter:image', image, 'name');
+    updateMetaTag('twitter:image', ensureAbsoluteUrl(image), 'name');
+    updateMetaTag('twitter:url', getCanonicalUrl(), 'name');
 
-    // Update language-specific canonical URL
+    // Update canonical URL
     const canonicalLink = document.querySelector('link[rel="canonical"]');
     if (canonicalLink) {
-      canonicalLink.href = `https://ullishtja-agroturizem.com/${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`;
+      canonicalLink.href = getCanonicalUrl();
+    }
+
+    // Keep html lang in sync for crawlers + accessibility
+    document.documentElement.lang = currentLanguage === 'al' ? 'sq' : currentLanguage;
+
+    // Update hreflang alternates for current pathname
+    const hreflangMap = [
+      { hreflang: 'sq', lang: 'al' },
+      { hreflang: 'en', lang: 'en' },
+      { hreflang: 'it', lang: 'it' },
+      { hreflang: 'x-default', lang: 'al' },
+    ];
+    const currentPath = window.location.pathname || '/';
+    hreflangMap.forEach(({ hreflang, lang }) => {
+      const href = `https://ullishtja-agroturizem.com${currentPath}${getLangParam(lang)}`;
+      let linkTag = document.querySelector(`link[rel="alternate"][hreflang="${hreflang}"]`);
+      if (!linkTag) {
+        linkTag = document.createElement('link');
+        linkTag.setAttribute('rel', 'alternate');
+        linkTag.setAttribute('hreflang', hreflang);
+        document.head.appendChild(linkTag);
+      }
+      linkTag.setAttribute('href', href);
+    });
+
+    // Article-specific tags for blog posts
+    if (blogPost) {
+      updateMetaTag('article:published_time', blogPost.publishedAt || blogPost.publishDate || '', 'property');
+      updateMetaTag('article:modified_time', blogPost.updatedAt || blogPost.publishDate || '', 'property');
+      updateMetaTag('article:section', blogPost.categoryName || 'Blog', 'property');
     }
 
     // Track page view for analytics
@@ -132,17 +208,78 @@ const SEOHead = ({
       });
     }
 
-  }, [title, description, keywords, image, pageSection, currentLanguage]);
+  }, [
+    title,
+    description,
+    keywords,
+    image,
+    robotsContent,
+    pageSection,
+    currentLanguage,
+    blogPost,
+    locale,
+    ensureAbsoluteUrl,
+    getCanonicalUrl,
+    getLangParam,
+  ]);
 
   // Generate structured data for the current section (memoized)
   const getStructuredData = useCallback(() => {
+    const canonicalUrl = getCanonicalUrl();
+    const inLanguage = currentLanguage === 'al' ? 'sq-AL' : currentLanguage === 'it' ? 'it-IT' : 'en-US';
+
+    if (pageSection === 'blog' && blogPost) {
+      return {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": blogPost.title || title,
+        "description": description,
+        "image": ensureAbsoluteUrl(image),
+        "inLanguage": inLanguage,
+        "author": {
+          "@type": "Organization",
+          "name": "Ullishtja Agroturizem"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Ullishtja Agroturizem",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://ullishtja-agroturizem.com/images/ullishtja_logo.jpeg"
+          }
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": canonicalUrl
+        },
+        "datePublished": blogPost.publishedAt || blogPost.publishDate || undefined,
+        "dateModified": blogPost.updatedAt || blogPost.publishDate || undefined,
+        "url": canonicalUrl
+      };
+    }
+
+    if (pageSection === 'blog') {
+      return {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        "name": "Ullishtja Agroturizem Blog",
+        "description": description,
+        "url": canonicalUrl,
+        "inLanguage": inLanguage,
+        "publisher": {
+          "@type": "Organization",
+          "name": "Ullishtja Agroturizem"
+        }
+      };
+    }
+
     const baseStructuredData = {
       "@context": "https://schema.org",
       "@type": "Restaurant",
       "name": "Ullishtja Agroturizem",
       "url": "https://ullishtja-agroturizem.com",
       "description": description,
-      "image": image,
+      "image": ensureAbsoluteUrl(image),
       "telephone": "+355 68 409 0405",
       "email": "hi@ullishtja-agroturizem.com",
       "address": {
@@ -181,7 +318,7 @@ const SEOHead = ({
     }
 
     return baseStructuredData;
-  }, [description, image, pageSection]);
+  }, [description, image, pageSection, blogPost, title, currentLanguage, ensureAbsoluteUrl, getCanonicalUrl]);
 
   // Add structured data script to head
   useEffect(() => {

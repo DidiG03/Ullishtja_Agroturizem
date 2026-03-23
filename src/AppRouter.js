@@ -93,6 +93,14 @@ const AppRouter = () => {
                   </Suspense>
                 } 
               />
+              <Route 
+                path="/blog/:slug" 
+                element={
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <Blog />
+                  </Suspense>
+                } 
+              />
               
               {/* Fallback route - redirect to home */}
               <Route path="*" element={<App />} />

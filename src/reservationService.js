@@ -10,7 +10,7 @@ const EMAILJS_CONFIG = {
 // Restaurant contact information
 const RESTAURANT_CONFIG = {
   email: 'hi@ullishtja-agroturizem.com', // Restaurant email
-  phone: '+4407312706087', // Replace with your WhatsApp number (include country code)
+  phone: '+355684090405', // WhatsApp number in E.164 format
   name: 'Ullishtja Agriturizem'
 };
 

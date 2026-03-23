@@ -141,7 +141,7 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
                 </div>
                 <div className="contact-item">
                   <span className="contact-icon">📞</span>
-                  <a href="tel:+35568409405" className="contact-value contact-link">
+                  <a href="tel:+355684090405" className="contact-value contact-link">
                     +355 68 409 0405
                   </a>
                 </div>
@@ -196,7 +196,7 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
                    onClick={handleDirectionsClick}>
                   🗺️ {t.footer.directions}
                 </a>
-                <a href="tel:+35568409405" className="footer-phone-link">
+                <a href="tel:+355684090405" className="footer-phone-link">
                   📞 {t.footer.callUs}
                 </a>
                 <div className="language-selector footer-lang">

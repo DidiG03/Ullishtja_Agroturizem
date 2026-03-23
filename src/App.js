@@ -426,6 +426,8 @@ function App() {
                     sizes="(max-width: 1200px) 50vw, min(600px, 45vw)"
                     loading="eager"
                     fetchPriority="high"
+                    width={600}
+                    height={400}
                   />
                 </Suspense>
                 <div className="image-decoration decoration-1"></div>
@@ -526,6 +528,8 @@ function App() {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
               loading="lazy"
               fetchPriority="low"
+              width={1200}
+              height={874}
             />
           </Suspense>
           <div className="image-overlay">
@@ -550,6 +554,8 @@ function App() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 42vw"
                   loading="lazy"
                   fetchPriority="low"
+                  width={1200}
+                  height={874}
                 />
               </Suspense>
               <div className="image-overlay">
@@ -674,7 +680,7 @@ function App() {
             <div className="contact-info-grid">
               <article className="contact-info-card">
                 <h3 className="contact-block-title">{t.contact.info.phone.title}</h3>
-                <a href="tel:+35568409405" className="contact-info-value" onClick={handlePhoneClick}>
+                <a href="tel:+355684090405" className="contact-info-value" onClick={handlePhoneClick}>
                   {t.contact.info.phone.text}
                 </a>
               </article>
@@ -701,7 +707,7 @@ function App() {
               <article className="contact-info-card">
                 <h3 className="contact-block-title">{t.contact.info.whatsapp.title}</h3>
                 <a
-                  href="https://wa.me/35568409405"
+                  href="https://wa.me/355684090405"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="contact-info-value"
@@ -855,7 +861,7 @@ function App() {
                         <div className="notice-text">
                           <strong>Large Group Reservation</strong>
                           <p>For groups of 9+ guests, please contact us directly for special arrangements:</p>
-                          <a href="tel:+35568409405" className="contact-link" onClick={handlePhoneClick}>📞 +355 68 409 0405</a>
+                          <a href="tel:+355684090405" className="contact-link" onClick={handlePhoneClick}>📞 +355 68 409 0405</a>
                         </div>
                       </div>
                     </div>
@@ -915,7 +921,7 @@ function App() {
                 </div>
                 <div className="contact-item">
                   <span className="contact-icon">📞</span>
-                  <a href="tel:+35568409405" className="contact-value contact-link" onClick={handlePhoneClick}>
+                  <a href="tel:+355684090405" className="contact-value contact-link" onClick={handlePhoneClick}>
                     +355 68 409 0405
                   </a>
                 </div>
@@ -970,7 +976,7 @@ function App() {
                    onClick={handleDirectionsClick}>
                   🗺️ {t.footer.directions}
                 </a>
-                <a href="tel:+35568409405" className="footer-phone-link" onClick={handlePhoneClick}>
+                <a href="tel:+355684090405" className="footer-phone-link" onClick={handlePhoneClick}>
                   📞 {t.footer.callUs}
                 </a>
                 <div className="language-selector footer-lang">

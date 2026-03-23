@@ -4,6 +4,7 @@ import { translations } from '../translations';
 import SEOHead from './SEOHead';
 import Layout from './Layout';
 import blogService from '../services/blogService';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Helper function to get language from localStorage or detect browser language
 const getInitialLanguage = () => {
@@ -35,6 +36,8 @@ const getInitialLanguage = () => {
 };
 
 const Blog = ({ currentLanguage: propLanguage }) => {
+  const navigate = useNavigate();
+  const { slug } = useParams();
   const [currentLanguage, setCurrentLanguage] = useState(propLanguage || getInitialLanguage());
   const [selectedPost, setSelectedPost] = useState(null);
   const [expandedPosts, setExpandedPosts] = useState({});
@@ -47,6 +50,11 @@ const Blog = ({ currentLanguage: propLanguage }) => {
   const [error, setError] = useState('');
 
   const t = translations[currentLanguage] || translations.al;
+
+  const buildBlogPath = (postSlug = null, lang = currentLanguage) => {
+    const basePath = postSlug ? `/blog/${postSlug}` : '/blog';
+    return lang === 'al' ? basePath : `${basePath}?lang=${lang}`;
+  };
 
   // Load data from database
   useEffect(() => {
@@ -188,8 +196,26 @@ const Blog = ({ currentLanguage: propLanguage }) => {
   // Handle back to blog from single post view
   const handleBackToBlog = () => {
     setSelectedPost(null);
+    navigate(buildBlogPath(null), { replace: false });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Sync route /blog/:slug <-> selected post
+  useEffect(() => {
+    if (loading) return;
+
+    if (slug) {
+      const matchedPost = posts.find((post) => post.slug === slug);
+      if (matchedPost) {
+        setSelectedPost(matchedPost);
+      } else {
+        setSelectedPost(null);
+      }
+      return;
+    }
+
+    setSelectedPost(null);
+  }, [slug, posts, loading]);
 
 
 
@@ -203,9 +229,16 @@ const Blog = ({ currentLanguage: propLanguage }) => {
           <SEOHead 
             currentLanguage={currentLanguage}
             pageSection="blog"
-            customTitle={`${selectedPost.title} - ${t.blog.title}`}
-            customDescription={selectedPost.excerpt}
-            customKeywords={`${selectedPost.title}, ${t.blog.categories[selectedPost.category]}, agriturismo, agricultura, ${currentLanguage === 'al' ? 'Ullishtja Shqipëri' : currentLanguage === 'it' ? 'Ullishtja Albania' : 'Ullishtja Albania'}`}
+            customTitle={`${selectedPost.title} | ${t.blog.title} | Ullishtja Agroturizem`}
+            customDescription={selectedPost.excerpt || t.blog.subtitle}
+            customKeywords={`${selectedPost.title}, ${selectedPost.category?.name || 'blog'}, ullishtja agroturizem, ${currentLanguage === 'al' ? 'restorant shqiptar' : currentLanguage === 'it' ? 'ristorante albanese' : 'albanian restaurant'}`}
+            customImage={selectedPost.featuredImageUrl || undefined}
+            blogPost={{
+              title: selectedPost.title,
+              publishedAt: selectedPost.publishedAt || selectedPost.publishDate,
+              updatedAt: selectedPost.updatedAt,
+              categoryName: selectedPost.category?.name || 'Blog',
+            }}
           />
           
           <div className="blog-header">
@@ -218,7 +251,7 @@ const Blog = ({ currentLanguage: propLanguage }) => {
                 >
                   ←
                 </button>
-                <h1 className="blog-title" style={{ margin: 0 }}>{t.blog.title}</h1>
+                <p className="blog-title" style={{ margin: 0 }}>{t.blog.title}</p>
                 <div style={{ width: 40 }} /> {/* Spacer to balance the layout */}
               </div>
             </div>
@@ -250,7 +283,11 @@ const Blog = ({ currentLanguage: propLanguage }) => {
                     <article 
                       key={post.id} 
                       className="related-post-card"
-                      onClick={() => setSelectedPost(post)}
+                      onClick={() => {
+                        setSelectedPost(post);
+                        navigate(buildBlogPath(post.slug), { replace: false });
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
                     >
                       <h4>{post.title}</h4>
                       <p>{truncateExcerpt(post.excerpt, 100)}</p>
@@ -268,6 +305,8 @@ const Blog = ({ currentLanguage: propLanguage }) => {
   }
 
   // Blog listing view
+  const hasNoPublishedPosts = !loading && !error && posts.length === 0;
+
   return (
     <Layout currentLanguage={currentLanguage}>
       <div className="blog-container">
@@ -277,6 +316,7 @@ const Blog = ({ currentLanguage: propLanguage }) => {
           customTitle={`${t.blog.title} - ${currentLanguage === 'al' ? 'Ullishtja Agroturizem' : currentLanguage === 'it' ? 'Ullishtja Agriturismo' : 'Ullishtja Agritourism'}`}
           customDescription={t.blog.subtitle}
           customKeywords={`blog agriturismo, agricultura organike, kuzhina tradicionale, ${currentLanguage === 'al' ? 'Ullishtja blog' : currentLanguage === 'it' ? 'blog Ullishtja' : 'Ullishtja blog'}, sustainable farming, traditional recipes`}
+          customRobots={hasNoPublishedPosts ? 'noindex, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' : null}
         />
         
         <div className="blog-header">
@@ -382,6 +422,7 @@ const Blog = ({ currentLanguage: propLanguage }) => {
                             className="read-full-btn"
                             onClick={() => {
                               setSelectedPost(post);
+                              navigate(buildBlogPath(post.slug), { replace: false });
                               window.scrollTo({ top: 0, behavior: 'smooth' });
                             }}
                           >

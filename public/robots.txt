@@ -27,5 +27,3 @@ Crawl-delay: 1
 # Sitemap location
 Sitemap: https://ullishtja-agroturizem.com/sitemap.xml
 
-# Additional sitemaps for different content types
-Sitemap: https://ullishtja-agroturizem.com/sitemap.xml

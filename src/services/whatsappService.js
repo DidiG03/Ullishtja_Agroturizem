@@ -20,7 +20,7 @@ const WHATSAPP_CONFIG = {
   },
   
   // Your restaurant WhatsApp number (public information)
-  restaurantNumber: '+4407312706087'
+  restaurantNumber: '+355684090405'
 };
 
 // Send WhatsApp message using Twilio
