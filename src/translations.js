@@ -136,23 +136,23 @@ export const translations = {
       info: {
         title: "Vendndodhja",
         address: {
-          title: "📍 Adresa",
+          title: "Adresa",
           text: "Fshati Shqiptar\nKontaktoni për drejtime të sakta"
         },
         phone: {
-          title: "📞 Telefoni",
+          title: "Telefoni",
           text: " +355 68 409 0405"
         },
         email: {
-          title: "📧 Email",
+          title: "Email",
           text: "hi@ullishtja-agroturizem.com"
         },
         hours: {
-          title: "🕒 Orari",
+          title: "Orari",
           text: "E Hënë - E Diel\n11:00 - 22:00"
         },
         whatsapp: {
-          title: "💬 WhatsApp",
+          title: "WhatsApp",
           text: "+355 68 409 0405"
         }
       },
@@ -1008,23 +1008,23 @@ export const translations = {
       info: {
         title: "Location",
         address: {
-          title: "📍 Address",
+          title: "Address",
           text: "Albanian Countryside\nContact for exact directions"
         },
         phone: {
-          title: "📞 Phone",
+          title: "Phone",
           text: " +355 68 409 0405"
         },
         email: {
-          title: "📧 Email",
+          title: "Email",
           text: "hi@ullishtja-agroturizem.com"
         },
         hours: {
-          title: "🕒 Hours",
+          title: "Hours",
           text: "Monday - Sunday\n10:00 AM - 10:00 PM"
         },
         whatsapp: {
-          title: "💬 WhatsApp",
+          title: "WhatsApp",
           text: "+355 68 409 0405"
         }
       },
@@ -1880,23 +1880,23 @@ export const translations = {
       info: {
         title: "Posizione",
         address: {
-          title: "📍 Indirizzo",
+          title: "Indirizzo",
           text: "Campagna Albanese\nContattate per indicazioni precise"
         },
         phone: {
-          title: "📞 Telefono",
+          title: "Telefono",
           text: " +355 68 409 0405"
         },
         email: {
-          title: "📧 Email",
+          title: "Email",
           text: "hi@ullishtja-agroturizem.com"
         },
         hours: {
-          title: "🕒 Orari",
+          title: "Orari",
           text: "Lunedì - Domenica\n11:00 - 22:00"
         },
         whatsapp: {
-          title: "💬 WhatsApp",
+          title: "WhatsApp",
           text: "+355 68 409 0405"
         }
       },
