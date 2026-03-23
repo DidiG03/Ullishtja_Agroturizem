@@ -35,7 +35,6 @@ const getInitialLanguage = () => {
 
 const Layout = ({ children, currentLanguage: propLanguage }) => {
   const [currentLanguage, setCurrentLanguage] = useState(propLanguage || getInitialLanguage());
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [reviewsData, setReviewsData] = useState(null);
 
   const t = useMemo(() => translations[currentLanguage], [currentLanguage]);
@@ -81,15 +80,6 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
     }));
   };
 
-  // Mobile menu handlers
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setMobileMenuOpen(false);
-  };
-
   // Handle directions click with conversion tracking
   const handleDirectionsClick = () => {
     googleAdsService.trackGetDirectionsConversion();
@@ -110,48 +100,10 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
     <div className="layout">
       {/* Navigation Header */}
       <header className="navbar">
-        <div className="nav-container">
-          <div className="logo-container">
-            <a href="/">
-              <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Authentic Albanian Restaurant Logo" className="logo" loading="eager" decoding="async" fetchpriority="high" width="100" height="50" />
-            </a>
-          </div>
-          
-          {/* Desktop Navigation */}
-          <nav className="nav-menu desktop-nav">
-            <a href="/#home" className="nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
-            <a href="/#about" className="nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
-            <a href="/#menu" className="nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-            <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="nav-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
-            <a href="/#contact" className="nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
-          </nav>
-
-          {/* Mobile Navigation */}
-          <div className={`mobile-nav ${mobileMenuOpen ? 'active' : ''}`}>
-            <div className="mobile-nav-header">
-              <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Mobile Logo" className="mobile-logo" loading="eager" decoding="async" width="100" height="50" />
-              <button className="mobile-close-btn" onClick={closeMobileMenu}>×</button>
-            </div>
-            <nav className="mobile-nav-menu">
-              <a href="/#home" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
-              <a href="/#about" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
-              <a href="/#menu" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-              <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
-              <a href="/#contact" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
-            </nav>
-          </div>
-
-          {/* Mobile Menu Overlay */}
-          {mobileMenuOpen && <div className="mobile-overlay" onClick={closeMobileMenu}></div>}
-
-          {/* Hamburger Menu Button */}
-          <button className="hamburger-btn" onClick={toggleMobileMenu} aria-label="Toggle mobile menu">
-            <span className={`hamburger-line ${mobileMenuOpen ? 'active' : ''}`}></span>
-            <span className={`hamburger-line ${mobileMenuOpen ? 'active' : ''}`}></span>
-            <span className={`hamburger-line ${mobileMenuOpen ? 'active' : ''}`}></span>
-          </button>
-
-
+        <div className="nav-container nav-container--logo-only">
+          <a href="/" className="logo-container logo-home-link" aria-label={t.nav.home}>
+            <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Authentic Albanian Restaurant Logo" className="logo" loading="eager" decoding="async" fetchpriority="high" width="100" height="50" />
+          </a>
         </div>
       </header>
 
@@ -211,11 +163,11 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
               <div className="footer-section footer-links">
                 <h4 className="footer-title">{t.footer.quickLinks}</h4>
                 <nav className="footer-nav">
-                  <a href="/#home" className="footer-link" onClick={closeMobileMenu}>{t.nav.home}</a>
-                  <a href="/#about" className="footer-link" onClick={closeMobileMenu}>{t.nav.about}</a>
-                  <a href="/#menu" className="footer-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-                  <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
-                  <a href="/#contact" className="footer-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
+                  <a href="/#home" className="footer-link">{t.nav.home}</a>
+                  <a href="/#about" className="footer-link">{t.nav.about}</a>
+                  <a href="/#alacarte" className="footer-link">{t.nav.menu}</a>
+                  <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.blog}</a>
+                  <a href="/#contact" className="footer-link">{t.nav.contact}</a>
                 </nav>
               </div>
 

@@ -14,7 +14,6 @@ import PosterPicture from './components/PosterPicture';
 // Lazy load components for better performance
 const MobileMenu = React.lazy(() => import('./components/MobileMenu'));
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
-const GooglePhotos = React.lazy(() => import('./components/GooglePhotos'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
   
 
@@ -98,9 +97,7 @@ function App() {
   useScrollOptimization();
   
   // Initialize mobile optimizations
-  const { preventBodyScroll, enableBodyScroll } = useMobileOptimizations();
-
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { enableBodyScroll } = useMobileOptimizations();
   
   // Dynamic menu state
   const [menuCategories, setMenuCategories] = useState([]);
@@ -175,28 +172,9 @@ function App() {
     loadReviews();
   }, []);
 
-  // Memoize event handlers with useCallback
-  const toggleMobileMenu = useCallback(() => {
-    const newState = !mobileMenuOpen;
-    setMobileMenuOpen(newState);
-    
-    // Prevent body scroll when menu is open
-    if (newState) {
-      preventBodyScroll();
-    } else {
-      enableBodyScroll();
-    }
-  }, [mobileMenuOpen, preventBodyScroll, enableBodyScroll]);
-
-  const closeMobileMenu = useCallback(() => {
-    setMobileMenuOpen(false);
-    enableBodyScroll();
-  }, [enableBodyScroll]);
-
   const changeLanguage = useCallback((lang) => {
     const previousLanguage = currentLanguage;
     setCurrentLanguage(lang);
-    closeMobileMenu(); // Close mobile menu when language changes
     
     // Store language preference in localStorage
     localStorage.setItem('preferredLanguage', lang);
@@ -205,7 +183,7 @@ function App() {
     if (previousLanguage !== lang) {
       analytics.trackLanguageChange(lang, previousLanguage);
     }
-  }, [closeMobileMenu, currentLanguage, analytics]);
+  }, [currentLanguage, analytics]);
 
 
 
@@ -327,8 +305,8 @@ function App() {
       
       {/* Navigation Header */}
       <header className="navbar">
-        <div className="nav-container">
-          <div className="logo-container">
+        <div className="nav-container nav-container--logo-only">
+          <a href="#home" className="logo-container logo-home-link" aria-label={t.nav.home}>
             <img
               src="/images/ullishtja_logo.jpeg"
               alt="Ullishtja Agroturizem - Authentic Albanian Restaurant Logo"
@@ -336,54 +314,7 @@ function App() {
               fetchPriority="high"
               decoding="sync"
             />
-          </div>
-          
-          {/* Desktop Navigation */}
-          <nav className="nav-menu desktop-nav">
-            <a href="#home" className="nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
-            <a href="#about" className="nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
-            <a href="#alacarte" className="nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-            <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="nav-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
-            {/* <a href="#gallery" className="nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
-            <a href="#contact" className="nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
-          </nav>
-
-          {/* Mobile Navigation */}
-          <div className={`mobile-nav ${mobileMenuOpen ? 'active' : ''}`}>
-            <div className="mobile-nav-header">
-              <img
-                src="/images/ullishtja_logo.jpeg"
-                alt="Ullishtja Agroturizem - Albanian Restaurant Mobile Logo"
-                className="mobile-logo"
-                fetchPriority="high"
-                decoding="sync"
-                width="120"
-                height="60"
-              />
-              <button className="mobile-close-btn" onClick={closeMobileMenu}>×</button>
-            </div>
-            <nav className="mobile-nav-menu">
-            <a href="#home" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.home}</a>
-            <a href="#about" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.about}</a>
-            <a href="#alacarte" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-            <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
-            {/* <a href="#gallery" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
-            <a href="#contact" className="mobile-nav-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
-            </nav>
-
-          </div>
-
-          {/* Mobile Menu Overlay */}
-          {mobileMenuOpen && <div className="mobile-overlay" onClick={closeMobileMenu}></div>}
-          
-
-
-          {/* Hamburger Menu Button */}
-          <button className="hamburger-btn" onClick={toggleMobileMenu} aria-label="Toggle mobile menu">
-            <span className={`hamburger-line ${mobileMenuOpen ? 'active' : ''}`}></span>
-            <span className={`hamburger-line ${mobileMenuOpen ? 'active' : ''}`}></span>
-            <span className={`hamburger-line ${mobileMenuOpen ? 'active' : ''}`}></span>
-          </button>
+          </a>
         </div>
       </header>
 
@@ -435,7 +366,7 @@ function App() {
             </p>
 
             <div className="hero-actions">
-              <a href="#contact" className="cta-button primary" onClick={closeMobileMenu}>
+              <a href="#contact" className="cta-button primary">
                 <span className="btn-text">{t.hero.cta}</span>
                 <span className="btn-arrow">→</span>
               </a>
@@ -444,13 +375,12 @@ function App() {
                 className="cta-button secondary"
                 onClick={(e) => {
                   e.preventDefault();
-                  closeMobileMenu();
                   openNewMobileMenu();
                 }}
               >
                 <span className="btn-text">{t.hero.viewMenu}</span>
               </a>
-              <a href="#contact" className="cta-button secondary" onClick={closeMobileMenu}>
+              <a href="#contact" className="cta-button secondary">
                 <span className="btn-text">{t.footer.directions}</span>
               </a>
               
@@ -689,11 +619,6 @@ function App() {
       {/* Google Reviews Section */}
       <Suspense fallback={<div className="loading-section">Loading reviews...</div>}>
         <GoogleReviews currentLanguage={currentLanguage} translations={t} />
-      </Suspense>
-
-      {/* Customer Photos Section */}
-      <Suspense fallback={<div className="loading-section">Loading photos...</div>}>
-        <GooglePhotos currentLanguage={currentLanguage} translations={t} />
       </Suspense>
 
       {/* Contact Section */}
@@ -1016,12 +941,11 @@ function App() {
               <div className="footer-section footer-links">
                 <h4 className="footer-title">{t.footer.quickLinks}</h4>
                 <nav className="footer-nav">
-                  <a href="#home" className="footer-link" onClick={closeMobileMenu}>{t.nav.home}</a>
-                  <a href="#about" className="footer-link" onClick={closeMobileMenu}>{t.nav.about}</a>
-          <a href="#alacarte" className="footer-link" onClick={closeMobileMenu}>{t.nav.menu}</a>
-                  <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link" onClick={closeMobileMenu}>{t.nav.blog}</a>
-                  {/* <a href="#gallery" className="footer-link" onClick={closeMobileMenu}>{t.nav.gallery}</a> */}
-                  <a href="#contact" className="footer-link" onClick={closeMobileMenu}>{t.nav.contact}</a>
+                  <a href="#home" className="footer-link">{t.nav.home}</a>
+                  <a href="#about" className="footer-link">{t.nav.about}</a>
+          <a href="#alacarte" className="footer-link">{t.nav.menu}</a>
+                  <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.blog}</a>
+                  <a href="#contact" className="footer-link">{t.nav.contact}</a>
                 </nav>
               </div>
 

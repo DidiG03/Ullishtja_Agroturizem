@@ -111,6 +111,17 @@ h2::after {
   padding: 0 20px;
 }
 
+.nav-container--logo-only {
+  justify-content: flex-start;
+}
+
+.logo-home-link {
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+}
+
 .logo-container .logo {
   height: 80px;
   width: 100px;
@@ -422,6 +433,7 @@ h2::after {
   margin-bottom: 1.5rem;
   line-height: 1.1;
   font-family: 'Playfair Display', 'Georgia', serif;
+  min-height: 1.2em;
 }
 
 .title-line {
@@ -431,11 +443,14 @@ h2::after {
 }
 
 .title-main {
-  font-size: 4.5rem;
+  font-size: clamp(2.2rem, 7.2vw, 4.5rem);
   color: #ffffff;
   text-shadow: none;
   animation: titleSlide 1s ease-out 0.3s both;
   letter-spacing: -0.02em;
+  white-space: nowrap;
+  display: inline-block;
+  line-height: 1.05;
 }
 
 .title-accent {
@@ -2077,28 +2092,19 @@ body.scroll-locked {
   touch-action: pan-y !important;
 }
 
-.desktop-nav, .desktop-lang {
-  display: flex;
-}
-
 /* Enhanced Mobile-First Responsive Design */
 @media (max-width: 768px) {
-  /* Navigation */
-  .desktop-nav {
-    display: none;
-  }
-  
-  .desktop-lang {
-    display: none;
-  }
-  
   .hamburger-btn {
-    display: flex;
+    display: none !important;
   }
   
   .nav-container {
-    justify-content: space-between;
-    padding: 0 15px;
+    justify-content: flex-start;
+    padding: 0 12px;
+  }
+
+  .logo-container {
+    flex-shrink: 0;
   }
 
   .navbar {
@@ -2139,9 +2145,11 @@ body.scroll-locked {
   }
 
   .title-main {
-    font-size: 2.6rem;
+    font-size: clamp(2rem, 8.6vw, 2.6rem);
     text-shadow: none;
     color: #ffffff;
+    letter-spacing: -0.015em;
+    white-space: nowrap;
   }
 
   .title-accent {
