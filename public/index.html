@@ -102,8 +102,11 @@
 
     <!-- Performance and Loading Optimization -->
     <!-- Preload and fetch-prioritize the LCP assets used in the hero and navbar -->
-    <link rel="preload" href="/images/ullishtja_logo.jpeg" as="image" imagesrcset="/images/ullishtja_logo.jpeg" fetchpriority="high">
-    <link rel="preload" href="/images/posters/hero-poster.jpg" as="image" fetchpriority="high">
+    <link rel="preload" href="/images/ullishtja_logo.jpeg" as="image" fetchpriority="high">
+    <!-- Mobile hero CSS background — small WebP (~100KB vs 1.4MB PNG) -->
+    <link rel="preload" href="/images/posters/hero-poster-mobile-900.webp" as="image" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
+    <!-- Desktop hero column image -->
+    <link rel="preload" href="/images/posters/hero-poster-1200.webp" as="image" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
     <link rel="preload" href="/videos/dji-20240806130059-0020-d-poster.jpg" as="image">
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//www.google-analytics.com">
@@ -112,7 +115,8 @@
     <!-- Premium Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Subset font weights + display=swap (Lighthouse) -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     
     <!-- Inline critical CSS for faster first paint on mobile -->
     <style>
@@ -159,7 +163,7 @@
       .events-section,.alacarte-section{padding:5rem 0}
       .section-subtitle{color:var(--accent-gold);font-size:1rem;margin-bottom:1rem;font-weight:500;text-transform:uppercase;letter-spacing:2px;font-family:'Inter',sans-serif}
       .section-img{width:100%;height:auto;display:block;border-radius:4px;object-fit:cover}
-      .section-image-breakout{margin-top:2rem}
+      .section-image-breakout{margin-top:0;margin-bottom:0}
       .section-grid{display:grid;gap:2rem}
       .section-grid.reverse .section-image{order:1}
       .section-grid.reverse .section-content{order:2}
@@ -208,9 +212,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://ucarecdn.com" crossorigin>
     
-    <!-- Resource Hints for better performance -->
-    <link rel="prefetch" href="/images/posters/alacarte-poster.jpg" as="image">
-    <link rel="prefetch" href="/images/posters/events-poster.jpg" as="image">
     
     <!-- Manifest -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
@@ -464,12 +465,14 @@
               <div class="hero-image-container">
                 <div class="hero-main-image">
                   <picture>
-                    <source srcset="/images/posters/hero-poster-mobile.png" media="(max-width: 600px)" />
+                    <source type="image/webp" srcset="/images/posters/hero-poster-800.webp 800w, /images/posters/hero-poster-1200.webp 1200w, /images/posters/hero-poster-1600.webp 1600w" sizes="(max-width: 1200px) 50vw, min(600px, 45vw)" />
                     <img
-                      src="/images/posters/hero-poster.jpg"
+                      src="/images/posters/hero-poster-1400.jpg"
                       alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views"
                       class="main-img"
                       fetchpriority="high"
+                      loading="eager"
+                      decoding="async"
                       width="600"
                       height="400"
                     />
@@ -518,14 +521,10 @@
             </div>
           </div>
           <div class="section-image section-image-breakout">
-            <img
-              src="/images/posters/events-poster.jpg"
-              alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
-              class="section-img"
-              loading="lazy"
-              width="800"
-              height="500"
-            />
+            <picture>
+              <source type="image/webp" srcset="/images/posters/events-poster-640.webp 640w, /images/posters/events-poster-960.webp 960w, /images/posters/events-poster-1280.webp 1280w" sizes="100vw" />
+              <img src="/images/posters/events-poster-1280.jpg" alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop" class="section-img" loading="lazy" width="800" height="500" decoding="async" />
+            </picture>
           </div>
         </section>
 
@@ -534,14 +533,10 @@
           <div class="container">
             <div class="section-grid reverse">
               <div class="section-image">
-                <img
-                  src="/images/posters/alacarte-poster.jpg"
-                  alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
-                  class="section-img"
-                  loading="lazy"
-                  width="800"
-                  height="500"
-                />
+                <picture>
+                  <source type="image/webp" srcset="/images/posters/alacarte-poster-640.webp 640w, /images/posters/alacarte-poster-960.webp 960w, /images/posters/alacarte-poster-1280.webp 1280w" sizes="100vw" />
+                  <img src="/images/posters/alacarte-poster-1280.jpg" alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem" class="section-img" loading="lazy" width="800" height="500" decoding="async" />
+                </picture>
               </div>
               <div class="section-content">
                 <h2 id="alacarte-heading">Menuja</h2>

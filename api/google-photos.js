@@ -37,8 +37,9 @@ export default async function handler(req, res) {
           photoReference: photo.photo_reference,
           width: photo.width,
           height: photo.height,
-          url: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photo.photo_reference}&key=${apiKey}`,
-          highResUrl: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=1600&photoreference=${photo.photo_reference}&key=${apiKey}`,
+          // Grid thumbnails: ~400px wide matches on-screen size; reduces transfer vs 800/1600
+          url: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${photo.photo_reference}&key=${apiKey}`,
+          highResUrl: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photoreference=${photo.photo_reference}&key=${apiKey}`,
           attributions: photo.html_attributions || []
         }))
       };

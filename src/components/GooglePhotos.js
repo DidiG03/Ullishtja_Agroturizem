@@ -122,7 +122,8 @@ const GooglePhotos = ({ currentLanguage, translations }) => {
                     src={photo.url || photo.highResUrl}
                     alt={`Customer photo ${index + 1}`}
                     className="customer-photo"
-                    loading={index < 4 ? "eager" : "lazy"}
+                    sizes="(max-width: 768px) 45vw, (max-width: 1200px) 30vw, 380px"
+                    loading={index === 0 ? 'eager' : 'lazy'}
                   />
                 </div>
               </div>

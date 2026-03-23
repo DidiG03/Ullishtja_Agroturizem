@@ -40,10 +40,6 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
     });
   };
 
-  const handleShowLess = () => {
-    setDisplayCount(3);
-  };
-
   // Use useMemo to avoid unnecessary re-renders
   const displayedReviews = useMemo(() => {
     if (!allHighRatingReviews.length) return [];
@@ -191,30 +187,13 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
           ))}
         </div>
 
-        {allHighRatingReviews.length > 3 && (
+        {allHighRatingReviews.length > 3 && displayCount < allHighRatingReviews.length && (
           <div className="reviews-actions">
-            {displayCount < allHighRatingReviews.length ? (
-              <button className="show-more-btn" onClick={handleShowMore}>
-                {translations.googleReviews.showMoreReviews} ({allHighRatingReviews.length - displayCount} {translations.googleReviews.remaining})
-              </button>
-            ) : (
-              <button className="show-less-btn" onClick={handleShowLess}>
-                {translations.googleReviews.showLessReviews}
-              </button>
-            )}
+            <button className="show-more-btn" onClick={handleShowMore}>
+              {translations.googleReviews.showMoreReviews} ({allHighRatingReviews.length - displayCount} {translations.googleReviews.remaining})
+            </button>
           </div>
         )}
-
-        <div className="reviews-footer">
-          <a 
-            href={googleReviewsService.getWriteReviewUrl()} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="write-review-btn"
-          >
-            {translations.googleReviews.writeReview}
-          </a>
-        </div>
       </div>
     </section>
   );

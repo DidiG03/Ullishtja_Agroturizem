@@ -2286,9 +2286,18 @@ body.scroll-locked {
   }
 
   /* Events & A la Carte Sections - Mobile Enhanced */
-  .events-section,
+  /* No bottom padding on events / no top padding on menu so breakout image meets Menu flush */
+  .events-section {
+    padding: 4rem 0 0;
+  }
+
   .alacarte-section {
-    padding: 4rem 0;
+    padding: 0 0 4rem;
+  }
+
+  .section-image-breakout {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 
   .section-grid {

@@ -39,6 +39,8 @@ const OptimizedImage = ({
   };
 
   const imageVariants = getImageVariants(src);
+  const isExternalUrl =
+    src.startsWith('http://') || src.startsWith('https://');
 
   // Intersection Observer for lazy loading
   useEffect(() => {
@@ -92,6 +94,31 @@ const OptimizedImage = ({
     
     return supportsWebP() ? imageVariants.webp : imageVariants.jpeg;
   };
+
+  // Google Places URLs: single <img> — <picture> srcsets would mangle the query string
+  if (isExternalUrl) {
+    return (
+      <div ref={imgRef} className={`optimized-image-container ${className}`}>
+        {!isLoaded && (
+          <div className="image-placeholder">
+            <div className="loading-animation"></div>
+          </div>
+        )}
+        {(isInView || loading === 'eager') && (
+          <img
+            src={src}
+            alt={alt}
+            loading={loading}
+            decoding="async"
+            onLoad={handleLoad}
+            onError={handleError}
+            className={`optimized-image ${isLoaded ? 'loaded' : 'loading'}`}
+            {...props}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div ref={imgRef} className={`optimized-image-container ${className}`}>

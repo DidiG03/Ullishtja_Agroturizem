@@ -9,6 +9,7 @@ import useScrollOptimization from './hooks/useScrollOptimization';
 import useMobileOptimizations from './hooks/useMobileOptimizations';
 import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
 import SEOHead from './components/SEOHead';
+import PosterPicture from './components/PosterPicture';
 
 // Lazy load components for better performance
 const MobileMenu = React.lazy(() => import('./components/MobileMenu'));
@@ -391,7 +392,7 @@ function App() {
         id="home"
         className="hero"
         style={{
-          backgroundImage: "url('/images/posters/hero-poster-mobile.png')",
+          backgroundImage: "url('/images/posters/hero-poster-mobile-900.webp')",
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
@@ -487,22 +488,15 @@ function App() {
             <div className="hero-image-container">
               <div className="hero-main-image">
                 <Suspense>
-                  <picture>
-                    {/* Mobile-first source */}
-                    <source
-                      srcSet="/images/posters/hero-poster-mobile.png"
-                      media="(max-width: 600px)"
-                    />
-                    {/* Default JPG */}
-                    <img
-                      src="/images/posters/hero-poster.jpg"
-                      alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views"
-                      className="main-img"
-                      loading="eager"
-                      decoding="async"
-                      fetchpriority="high"
-                    />
-                  </picture>
+                  <PosterPicture
+                    base="hero-poster"
+                    variant="hero"
+                    alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views"
+                    className="main-img"
+                    sizes="(max-width: 1200px) 50vw, min(600px, 45vw)"
+                    loading="eager"
+                    fetchPriority="high"
+                  />
                 </Suspense>
                 <div className="image-decoration decoration-1"></div>
                 <div className="image-decoration decoration-2"></div>
@@ -595,13 +589,13 @@ function App() {
         </div>
         <div className="section-image section-image-breakout">
           <Suspense>
-            <img
-              src="/images/posters/events-poster.jpg"
+            <PosterPicture
+              base="events-poster"
               alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
               className="section-img"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
               loading="lazy"
-              decoding="async"
-              fetchpriority="low"
+              fetchPriority="low"
             />
           </Suspense>
           <div className="image-overlay">
@@ -619,13 +613,13 @@ function App() {
           <div className="section-grid reverse">
             <div className="section-image">
               <Suspense>
-                <img
-                  src="/images/posters/alacarte-poster.jpg"
+                <PosterPicture
+                  base="alacarte-poster"
                   alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
                   className="section-img"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 42vw"
                   loading="lazy"
-                  decoding="async"
-                  fetchpriority="low"
+                  fetchPriority="low"
                 />
               </Suspense>
               <div className="image-overlay">

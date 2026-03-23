@@ -308,8 +308,7 @@
   margin: 2rem 0;
 }
 
-.show-more-btn,
-.show-less-btn {
+.show-more-btn {
   background: linear-gradient(135deg, #8fbc8f 0%, #d4af37 100%);
   color: white;
   border: none;
@@ -322,18 +321,10 @@
   box-shadow: 0 4px 15px rgba(143, 188, 143, 0.3);
 }
 
-.show-more-btn:hover,
-.show-less-btn:hover {
+.show-more-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(143, 188, 143, 0.4);
   background: linear-gradient(135deg, #d4af37 0%, #8fbc8f 100%);
-}
-
-/* Reviews Footer */
-.reviews-footer {
-  text-align: center;
-  padding-top: 2rem;
-  border-top: 1px solid #eee;
 }
 
 .reviews-disclaimer {
@@ -341,26 +332,6 @@
   font-size: 0.9rem;
   margin-bottom: 1rem;
   font-style: italic;
-}
-
-.write-review-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 12px 30px;
-  background: linear-gradient(135deg, #8fbc8f 0%, #d4af37 100%);
-  color: white;
-  text-decoration: none;
-  border-radius: 25px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(143, 188, 143, 0.3);
-}
-
-.write-review-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(143, 188, 143, 0.4);
-  background: linear-gradient(135deg, #d4af37 0%, #8fbc8f 100%);
 }
 
 /* Loading and Error States */
@@ -495,8 +466,7 @@
     font-size: 0.8rem;
   }
 
-  .show-more-btn,
-  .show-less-btn {
+  .show-more-btn {
     padding: 10px 20px;
     font-size: 0.9rem;
   }

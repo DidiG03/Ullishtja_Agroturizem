@@ -32,7 +32,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "npx prisma generate && react-scripts build",
+    "build": "npm run optimize-posters && npx prisma generate && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "NODE_ENV=development node server/index.js",
@@ -42,6 +42,7 @@
     "clear-reservations": "node scripts/clear-test-reservations.js",
     "init-settings": "node scripts/init-restaurant-settings.js",
     "optimize-images": "node scripts/optimize-images.js",
+    "optimize-posters": "node scripts/optimize-posters.js",
     "validate-env": "node -e \"require('./src/utils/envValidation.js').logEnvironmentStatus()\"",
     "validate-deployment": "node scripts/validate-deployment.js",
     "production-check": "node scripts/production-check.js",
