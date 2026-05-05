@@ -10,6 +10,7 @@ import useMobileOptimizations from './hooks/useMobileOptimizations';
 import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
 import SEOHead from './components/SEOHead';
 import PosterPicture from './components/PosterPicture';
+import HeroBackgroundVideo from './components/HeroBackgroundVideo';
 
 // Lazy load components for better performance
 const MobileMenu = React.lazy(() => import('./components/MobileMenu'));
@@ -331,6 +332,10 @@ function App() {
         {/* Animated Background */}
         <div className="hero-background">
           <div className="hero-bg-image"></div>
+          <HeroBackgroundVideo
+            src="/videos/hero/hero-bg-mobile.mp4"
+            poster="/images/posters/hero-poster-mobile-900.webp"
+          />
           <div className="hero-overlay"></div>
           <div className="floating-elements">
             <div className="floating-element olive">🫒</div>

@@ -1,0 +1,26 @@
+.hero-bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 600ms ease;
+  filter: blur(1px) saturate(1.05);
+  transform: scale(1.03);
+  will-change: opacity, transform;
+  background: var(--dark-bg, #0d1b12);
+}
+
+.hero-bg-video.is-ready {
+  opacity: 1;
+}
+
+@media (min-width: 769px) {
+  .hero-bg-video {
+    display: none;
+  }
+}
