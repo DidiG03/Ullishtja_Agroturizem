@@ -29,7 +29,7 @@ export const translations = {
     about: {
       title: "Historia Jonë",
       text1: "E vendosur në qytetin e bukur dhe antik shqiptar të Durrësit, Ullishtja Agriturizem ofron një përvojë autentike nga ferma në tavolinë. Restoranti ynë kremton traditat e pasura kulinare të Shqipërisë, duke përdorur përbërës të freskët nga kopshtet tona dhe fermat lokale.",
-      text2: "E themeluar në vitin 2021, ne krenohemi që shërbejmë ushqime tradicionale shqiptare të përgatitura me dashuri dhe kujdes, ashtu si i bënin të parët tanë. Çdo vakt tregon një histori të trashëgimisë sonë dhe lidhjes me tokën.",
+      text2: "E themeluar në vitin 2021, ne krenohemi që shërbejmë ushqime tradicionale shqiptare të përgatitura me dashuri dhe kujdes, ashtu si i bënin të parët tanë. Çdo pjatë tregon një histori të trashëgimisë dhe profesionalizmit tonë.",
       features: {
         fresh: {
           title: "🫒 Përbërës të Freskët",
@@ -55,8 +55,8 @@ export const translations = {
     events: {
       title: "Eventet dhe Festimet",
       subtitle: "Krijoni Kujtime të Përhershme",
-      text1: "Ullishtja Agriturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga fejesat tradicionale shqiptare te eventet korporative dhe festimet familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
-      text2: "Stafi ynë i dedikuar bashkëpunon me ju për të planifikuar çdo detaj, nga menuja e personalizuar me specialitete lokale te dekorimi dhe koordinimi i plotë i eveentit.",
+      text1: "Ullishtja Agriturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga fejesat tradicionale, tek eventet korporative dhe ato familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
+      text2: "Stafi ynë i dedikuar bashkëpunon me ju për të planifikuar çdo detaj, nga menuja me specialitete lokale, tek dekorimi dhe koordinimi i plotë i eveentit.",
       features: {
         weddings: "Fejesë Tradicionale",
         corporate: "Evente Korporative", 
@@ -68,8 +68,8 @@ export const translations = {
     alacarte: {
       title: "Menuja",
       subtitle: "Përjetoni Shijen e Vërtetë Shqiptare",
-      text1: "Zbuloni një risi shijesh në menunë tonë të plotë a la carte, ku çdo pjatë tregon një histori të trashëgimisë kulinare shqiptare. Përbërësit tanë të freskët vijnë direkt nga fermat lokale dhe kopshtet tona.",
-      text2: "Nga antipastat tradicionale me djathë të bardhë dhe ullinje, te pjatat kryesore si Tavë Kosi dhe Qofte të Fërguara, çdo vakt përgatitet me kujdesin dhe dashurinë e traditës familjare.",
+      text1: "Zbuloni një risi shijesh në menunë tonë, ku çdo pjatë tregon një histori të trashëgimisë kulinare shqiptare. Përbërësit tanë të freskët vijnë nga fermat lokale dhe kopshtet tona.",
+      text2: "Nga antipastat tradicionale me djathë të bardhë dhe ullinje, te pjatat kryesore si Shpatull Qingji dhe Pulë me Oriz, çdo vakt përgatitet me kujdesin dhe dashurinë e traditës familjare.",
       features: {
         fresh: "Përbërës të Freskët Çdo Ditë",
         traditional: "Receta të Trashëguara",

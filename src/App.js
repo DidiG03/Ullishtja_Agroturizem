@@ -597,14 +597,14 @@ function App() {
               <div className="menu-cta-container alacarte-cta">
                 <button className="mobile-menu-btn show-desktop-tablet" onClick={openNewMobileMenu}>
                   {currentLanguage === 'al'
-                    ? 'Shiko Menunë A La Carte'
+                    ? 'Shiko Menunë'
                     : currentLanguage === 'en'
                     ? 'Menu'
                     : 'Menu'}
                 </button>
                 <button className="mobile-menu-btn show-mobile" onClick={openNewMobileMenu}>
                   {currentLanguage === 'al'
-                    ? 'Shiko Menunë A La Carte'
+                    ? 'Shiko Menunë'
                     : currentLanguage === 'en'
                     ? 'Menu'
                     : 'Menu'}
