@@ -80,28 +80,7 @@ async function setupProduction() {
       process.exit(1);
     }
     
-    // 4. Initialize restaurant settings
-    console.log('\n🏪 Initializing restaurant settings...');
-    
-    const existingSettings = await prisma.restaurantSettings.findFirst();
-    
-    if (!existingSettings) {
-      await prisma.restaurantSettings.create({
-        data: {
-          restaurantName: 'Ullishtja Agriturizem',
-          email: 'hi@ullishtja-agroturizem.com',
-          phone: '+355 68 409 0405',
-          address: 'Rruga e Ullishtes, Tirane, Albania',
-          websiteUrl: 'https://ullishtja-agriturizem.com',
-          maxCapacity: 60,
-        },
-      });
-      console.log('✅ Restaurant settings created');
-    } else {
-      console.log('✅ Restaurant settings already exist');
-    }
-    
-    // 5. Create admin user
+    // 4. Create admin user
     console.log('\n👑 Creating admin user...');
     
     const email = process.env.ADMIN_EMAIL;

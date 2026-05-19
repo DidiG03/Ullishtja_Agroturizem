@@ -29,71 +29,6 @@ model Reservation {
   @@map("reservations")
 }
 
-model TimeSlot {
-  id          String   @id @default(cuid())
-  time        String   // Time in HH:MM format (e.g., "12:00", "12:30")
-  duration    Int      @default(120) // Duration in minutes (default 2 hours)
-  maxCapacity Int      @default(20)  // Maximum guests for this time slot
-  isActive    Boolean  @default(true)
-  displayOrder Int     @default(0)
-  
-  // Relations
-  capacityOverrides TimeSlotCapacity[]
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  @@unique([time])
-  @@map("time_slots")
-}
-
-model TimeSlotCapacity {
-  id          String   @id @default(cuid())
-  timeSlotId  String
-  dayOfWeek   Int      // 0 = Sunday, 1 = Monday, ... 6 = Saturday
-  maxCapacity Int      // Override capacity for this day
-  isActive    Boolean  @default(true)
-  
-  // Relations
-  timeSlot    TimeSlot @relation(fields: [timeSlotId], references: [id], onDelete: Cascade)
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  @@unique([timeSlotId, dayOfWeek])
-  @@map("time_slot_capacities")
-}
-
-
-
-model RestaurantSettings {
-  id              String   @id @default(cuid())
-  restaurantName  String   @default("Ullishtja Agriturizem")
-  email          String   @default("hi@ullishtja-agroturizem.com")
-  phone          String   @default("+355 XX XXX XXX")
-  address        String   @default("Rruga e Ullishtes, Tirane, Albania")
-  
-  // Operating hours (JSON format)
-  operatingHours String   @default("{\"monday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"tuesday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"wednesday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"thursday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"friday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"saturday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false},\"sunday\":{\"open\":\"12:00\",\"close\":\"22:00\",\"closed\":false}}")
-  
-  maxCapacity    Int      @default(50)
-  tableCapacity  String   @default("{\"2\":8,\"4\":6,\"6\":4,\"8\":2}")  // JSON: seats -> number of tables
-  
-  // Social media & website
-  websiteUrl     String?
-  facebookUrl    String?
-  instagramUrl   String?
-  
-  // Notification settings
-  emailNotifications Boolean @default(true)
-  smsNotifications   Boolean @default(false)
-  
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  
-  @@map("restaurant_settings")
-}
-
 model Customer {
   id          String   @id @default(cuid())
   name        String
@@ -316,20 +251,6 @@ enum ReservationStatus {
   CANCELLED
   COMPLETED
   NO_SHOW
-}
-
-// Staff members who can access the POS
-model Staff {
-  id         String   @id @default(cuid())
-  firstName  String
-  lastName   String
-  posPin     String   @unique
-  isActive   Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@index([lastName, firstName])
-  @@map("staff")
 }
 
 enum ReviewStatus {

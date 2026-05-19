@@ -1,10 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import MenuService from '../services/menuService';
 import './MenuManagement.css';
 
+function sortCategories(cats) {
+  return [...cats].sort(
+    (a, b) =>
+      (a.displayOrder ?? 0) - (b.displayOrder ?? 0) ||
+      (a.nameAL || '').localeCompare(b.nameAL || '', 'sq')
+  );
+}
+
+function sortItems(items) {
+  return [...items].sort(
+    (a, b) =>
+      (a.displayOrder ?? 0) - (b.displayOrder ?? 0) ||
+      (a.nameAL || '').localeCompare(b.nameAL || '', 'sq')
+  );
+}
+
 function MenuManagement() {
   const [categories, setCategories] = useState([]);
-  const [menuItems, setMenuItems] = useState([]);
+  const [allItems, setAllItems] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [showItemForm, setShowItemForm] = useState(false);
@@ -14,6 +30,9 @@ function MenuManagement() {
   const [error, setError] = useState(null);
   const [draggedCategory, setDraggedCategory] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
+  const [categorySearch, setCategorySearch] = useState('');
+  const [itemSearch, setItemSearch] = useState('');
+  const [viewMode, setViewMode] = useState('list');
 
   // Form states
   const [categoryForm, setCategoryForm] = useState({
@@ -45,46 +64,89 @@ function MenuManagement() {
     isKg: false
   });
 
-  const loadMenuItems = useCallback(async (categoryId = selectedCategory) => {
-    try {
-      const result = await MenuService.getMenuItems(categoryId);
-      if (result.success) {
-        setMenuItems(result.data || []);
-      } else {
-        setError(result.error || 'Failed to load menu items');
-      }
-    } catch (error) {
-      setError('Failed to load menu items');
-      console.error(error);
-    }
-  }, [selectedCategory]);
+  const refreshMenu = useCallback(async (preferredCategoryId = null) => {
+    const [catResult, itemsResult] = await Promise.all([
+      MenuService.getCategories(),
+      MenuService.getMenuItems(),
+    ]);
 
-  const loadCategories = useCallback(async () => {
-    try {
-      setLoading(true);
-      const result = await MenuService.getCategories();
-      if (result.success) {
-        const categoriesData = result.data || [];
-        setCategories(categoriesData);
-        if (categoriesData.length > 0 && !selectedCategory) {
-          setSelectedCategory(categoriesData[0].id);
-          loadMenuItems(categoriesData[0].id);
-        }
-      } else {
-        setError(result.error || 'Failed to load categories');
-      }
-    } catch (error) {
-      setError('Failed to load categories');
-      console.error(error);
-    } finally {
-      setLoading(false);
+    if (catResult.success) {
+      const sorted = sortCategories(catResult.data || []);
+      setCategories(sorted);
+      const nextId =
+        preferredCategoryId && sorted.some((c) => c.id === preferredCategoryId)
+          ? preferredCategoryId
+          : sorted[0]?.id ?? null;
+      setSelectedCategory(nextId);
+    } else {
+      setError(catResult.error || 'Failed to load categories');
     }
-  }, [selectedCategory, loadMenuItems]);
 
-  // Load data
+    if (itemsResult.success) {
+      setAllItems(itemsResult.data || []);
+    } else if (!catResult.success) {
+      setError(itemsResult.error || 'Failed to load menu items');
+    }
+  }, []);
+
   useEffect(() => {
-    loadCategories();
-  }, [loadCategories]);
+    let cancelled = false;
+    (async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        await refreshMenu();
+      } catch (err) {
+        if (!cancelled) setError('Failed to load menu');
+        console.error(err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshMenu]);
+
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    allItems.forEach((item) => {
+      counts[item.categoryId] = (counts[item.categoryId] || 0) + 1;
+    });
+    return counts;
+  }, [allItems]);
+
+  const filteredCategories = useMemo(() => {
+    const q = categorySearch.trim().toLowerCase();
+    if (!q) return categories;
+    return categories.filter(
+      (c) =>
+        c.nameAL?.toLowerCase().includes(q) ||
+        c.nameEN?.toLowerCase().includes(q) ||
+        c.nameIT?.toLowerCase().includes(q)
+    );
+  }, [categories, categorySearch]);
+
+  const displayedItems = useMemo(() => {
+    if (!selectedCategory) return [];
+    let items = allItems.filter((i) => i.categoryId === selectedCategory);
+    const q = itemSearch.trim().toLowerCase();
+    if (q) {
+      items = items.filter(
+        (i) =>
+          i.nameAL?.toLowerCase().includes(q) ||
+          i.nameEN?.toLowerCase().includes(q) ||
+          i.nameIT?.toLowerCase().includes(q) ||
+          i.descriptionAL?.toLowerCase().includes(q)
+      );
+    }
+    return sortItems(items);
+  }, [allItems, selectedCategory, itemSearch]);
+
+  const selectedCategoryData = useMemo(
+    () => categories.find((c) => c.id === selectedCategory),
+    [categories, selectedCategory]
+  );
 
   // Category handlers
   const handleCategorySubmit = async (e) => {
@@ -95,7 +157,7 @@ function MenuManagement() {
       } else {
         await MenuService.createCategory(categoryForm);
       }
-      await loadCategories();
+      await refreshMenu(selectedCategory);
       resetCategoryForm();
     } catch (error) {
       setError(`Failed to ${editingCategory ? 'update' : 'create'} category`);
@@ -118,7 +180,8 @@ function MenuManagement() {
     if (window.confirm('Are you sure? This will delete all items in this category.')) {
       try {
         await MenuService.deleteCategory(categoryId);
-        await loadCategories();
+        const nextSelection = selectedCategory === categoryId ? null : selectedCategory;
+        await refreshMenu(nextSelection);
       } catch (error) {
         setError('Failed to delete category');
       }
@@ -181,7 +244,7 @@ function MenuManagement() {
     } catch (error) {
       // Revert on error
       setError('Failed to update category order');
-      await loadCategories();
+      await refreshMenu(selectedCategory);
     }
 
     setDraggedCategory(null);
@@ -190,11 +253,17 @@ function MenuManagement() {
   // Menu item handlers
   const handleItemSubmit = async (e) => {
     e.preventDefault();
+    if (!selectedCategory) {
+      setError('Select a category first');
+      return;
+    }
     try {
       const itemData = {
         ...itemForm,
+        nameEN: itemForm.nameEN || itemForm.nameAL,
+        nameIT: itemForm.nameIT || itemForm.nameAL,
         price: parseFloat(itemForm.price),
-        categoryId: selectedCategory
+        categoryId: selectedCategory,
       };
       
       if (editingItem) {
@@ -202,7 +271,7 @@ function MenuManagement() {
       } else {
         await MenuService.createMenuItem(itemData);
       }
-      await loadMenuItems();
+      await refreshMenu(selectedCategory);
       resetItemForm();
     } catch (error) {
       setError(`Failed to ${editingItem ? 'update' : 'create'} menu item`);
@@ -238,7 +307,7 @@ function MenuManagement() {
     if (window.confirm('Are you sure you want to delete this menu item?')) {
       try {
         await MenuService.deleteMenuItem(itemId);
-        await loadMenuItems();
+        await refreshMenu(selectedCategory);
       } catch (error) {
         setError('Failed to delete menu item');
       }
@@ -270,6 +339,31 @@ function MenuManagement() {
     setShowItemForm(false);
   };
 
+  const openAddItem = () => {
+    setEditingItem(null);
+    setItemForm({
+      categoryId: selectedCategory || '',
+      nameAL: '',
+      nameEN: '',
+      nameIT: '',
+      descriptionAL: '',
+      descriptionEN: '',
+      descriptionIT: '',
+      ingredientsAL: '',
+      ingredientsEN: '',
+      ingredientsIT: '',
+      price: '',
+      isVegetarian: false,
+      isSpicy: false,
+      isRecommended: false,
+      isNew: false,
+      imageUrl: '',
+      displayOrder: displayedItems.length,
+      isKg: false,
+    });
+    setShowItemForm(true);
+  };
+
   // Generate slug from Albanian name
   const generateSlug = (name) => {
     return name
@@ -278,25 +372,33 @@ function MenuManagement() {
       .replace(/(^-|-$)/g, '');
   };
 
-  if (loading) return <div className="loading">Loading menu management...</div>;
+  if (loading) return <div className="loading">Loading menu…</div>;
+
+  const renderItemBadges = (item) => (
+    <div className="item-badges">
+      {item.isVegetarian && <span className="badge vegetarian" title="Vegetarian">🌱</span>}
+      {item.isSpicy && <span className="badge spicy" title="Spicy">🌶️</span>}
+      {item.isRecommended && <span className="badge recommended" title="Recommended">⭐</span>}
+      {item.isNew && <span className="badge new">NEW</span>}
+      {item.isKg && <span className="badge kg">/kg</span>}
+    </div>
+  );
 
   return (
     <div className="menu-management">
       <div className="menu-management-header">
-        <h2>Menu Management</h2>
+        <div className="menu-header-title">
+          <h2>Menu</h2>
+          <p className="menu-subtitle">
+            {categories.length} categories · {allItems.length} items
+          </p>
+        </div>
         <div className="header-actions">
-          <button 
-            className="btn btn-primary"
-            onClick={() => setShowCategoryForm(true)}
-          >
-            + Add Category
+          <button type="button" className="btn btn-primary" onClick={() => setShowCategoryForm(true)}>
+            + Category
           </button>
-          <button 
-            className="btn btn-secondary"
-            onClick={() => setShowItemForm(true)}
-            disabled={!selectedCategory}
-          >
-            + Add Menu Item
+          <button type="button" className="btn btn-secondary" onClick={openAddItem} disabled={!selectedCategory}>
+            + Item
           </button>
         </div>
       </div>
@@ -304,106 +406,205 @@ function MenuManagement() {
       {error && (
         <div className="error-message">
           {error}
-          <button onClick={() => setError(null)}>×</button>
+          <button type="button" onClick={() => setError(null)} aria-label="Dismiss">×</button>
+        </div>
+      )}
+
+      {categories.length > 0 && (
+        <div className="category-pills" role="tablist" aria-label="Categories">
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              type="button"
+              role="tab"
+              aria-selected={selectedCategory === category.id}
+              className={`category-pill ${selectedCategory === category.id ? 'active' : ''}`}
+              onClick={() => {
+                setSelectedCategory(category.id);
+                setItemSearch('');
+              }}
+            >
+              {category.nameAL}
+              <span className="pill-count">{categoryCounts[category.id] || 0}</span>
+            </button>
+          ))}
         </div>
       )}
 
       <div className="menu-content">
-        {/* Categories Sidebar */}
-        <div className="categories-sidebar">
-          <h3>Categories</h3>
-          <div className="category-list">
-            {categories.map((category, index) => (
-              <div 
-                key={category.id}
-                className={`category-item ${selectedCategory === category.id ? 'active' : ''} ${
-                  dragOverIndex === index ? 'drag-over' : ''
-                } ${
-                  draggedCategory?.category.id === category.id ? 'dragging' : ''
-                }`}
-                draggable
-                onDragStart={(e) => handleDragStart(e, category, index)}
-                onDragOver={(e) => handleDragOver(e, index)}
-                onDragLeave={handleDragLeave}
-                onDrop={(e) => handleDrop(e, index)}
-                onClick={() => {
-                  setSelectedCategory(category.id);
-                  loadMenuItems(category.id);
-                }}
-              >
-                <div className="drag-handle" title="Drag to reorder">
-                  ⋮⋮
-                </div>
-                <div className="category-info">
-                  <h4>{category.nameAL}</h4>
-                  <small>{category.nameEN}</small>
-                </div>
-                <div className="category-actions">
-                  <button 
-                    className="btn-icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCategoryEdit(category);
-                    }}
-                  >
-                    ✏️
-                  </button>
-                  <button 
-                    className="btn-icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCategoryDelete(category.id);
-                    }}
-                  >
-                    🗑️
-                  </button>
-                </div>
-              </div>
-            ))}
+        <aside className="categories-sidebar">
+          <div className="sidebar-header">
+            <h3>Categories</h3>
+            <span className="sidebar-hint">Drag to reorder</span>
           </div>
-        </div>
-
-        {/* Menu Items */}
-        <div className="menu-items-section">
-          {selectedCategory && (
-            <>
-              <h3>
-                Menu Items - {categories.find(c => c.id === selectedCategory)?.nameAL}
-              </h3>
-              <div className="menu-items-grid">
-                {menuItems.map(item => (
-                  <div key={item.id} className="menu-item-card">
-                    <div className="item-header">
-                      <h4>{item.nameAL}</h4>
-                      <span className="price">{item.price} {item.currency}</span>
+          <input
+            type="search"
+            className="menu-search"
+            placeholder="Search categories…"
+            value={categorySearch}
+            onChange={(e) => setCategorySearch(e.target.value)}
+            aria-label="Search categories"
+          />
+          <div className="category-list">
+            {filteredCategories.length === 0 ? (
+              <p className="empty-hint">No categories match your search.</p>
+            ) : (
+              filteredCategories.map((category) => {
+                const index = categories.findIndex((c) => c.id === category.id);
+                return (
+                  <div
+                    key={category.id}
+                    className={`category-item ${selectedCategory === category.id ? 'active' : ''} ${
+                      dragOverIndex === index ? 'drag-over' : ''
+                    } ${draggedCategory?.category.id === category.id ? 'dragging' : ''}`}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, category, index)}
+                    onDragOver={(e) => handleDragOver(e, index)}
+                    onDragLeave={handleDragLeave}
+                    onDrop={(e) => handleDrop(e, index)}
+                    onClick={() => {
+                      setSelectedCategory(category.id);
+                      setItemSearch('');
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <div className="drag-handle" title="Drag to reorder" aria-hidden>⋮⋮</div>
+                    <div className="category-info">
+                      <h4>{category.nameAL}</h4>
+                      <small>{category.nameEN}</small>
                     </div>
-                    <p className="description">{item.descriptionAL}</p>
-                    <div className="item-badges">
-                      {item.isVegetarian && <span className="badge vegetarian">🌱</span>}
-                      {item.isSpicy && <span className="badge spicy">🌶️</span>}
-                      {item.isRecommended && <span className="badge recommended">⭐</span>}
-                      {item.isNew && <span className="badge new">NEW</span>}
-                    </div>
-                    <div className="item-actions">
-                      <button 
-                        className="btn btn-small"
-                        onClick={() => handleItemEdit(item)}
+                    <span className="category-count">{categoryCounts[category.id] || 0}</span>
+                    <div className="category-actions">
+                      <button
+                        type="button"
+                        className="btn-icon"
+                        title="Edit category"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCategoryEdit(category);
+                        }}
                       >
-                        Edit
+                        ✏️
                       </button>
-                      <button 
-                        className="btn btn-small btn-danger"
-                        onClick={() => handleItemDelete(item.id)}
+                      <button
+                        type="button"
+                        className="btn-icon"
+                        title="Delete category"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCategoryDelete(category.id);
+                        }}
                       >
-                        Delete
+                        🗑️
                       </button>
                     </div>
                   </div>
-                ))}
+                );
+              })
+            )}
+          </div>
+        </aside>
+
+        <section className="menu-items-section">
+          {!selectedCategory ? (
+            <div className="empty-state">
+              <p>Add a category to start building your menu.</p>
+              <button type="button" className="btn btn-primary" onClick={() => setShowCategoryForm(true)}>
+                + Add Category
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="items-toolbar">
+                <div className="items-toolbar-title">
+                  <h3>{selectedCategoryData?.nameAL}</h3>
+                  <span className="items-meta">
+                    {displayedItems.length}
+                    {itemSearch ? ` of ${categoryCounts[selectedCategory] || 0}` : ''} items
+                  </span>
+                </div>
+                <div className="items-toolbar-controls">
+                  <input
+                    type="search"
+                    className="menu-search"
+                    placeholder="Search items…"
+                    value={itemSearch}
+                    onChange={(e) => setItemSearch(e.target.value)}
+                    aria-label="Search menu items"
+                  />
+                  <div className="view-toggle" role="group" aria-label="View mode">
+                    <button type="button" className={viewMode === 'list' ? 'active' : ''} onClick={() => setViewMode('list')}>
+                      List
+                    </button>
+                    <button type="button" className={viewMode === 'grid' ? 'active' : ''} onClick={() => setViewMode('grid')}>
+                      Cards
+                    </button>
+                  </div>
+                  <button type="button" className="btn btn-secondary btn-compact" onClick={openAddItem}>
+                    + Item
+                  </button>
+                </div>
+              </div>
+
+              <div className="menu-items-body">
+              {displayedItems.length === 0 ? (
+                <div className="empty-state compact">
+                  {itemSearch ? (
+                    <p>No items match &ldquo;{itemSearch}&rdquo;.</p>
+                  ) : (
+                    <>
+                      <p>No items in this category yet.</p>
+                      <button type="button" className="btn btn-primary" onClick={openAddItem}>
+                        + Add first item
+                      </button>
+                    </>
+                  )}
+                </div>
+              ) : viewMode === 'list' ? (
+                <div className="menu-items-list">
+                  {displayedItems.map((item) => (
+                    <article key={item.id} className="menu-item-row">
+                      <div className="menu-item-row-main">
+                        <div className="menu-item-row-head">
+                          <h4>{item.nameAL}</h4>
+                          <span className="price">
+                            {item.price}
+                            {item.isKg ? '/kg' : ''}
+                          </span>
+                        </div>
+                        {item.descriptionAL && <p className="description">{item.descriptionAL}</p>}
+                        {renderItemBadges(item)}
+                      </div>
+                      <div className="item-actions">
+                        <button type="button" className="btn btn-small" onClick={() => handleItemEdit(item)}>Edit</button>
+                        <button type="button" className="btn btn-small btn-danger" onClick={() => handleItemDelete(item.id)}>Delete</button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className="menu-items-grid">
+                  {displayedItems.map((item) => (
+                    <article key={item.id} className="menu-item-card">
+                      <div className="item-header">
+                        <h4>{item.nameAL}</h4>
+                        <span className="price">{item.price}{item.isKg ? '/kg' : ''}</span>
+                      </div>
+                      {item.descriptionAL && <p className="description">{item.descriptionAL}</p>}
+                      {renderItemBadges(item)}
+                      <div className="item-actions">
+                        <button type="button" className="btn btn-small" onClick={() => handleItemEdit(item)}>Edit</button>
+                        <button type="button" className="btn btn-small btn-danger" onClick={() => handleItemDelete(item.id)}>Delete</button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
               </div>
             </>
           )}
-        </div>
+        </section>
       </div>
 
       {/* Category Form Modal */}
@@ -486,7 +687,12 @@ function MenuManagement() {
         <div className="modal-overlay">
           <div className="modal large">
             <div className="modal-header">
-              <h3>{editingItem ? 'Edit Menu Item' : 'Add New Menu Item'}</h3>
+              <h3>
+                {editingItem ? 'Edit item' : 'Add item'}
+                {selectedCategoryData && (
+                  <span className="modal-category"> · {selectedCategoryData.nameAL}</span>
+                )}
+              </h3>
               <button 
                 className="close-btn"
                 onClick={resetItemForm}
@@ -507,21 +713,19 @@ function MenuManagement() {
                   />
                 </div>
                 <div className="form-group">
-                  <label>English Name</label>
+                  <label>English Name <span className="label-hint">(optional)</span></label>
                   <input
                     type="text"
                     value={itemForm.nameEN}
                     onChange={(e) => setItemForm({...itemForm, nameEN: e.target.value})}
-                    required
                   />
                 </div>
                 <div className="form-group">
-                  <label>Italian Name</label>
+                  <label>Italian Name <span className="label-hint">(optional)</span></label>
                   <input
                     type="text"
                     value={itemForm.nameIT}
                     onChange={(e) => setItemForm({...itemForm, nameIT: e.target.value})}
-                    required
                   />
                 </div>
 

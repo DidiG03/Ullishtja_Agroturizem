@@ -1,6 +1,5 @@
 // Consolidated POS API for external apps
 // Menu: GET /api/pos?resource=menu&lang=al&flat=false&includeInactive=false
-// Staff: GET /api/pos?resource=staff&includeInactive=false
 
 import prisma from '../src/lib/prisma.js';
 
@@ -50,28 +49,14 @@ export default async function handler(req, res) {
   const { resource = 'menu' } = req.query || {};
 
   try {
-    if (resource === 'staff') {
-      const { includeInactive = 'false' } = req.query || {};
-      const includeInactiveBool = coerceBoolean(includeInactive, false);
-      const staff = await prisma.staff.findMany({
-        where: includeInactiveBool ? undefined : { isActive: true },
-        orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+    if (resource !== 'menu') {
+      return res.status(400).json({
+        success: false,
+        error: 'Unsupported resource. Use resource=menu',
       });
-      const data = staff.map((s) => ({
-        id: s.id,
-        firstName: s.firstName,
-        lastName: s.lastName,
-        fullName: `${s.firstName} ${s.lastName}`.trim(),
-        posPin: s.posPin,
-        isActive: s.isActive,
-        updatedAt: s.updatedAt,
-        createdAt: s.createdAt,
-      }));
-      res.setHeader('Cache-Control', 'no-store');
-      return res.status(200).json({ success: true, source: 'pos-staff', updatedAt: new Date().toISOString(), data });
     }
 
-    // Default: menu
+    // Menu
     const { lang = 'al', flat = 'false', includeInactive = 'false' } = req.query || {};
     const language = String(lang).toLowerCase();
     const isFlat = coerceBoolean(flat, false);

@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import blogService from '../services/blogService';
+import BlogPostEditor from './blog/BlogPostEditor';
 import './BlogManagement.css';
 
 const BlogManagement = () => {
@@ -13,33 +14,9 @@ const BlogManagement = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  // Post management state
-  const [showPostModal, setShowPostModal] = useState(false);
+  const [view, setView] = useState('list'); // 'list' | 'editor'
   const [editingPost, setEditingPost] = useState(null);
-  const [postForm, setPostForm] = useState({
-    categoryId: '',
-    slug: '',
-    titleAL: '',
-    titleEN: '',
-    titleIT: '',
-    excerptAL: '',
-    excerptEN: '',
-    excerptIT: '',
-    contentAL: '',
-    contentEN: '',
-    contentIT: '',
-    metaDescriptionAL: '',
-    metaDescriptionEN: '',
-    metaDescriptionIT: '',
-    metaKeywordsAL: '',
-    metaKeywordsEN: '',
-    metaKeywordsIT: '',
-    featuredImageUrl: '',
-    featuredImageAlt: '',
-    isPublished: false,
-    isFeatured: false,
-    displayOrder: 0
-  });
+  const [editorLoading, setEditorLoading] = useState(false);
 
   // Category management state
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -66,7 +43,7 @@ const BlogManagement = () => {
     setLoading(true);
     try {
       const [postsResult, categoriesResult] = await Promise.all([
-        blogService.getPosts({ language: 'al' }),
+        blogService.getPosts({ language: 'al', published: 'all' }),
         blogService.getCategories({ language: 'al', includePosts: true })
       ]);
 
@@ -92,91 +69,58 @@ const BlogManagement = () => {
   // Post management functions
   const handleCreatePost = () => {
     setEditingPost(null);
-    setPostForm({
-      categoryId: '',
-      slug: '',
-      titleAL: '',
-      titleEN: '',
-      titleIT: '',
-      excerptAL: '',
-      excerptEN: '',
-      excerptIT: '',
-      contentAL: '',
-      contentEN: '',
-      contentIT: '',
-      metaDescriptionAL: '',
-      metaDescriptionEN: '',
-      metaDescriptionIT: '',
-      metaKeywordsAL: '',
-      metaKeywordsEN: '',
-      metaKeywordsIT: '',
-      featuredImageUrl: '',
-      featuredImageAlt: '',
-      isPublished: false,
-      isFeatured: false,
-      displayOrder: 0
-    });
-    setShowPostModal(true);
+    setView('editor');
     clearMessages();
   };
 
-  const handleEditPost = (post) => {
-    setEditingPost(post);
-    setPostForm({
-      categoryId: post.category.id,
-      slug: post.slug,
-      titleAL: post.titleAL || '',
-      titleEN: post.titleEN || '',
-      titleIT: post.titleIT || '',
-      excerptAL: post.excerptAL || '',
-      excerptEN: post.excerptEN || '',
-      excerptIT: post.excerptIT || '',
-      contentAL: post.contentAL || '',
-      contentEN: post.contentEN || '',
-      contentIT: post.contentIT || '',
-      metaDescriptionAL: post.metaDescriptionAL || '',
-      metaDescriptionEN: post.metaDescriptionEN || '',
-      metaDescriptionIT: post.metaDescriptionIT || '',
-      metaKeywordsAL: post.metaKeywordsAL || '',
-      metaKeywordsEN: post.metaKeywordsEN || '',
-      metaKeywordsIT: post.metaKeywordsIT || '',
-      featuredImageUrl: post.featuredImageUrl || '',
-      featuredImageAlt: post.featuredImageAlt || '',
-      isPublished: post.isPublished,
-      isFeatured: post.isFeatured,
-      displayOrder: post.displayOrder
-    });
-    setShowPostModal(true);
-    clearMessages();
+  const handleEditPost = async (post) => {
+    try {
+      setEditorLoading(true);
+      clearMessages();
+      const fullPost = await blogService.getPostForEdit(post.id);
+      setEditingPost(fullPost);
+      setView('editor');
+    } catch (err) {
+      setError('Failed to load post: ' + err.message);
+    } finally {
+      setEditorLoading(false);
+    }
   };
 
-  const handleSavePost = async () => {
+  const handleSavePost = async (postForm, publish) => {
     try {
       setLoading(true);
       clearMessages();
 
-      // Validate form
-      const validation = blogService.validatePostData(postForm);
-      if (!validation.isValid) {
-        setError(validation.errors.join(', '));
-        return;
-      }
+      const payload = {
+        ...postForm,
+        isPublished: publish ? true : postForm.isPublished,
+      };
 
-      if (editingPost) {
-        await blogService.updatePost(editingPost.id, postForm);
-        setSuccess('Post updated successfully');
+      if (editingPost?.id) {
+        await blogService.updatePost(editingPost.id, payload);
+        setSuccess(publish ? 'Post published successfully' : 'Post saved successfully');
       } else {
-        await blogService.createPost(postForm);
-        setSuccess('Post created successfully');
+        await blogService.createPost(payload);
+        setSuccess(publish ? 'Post published successfully' : 'Draft created successfully');
       }
 
-      setShowPostModal(false);
+      setView('list');
+      setEditingPost(null);
       loadData();
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCloseEditor = () => {
+    if (!window.confirm('Leave editor? Unsaved changes may remain in your browser draft.')) {
+      return;
+    }
+    setView('list');
+    setEditingPost(null);
   };
 
   const handleDeletePost = async (postId) => {
@@ -278,18 +222,12 @@ const BlogManagement = () => {
   };
 
   // Auto-generate slug from title
-  const handleTitleChange = (field, value, formType = 'post') => {
-    const form = formType === 'post' ? postForm : categoryForm;
-    const setForm = formType === 'post' ? setPostForm : setCategoryForm;
-
-    const updates = { [field]: value };
-
-    // Auto-generate slug from Albanian title
-    if (field === (formType === 'post' ? 'titleAL' : 'nameAL') && value) {
-      updates.slug = blogService.generateSlug(value);
-    }
-
-    setForm({ ...form, ...updates });
+  const handleCategoryNameChange = (value) => {
+    setCategoryForm({
+      ...categoryForm,
+      nameAL: value,
+      slug: value ? blogService.generateSlug(value) : categoryForm.slug,
+    });
   };
 
   // Filter posts
@@ -306,6 +244,32 @@ const BlogManagement = () => {
 
     return matchesSearch && matchesCategory && matchesPublished;
   });
+
+  if (view === 'editor') {
+    return (
+      <div className="blog-management blog-management--editor">
+        {error && (
+          <div className="message error">
+            {error}
+            <button type="button" onClick={clearMessages}>×</button>
+          </div>
+        )}
+        {success && (
+          <div className="message success">
+            {success}
+            <button type="button" onClick={clearMessages}>×</button>
+          </div>
+        )}
+        <BlogPostEditor
+          post={editingPost}
+          categories={categories}
+          onSave={handleSavePost}
+          onCancel={handleCloseEditor}
+          saving={loading || editorLoading}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="blog-management">
@@ -498,175 +462,6 @@ const BlogManagement = () => {
         </div>
       )}
 
-      {/* Post Modal */}
-      {showPostModal && (
-        <div className="modal-overlay" onClick={() => setShowPostModal(false)}>
-          <div className="modal-content large" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>{editingPost ? 'Edit Post' : 'Create New Post'}</h3>
-              <button className="modal-close" onClick={() => setShowPostModal(false)}>×</button>
-            </div>
-            
-            <div className="modal-body">
-              <div className="form-grid">
-                {/* Basic Information */}
-                <div className="form-section">
-                  <h4>Basic Information</h4>
-                  
-                  <div className="form-group">
-                    <label>Category *</label>
-                    <select
-                      value={postForm.categoryId}
-                      onChange={(e) => setPostForm({...postForm, categoryId: e.target.value})}
-                      required
-                    >
-                      <option value="">Select Category</option>
-                      {categories.map(cat => (
-                        <option key={cat.id} value={cat.id}>{cat.name}</option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label>URL Slug *</label>
-                    <input
-                      type="text"
-                      value={postForm.slug}
-                      onChange={(e) => setPostForm({...postForm, slug: e.target.value})}
-                      placeholder="url-friendly-slug"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Titles */}
-                <div className="form-section">
-                  <h4>Titles</h4>
-                  
-                  <div className="form-group">
-                    <label>Albanian Title *</label>
-                    <input
-                      type="text"
-                      value={postForm.titleAL}
-                      onChange={(e) => handleTitleChange('titleAL', e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>English Title *</label>
-                    <input
-                      type="text"
-                      value={postForm.titleEN}
-                      onChange={(e) => setPostForm({...postForm, titleEN: e.target.value})}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Italian Title *</label>
-                    <input
-                      type="text"
-                      value={postForm.titleIT}
-                      onChange={(e) => setPostForm({...postForm, titleIT: e.target.value})}
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Note: Content editing will be enhanced with rich text editor */}
-                <div className="form-section full-width">
-                  <h4>Content (Note: Rich text editor will be added)</h4>
-                  
-                  <div className="form-group">
-                    <label>Albanian Content *</label>
-                    <textarea
-                      value={postForm.contentAL}
-                      onChange={(e) => setPostForm({...postForm, contentAL: e.target.value})}
-                      rows="10"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>English Content *</label>
-                    <textarea
-                      value={postForm.contentEN}
-                      onChange={(e) => setPostForm({...postForm, contentEN: e.target.value})}
-                      rows="10"
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>Italian Content *</label>
-                    <textarea
-                      value={postForm.contentIT}
-                      onChange={(e) => setPostForm({...postForm, contentIT: e.target.value})}
-                      rows="10"
-                      required
-                    />
-                  </div>
-                </div>
-
-                {/* Settings */}
-                <div className="form-section">
-                  <h4>Settings</h4>
-                  
-                  <div className="form-group checkbox-group">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={postForm.isPublished}
-                        onChange={(e) => setPostForm({...postForm, isPublished: e.target.checked})}
-                      />
-                      Published
-                    </label>
-                  </div>
-
-                  <div className="form-group checkbox-group">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={postForm.isFeatured}
-                        onChange={(e) => setPostForm({...postForm, isFeatured: e.target.checked})}
-                      />
-                      Featured
-                    </label>
-                  </div>
-
-                  <div className="form-group">
-                    <label>Display Order</label>
-                    <input
-                      type="number"
-                      value={postForm.displayOrder}
-                      onChange={(e) => setPostForm({...postForm, displayOrder: parseInt(e.target.value) || 0})}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="modal-footer">
-              <button 
-                className="btn btn-secondary" 
-                onClick={() => setShowPostModal(false)}
-                disabled={loading}
-              >
-                Cancel
-              </button>
-              <button 
-                className="btn btn-primary" 
-                onClick={handleSavePost}
-                disabled={loading}
-              >
-                {loading ? 'Saving...' : (editingPost ? 'Update Post' : 'Create Post')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Category Modal */}
       {showCategoryModal && (
         <div className="modal-overlay" onClick={() => setShowCategoryModal(false)}>
@@ -682,7 +477,7 @@ const BlogManagement = () => {
                 <input
                   type="text"
                   value={categoryForm.nameAL}
-                  onChange={(e) => handleTitleChange('nameAL', e.target.value, 'category')}
+                  onChange={(e) => handleCategoryNameChange(e.target.value)}
                   required
                 />
               </div>

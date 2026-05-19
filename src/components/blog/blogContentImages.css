@@ -1,0 +1,132 @@
+/* Shared blog body + inline images (editor, preview, public post) */
+
+.blog-article-body,
+.post-content.bpe-preview-content {
+  overflow: hidden;
+}
+
+.blog-article-body::after,
+.post-content.bpe-preview-content::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.blog-article-body .blog-figure,
+.post-content .blog-figure,
+.rte-content .blog-figure {
+  margin: 1.25rem 0;
+  padding: 0;
+  border: none;
+  max-width: 100%;
+}
+
+.blog-article-body .blog-figure img,
+.post-content .blog-figure img,
+.rte-content .blog-figure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(45, 74, 54, 0.12);
+}
+
+/* Full width */
+.blog-figure--full,
+.blog-figure--center {
+  width: 100%;
+  clear: both;
+}
+
+.blog-figure--full img,
+.blog-figure--center img {
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Float left / right */
+.blog-figure--left {
+  float: left;
+  width: min(48%, 360px);
+  margin: 0.25rem 1.25rem 1rem 0;
+  clear: left;
+}
+
+.blog-figure--right {
+  float: right;
+  width: min(48%, 360px);
+  margin: 0.25rem 0 1rem 1.25rem;
+  clear: right;
+}
+
+/* Legacy: bare img without figure */
+.blog-article-body > img,
+.post-content > img,
+.bpe-preview-content > img,
+.rte-content > img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.25rem auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(45, 74, 54, 0.12);
+}
+
+/* Selected image in editor */
+.rte-content .blog-figure.is-selected {
+  outline: 3px solid #6b8e23;
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+.rte-image-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  background: #2d4a36;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  align-items: center;
+}
+
+.rte-image-toolbar span {
+  color: #e8f5cd;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-right: 0.35rem;
+}
+
+.rte-image-toolbar button {
+  padding: 0.3rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  background: transparent;
+  color: white;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.rte-image-toolbar button.active,
+.rte-image-toolbar button:hover {
+  background: #6b8e23;
+  border-color: #6b8e23;
+}
+
+.rte-image-toolbar button.danger {
+  color: #fecaca;
+}
+
+.rte-drop-hint {
+  border: 2px dashed #6b8e23 !important;
+  background: rgba(107, 142, 35, 0.06) !important;
+}
+
+@media (max-width: 640px) {
+  .blog-figure--left,
+  .blog-figure--right {
+    float: none;
+    width: 100%;
+    margin: 1.25rem 0;
+  }
+}

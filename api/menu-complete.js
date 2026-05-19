@@ -6,7 +6,7 @@ import prisma from '../src/lib/prisma.js';
 export default async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
@@ -26,10 +26,10 @@ export default async function handler(req, res) {
         const categories = await prisma.menuCategory.findMany({
           include: {
             menuItems: {
-              orderBy: { nameAL: 'asc' }
+              orderBy: [{ displayOrder: 'asc' }, { nameAL: 'asc' }]
             }
           },
-          orderBy: { nameAL: 'asc' }
+          orderBy: [{ displayOrder: 'asc' }, { nameAL: 'asc' }]
         });
 
         return res.status(200).json({
@@ -43,12 +43,37 @@ export default async function handler(req, res) {
         // GET /api/menu-complete?path=categories - Get all categories
         if (req.method === 'GET') {
           const categories = await prisma.menuCategory.findMany({
-            orderBy: { nameAL: 'asc' }
+            orderBy: [{ displayOrder: 'asc' }, { nameAL: 'asc' }]
           });
 
           return res.status(200).json({
             success: true,
             data: categories
+          });
+        }
+        // PATCH /api/menu-complete?path=categories - Bulk update display order
+        else if (req.method === 'PATCH') {
+          const { orders } = req.body;
+
+          if (!Array.isArray(orders) || orders.length === 0) {
+            return res.status(400).json({
+              success: false,
+              error: 'orders array with id and displayOrder is required'
+            });
+          }
+
+          await prisma.$transaction(
+            orders.map(({ id, displayOrder }) =>
+              prisma.menuCategory.update({
+                where: { id },
+                data: { displayOrder: Number(displayOrder) }
+              })
+            )
+          );
+
+          return res.status(200).json({
+            success: true,
+            message: 'Category order updated'
           });
         }
         // POST /api/menu-complete?path=categories - Create category
@@ -88,7 +113,7 @@ export default async function handler(req, res) {
             where: { id: categoryId },
             include: {
               menuItems: {
-                orderBy: { nameAL: 'asc' }
+                orderBy: [{ displayOrder: 'asc' }, { nameAL: 'asc' }]
               }
             }
           });
@@ -140,13 +165,15 @@ export default async function handler(req, res) {
     } else if (pathArray[0] === 'items') {
       // Items operations
       if (pathArray.length === 1) {
-        // GET /api/menu-complete?path=items - Get all items
+        // GET /api/menu-complete?path=items[&categoryId=...] - Get items (optionally by category)
         if (req.method === 'GET') {
+          const { categoryId } = req.query;
           const items = await prisma.menuItem.findMany({
+            where: categoryId ? { categoryId } : undefined,
             include: {
               category: true
             },
-            orderBy: { nameAL: 'asc' }
+            orderBy: [{ displayOrder: 'asc' }, { nameAL: 'asc' }]
           });
 
           return res.status(200).json({

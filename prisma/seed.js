@@ -11,19 +11,6 @@ async function main() {
   await prisma.reservation.deleteMany();
   await prisma.review.deleteMany();
   await prisma.customer.deleteMany();
-  await prisma.restaurantSettings.deleteMany();
-
-  // Create Restaurant Settings
-  const settings = await prisma.restaurantSettings.create({
-    data: {
-      restaurantName: 'Ullishtja Agriturizem',
-      email: 'hi@ullishtja-agroturizem.com',
-      phone: '+355 68 409 0405',
-      address: 'Rruga e Ullishtes, Tirane, Albania',
-      websiteUrl: 'https://ullishtja-agriturizem.com',
-      maxCapacity: 60,
-    },
-  });
 
   // Create Menu Categories
   const appetizers = await prisma.menuCategory.create({

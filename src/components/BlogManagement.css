@@ -1,9 +1,31 @@
 /* Blog Management Styles */
 
 .blog-management {
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.blog-management--editor {
+  padding: 0;
+}
+
+.blog-management-header,
+.blog-management > .message {
+  flex-shrink: 0;
+}
+
+.posts-section,
+.categories-section {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.25rem;
 }
 
 .blog-management-header {

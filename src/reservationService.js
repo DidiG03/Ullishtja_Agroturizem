@@ -44,7 +44,7 @@ const apiCall = async (endpoint, options = {}) => {
 const reservationService = {
   async create(reservationData) {
     try {
-      const result = await apiCall('/reservations', {
+      const result = await apiCall('/reservations-complete', {
         method: 'POST',
         body: JSON.stringify(reservationData),
       });
@@ -58,7 +58,7 @@ const reservationService = {
   async getAll(options = {}) {
     try {
       const params = new URLSearchParams(options);
-      const result = await apiCall(`/reservations?${params}`);
+      const result = await apiCall(`/reservations-complete?${params}`);
       return result;
     } catch (error) {
       console.error('Error fetching reservations:', error);
@@ -68,7 +68,7 @@ const reservationService = {
 
   async updateStatus(id, status) {
     try {
-      const result = await apiCall(`/reservations/${id}`, {
+      const result = await apiCall(`/reservations-complete?path=${encodeURIComponent(id)}`, {
         method: 'PUT',
         body: JSON.stringify({ status }),
       });

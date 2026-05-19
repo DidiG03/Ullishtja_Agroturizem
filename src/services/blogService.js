@@ -25,6 +25,7 @@ class BlogService {
 
     const params = new URLSearchParams();
     if (published !== undefined) params.append('published', published);
+    if (options.admin) params.append('admin', 'true');
     if (category) params.append('category', category);
     if (featured !== undefined) params.append('featured', featured);
     if (limit) params.append('limit', limit);
@@ -52,6 +53,20 @@ class BlogService {
       return result.data[0] || null;
     } catch (error) {
       console.error('Error fetching blog post:', error);
+      throw error;
+    }
+  }
+
+  async getPostForEdit(id) {
+    try {
+      const response = await fetch(`${this.apiBaseUrl}/api/blog?id=${id}&admin=true`);
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to fetch post');
+      }
+      return result.data[0] || null;
+    } catch (error) {
+      console.error('Error fetching blog post for edit:', error);
       throw error;
     }
   }
@@ -297,19 +312,16 @@ class BlogService {
 
   validatePostData(postData) {
     const errors = [];
+    const hasContent = (html) => html && html.replace(/<[^>]*>/g, '').trim().length > 0;
 
-    if (!postData.titleAL) errors.push('Albanian title is required');
-    if (!postData.titleEN) errors.push('English title is required');
-    if (!postData.titleIT) errors.push('Italian title is required');
-    if (!postData.contentAL) errors.push('Albanian content is required');
-    if (!postData.contentEN) errors.push('English content is required');
-    if (!postData.contentIT) errors.push('Italian content is required');
+    if (!postData.titleAL?.trim()) errors.push('Albanian title is required');
+    if (!hasContent(postData.contentAL)) errors.push('Albanian content is required');
     if (!postData.categoryId) errors.push('Category is required');
-    if (!postData.slug) errors.push('Slug is required');
+    if (!postData.slug?.trim()) errors.push('Slug is required');
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 

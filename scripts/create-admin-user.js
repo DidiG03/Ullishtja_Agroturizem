@@ -1,7 +1,8 @@
 const { createClerkClient } = require('@clerk/backend');
 const { PrismaClient } = require('@prisma/client');
 
-// Load environment variables
+// Load .env.local first (dev overrides), then .env
+require('dotenv').config({ path: '.env.local' });
 require('dotenv').config();
 
 const prisma = new PrismaClient();
@@ -31,29 +32,55 @@ async function createAdminUser() {
       process.exit(1);
     }
 
-    // Create user in Clerk
-    const user = await clerkClient.users.createUser({
-      emailAddress: [email],
-      password: password,
-      firstName: firstName,
-      lastName: lastName,
-      skipPasswordChecks: false,
-      skipPasswordRequirement: false,
-    });
+    let user;
 
-    // Create customer record in database
-    const customer = await prisma.customer.create({
-      data: {
-        name: `${firstName} ${lastName}`,
-        email: email,
-        clerkUserId: user.id,
-        notes: 'Admin user account',
-        preferences: JSON.stringify({
-          role: 'admin',
-          createdBy: 'script'
-        })
-      }
+    try {
+      user = await clerkClient.users.createUser({
+        emailAddress: [email],
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        skipPasswordChecks: false,
+        skipPasswordRequirement: false,
+      });
+      console.log('✅ Created new Clerk user');
+    } catch (createError) {
+      const alreadyExists = createError.errors?.some(
+        (e) => e.code === 'form_identifier_exists'
+      );
+      if (!alreadyExists) throw createError;
+
+      const existing = await clerkClient.users.getUserList({
+        emailAddress: [email],
+        limit: 1,
+      });
+      if (!existing.data.length) throw createError;
+
+      user = existing.data[0];
+      console.log('ℹ️  User already exists in Clerk — using existing account');
+    }
+
+    console.log('\n📋 Add this to .env.local:\n');
+    console.log(`REACT_APP_ADMIN_USER_IDS=${user.id}\n`);
+
+    // Create customer record in database (skip if already linked)
+    const existingCustomer = await prisma.customer.findFirst({
+      where: { OR: [{ clerkUserId: user.id }, { email }] },
     });
+    if (!existingCustomer) {
+      await prisma.customer.create({
+        data: {
+          name: `${firstName} ${lastName}`,
+          email: email,
+          clerkUserId: user.id,
+          notes: 'Admin user account',
+          preferences: JSON.stringify({
+            role: 'admin',
+            createdBy: 'script',
+          }),
+        },
+      });
+    }
 
     // Log admin activity
     await prisma.adminActivity.create({
@@ -73,7 +100,7 @@ async function createAdminUser() {
       }
     });
 
-
+    console.log('✅ Done. Restart dev server: npm run start:prod-data');
   } catch (error) {
     console.error('❌ Error creating admin user:', error);
     

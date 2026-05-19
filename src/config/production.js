@@ -20,7 +20,6 @@ export const productionConfig = {
     ttl: 300, // 5 minutes default TTL
     menu: 900, // 15 minutes for menu items
     reviews: 1800, // 30 minutes for reviews
-    settings: 3600, // 1 hour for restaurant settings
   },
 
   // Rate limiting

@@ -16,12 +16,6 @@ async function wipeDatabase() {
     console.log('Deleting menu categories...');
     await prisma.menuCategory.deleteMany();
     
-    console.log('Deleting time slot capacities...');
-    await prisma.timeSlotCapacity.deleteMany();
-    
-    console.log('Deleting time slots...');
-    await prisma.timeSlot.deleteMany();
-    
     console.log('Deleting reservations...');
     await prisma.reservation.deleteMany();
     
@@ -36,9 +30,6 @@ async function wipeDatabase() {
     
     console.log('Deleting customers...');
     await prisma.customer.deleteMany();
-    
-    console.log('Deleting restaurant settings...');
-    await prisma.restaurantSettings.deleteMany();
     
     console.log('✅ Database wiped successfully!');
     console.log('📊 All tables are now empty and ready for fresh data.');

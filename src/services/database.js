@@ -167,43 +167,6 @@ export const menuService = {
   },
 };
 
-// Restaurant Settings Service
-export const settingsService = {
-  // Get restaurant settings
-  async get() {
-    try {
-      let settings = await prisma.restaurantSettings.findFirst();
-      
-      // Create default settings if none exist
-      if (!settings) {
-        settings = await prisma.restaurantSettings.create({
-          data: {}, // Will use schema defaults
-        });
-      }
-      
-      return { success: true, data: settings };
-    } catch (error) {
-      console.error('Error fetching settings:', error);
-      return { success: false, error: error.message };
-    }
-  },
-
-  // Update restaurant settings
-  async update(settingsData) {
-    try {
-      const settings = await prisma.restaurantSettings.upsert({
-        where: { id: settingsData.id || 'default' },
-        update: settingsData,
-        create: settingsData,
-      });
-      return { success: true, data: settings };
-    } catch (error) {
-      console.error('Error updating settings:', error);
-      return { success: false, error: error.message };
-    }
-  },
-};
-
 // Customer Service
 export const customerService = {
   // Create or update customer

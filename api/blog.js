@@ -92,16 +92,45 @@ export default async function handler(req, res) {
 
     // Posts resource
     if (req.method === 'GET') {
-      const { category, featured, published = 'true', language = 'al', id } = req.query || {};
+      const { category, featured, published, language = 'al', id, admin } = req.query || {};
+      const isAdmin = admin === 'true' || admin === '1';
       const lang = String(language).toLowerCase();
       const suffix = lang === 'it' ? 'IT' : lang === 'en' ? 'EN' : 'AL';
+
+      if (id) {
+        const post = await prisma.blogPost.findUnique({
+          where: { id: String(id) },
+          include: {
+            category: { select: { id: true, nameAL: true, nameEN: true, nameIT: true, slug: true } },
+          },
+        });
+        if (!post) {
+          return res.status(404).json({ success: false, error: 'Post not found' });
+        }
+        if (isAdmin) {
+          return res.status(200).json({
+            success: true,
+            data: [{
+              ...post,
+              category: {
+                id: post.category.id,
+                name: post.category.nameAL,
+                nameAL: post.category.nameAL,
+                nameEN: post.category.nameEN,
+                nameIT: post.category.nameIT,
+                slug: post.category.slug,
+              },
+            }],
+          });
+        }
+      }
+
       const whereClause = {};
       if (published === 'true') whereClause.isPublished = true;
       else if (published === 'false') whereClause.isPublished = false;
       if (category && category !== 'all') whereClause.category = { slug: category };
       if (featured !== undefined) whereClause.isFeatured = String(featured) === 'true';
 
-      const whereIdClause = id ? { id: String(id) } : {};
       const posts = await prisma.blogPost.findMany({
         where: whereClause,
         include: {
@@ -164,16 +193,25 @@ export default async function handler(req, res) {
         author,
         isFeatured = false,
         isPublished = false,
-        metaDescription,
-        metaKeywords,
+        metaDescriptionAL,
+        metaDescriptionEN,
+        metaDescriptionIT,
+        metaKeywordsAL,
+        metaKeywordsEN,
+        metaKeywordsIT,
         displayOrder = 0,
       } = req.body || {};
 
-      if (!categoryId || !slug || !titleAL || !titleEN || !titleIT || !contentAL || !contentEN || !contentIT) {
+      const resolvedTitleEN = titleEN || titleAL;
+      const resolvedTitleIT = titleIT || titleAL;
+      const resolvedContentEN = contentEN || contentAL;
+      const resolvedContentIT = contentIT || contentAL;
+
+      if (!categoryId || !slug || !titleAL || !contentAL) {
         return res.status(400).json({
           success: false,
           error: 'Missing required fields',
-          required: ['categoryId', 'slug', 'titleAL', 'titleEN', 'titleIT', 'contentAL', 'contentEN', 'contentIT'],
+          required: ['categoryId', 'slug', 'titleAL', 'contentAL'],
         });
       }
 
@@ -187,14 +225,14 @@ export default async function handler(req, res) {
           categoryId,
           slug,
           titleAL,
-          titleEN,
-          titleIT,
+          titleEN: resolvedTitleEN,
+          titleIT: resolvedTitleIT,
           excerptAL,
           excerptEN,
           excerptIT,
           contentAL,
-          contentEN,
-          contentIT,
+          contentEN: resolvedContentEN,
+          contentIT: resolvedContentIT,
           featuredImageUrl,
           featuredImageAlt,
           authorName: author || undefined,
@@ -202,8 +240,12 @@ export default async function handler(req, res) {
           isPublished,
           displayOrder,
           publishedAt: isPublished ? new Date() : null,
-          metaDescription,
-          metaKeywords,
+          metaDescriptionAL,
+          metaDescriptionEN,
+          metaDescriptionIT,
+          metaKeywordsAL,
+          metaKeywordsEN,
+          metaKeywordsIT,
         },
         include: {
           category: { select: { id: true, nameAL: true, nameEN: true, nameIT: true, slug: true } },
@@ -233,8 +275,12 @@ export default async function handler(req, res) {
         isFeatured,
         isPublished,
         displayOrder,
-        metaDescription,
-        metaKeywords,
+        metaDescriptionAL,
+        metaDescriptionEN,
+        metaDescriptionIT,
+        metaKeywordsAL,
+        metaKeywordsEN,
+        metaKeywordsIT,
       } = req.body || {};
 
       const updateData = {};
@@ -255,8 +301,12 @@ export default async function handler(req, res) {
       if (isFeatured !== undefined) updateData.isFeatured = isFeatured;
       if (isPublished !== undefined) updateData.isPublished = isPublished;
       if (displayOrder !== undefined) updateData.displayOrder = displayOrder;
-      if (metaDescription !== undefined) updateData.metaDescription = metaDescription;
-      if (metaKeywords !== undefined) updateData.metaKeywords = metaKeywords;
+      if (metaDescriptionAL !== undefined) updateData.metaDescriptionAL = metaDescriptionAL;
+      if (metaDescriptionEN !== undefined) updateData.metaDescriptionEN = metaDescriptionEN;
+      if (metaDescriptionIT !== undefined) updateData.metaDescriptionIT = metaDescriptionIT;
+      if (metaKeywordsAL !== undefined) updateData.metaKeywordsAL = metaKeywordsAL;
+      if (metaKeywordsEN !== undefined) updateData.metaKeywordsEN = metaKeywordsEN;
+      if (metaKeywordsIT !== undefined) updateData.metaKeywordsIT = metaKeywordsIT;
       if (isPublished === true) updateData.publishedAt = new Date();
 
       const updated = await prisma.blogPost.update({ where: { id }, data: updateData });

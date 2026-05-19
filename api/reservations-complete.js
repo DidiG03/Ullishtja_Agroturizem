@@ -14,9 +14,14 @@ export default async function handler(req, res) {
   }
 
   const { path } = req.query;
+  const pathArray = path
+    ? Array.isArray(path)
+      ? path
+      : String(path).split(',').filter(Boolean)
+    : [];
 
   try {
-    if (!path || path.length === 0) {
+    if (pathArray.length === 0) {
       // Base reservations operations
       if (req.method === 'GET') {
         // GET /api/reservations-complete - Get all reservations
@@ -119,9 +124,9 @@ export default async function handler(req, res) {
           data: reservation
         });
       }
-    } else if (path.length === 1) {
+    } else if (pathArray.length === 1) {
       // Operations on specific reservation by ID
-      const reservationId = path[0];
+      const reservationId = pathArray[0];
 
       if (req.method === 'GET') {
         // GET /api/reservations-complete?path={id}

@@ -67,8 +67,12 @@ function MobileMenu({ currentLanguage, onClose }) {
   };
 
   const formatPrice = (price) => {
-    if (!price) return '';
-    return `${price} ALL`;
+    if (price == null || price === '') return '';
+    const num = Number(price);
+    if (!Number.isNaN(num)) {
+      return Number.isInteger(num) ? String(Math.round(num)) : String(num);
+    }
+    return String(price).replace(/\s*ALL\s*/gi, '').trim();
   };
 
   const getMenuTitle = () => {

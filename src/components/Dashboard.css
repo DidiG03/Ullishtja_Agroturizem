@@ -1,5 +1,9 @@
 .dashboard-container {
+  height: 100vh;
   min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   background-color: #f7fafc;
 }
 
@@ -45,7 +49,9 @@
 
 .dashboard-content {
   display: flex;
-  min-height: calc(100vh - 90px);
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .dashboard-nav {
@@ -299,7 +305,16 @@
 
 .dashboard-main {
   flex: 1;
+  min-width: 0;
   padding: 30px;
+  overflow-y: auto;
+}
+
+.dashboard-main--contained {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .tab-content h2 {
@@ -507,27 +522,6 @@
   border-color: #cbd5e0;
 }
 
-/* Settings Tab Styles */
-.settings-sections {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.settings-section {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.settings-section h3 {
-  margin: 0 0 20px 0;
-  color: #2d3748;
-  font-size: 20px;
-  font-weight: 600;
-}
-
 .form-group {
   margin-bottom: 20px;
 }
@@ -584,59 +578,6 @@
 .save-btn:hover {
   background: #2f855a;
   transform: translateY(-1px);
-}
-
-.hours-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.day-hours {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 12px 0;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.day-hours:last-child {
-  border-bottom: none;
-}
-
-.day-hours span {
-  min-width: 100px;
-  color: #4a5568;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.day-hours input[type="time"] {
-  padding: 8px 12px;
-  border: 2px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 14px;
-  min-width: 120px;
-}
-
-.day-hours input[type="time"]:disabled {
-  background-color: #f7fafc;
-  color: #a0aec0;
-  cursor: not-allowed;
-}
-
-.day-hours label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #4a5568;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.day-hours label input[type="checkbox"] {
-  transform: scale(1.1);
 }
 
 /* Unauthorized Access Styles */

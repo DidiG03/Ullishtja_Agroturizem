@@ -3,9 +3,12 @@
 
 class ApiClient {
   constructor() {
-    this.baseUrl = process.env.NODE_ENV === 'production' 
-      ? '' 
-      : process.env.REACT_APP_API_URL || 'http://localhost:3001';
+    const useProductionApi =
+      process.env.REACT_APP_USE_PRODUCTION_API === 'true';
+    this.baseUrl =
+      process.env.NODE_ENV === 'production' || useProductionApi
+        ? ''
+        : process.env.REACT_APP_API_URL || 'http://localhost:3001';
   }
 
   async request(endpoint, options = {}) {

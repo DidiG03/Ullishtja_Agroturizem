@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './Blog.css';
+import './blog/blogContentImages.css';
 import { translations } from '../translations';
 import SEOHead from './SEOHead';
 import Layout from './Layout';
@@ -177,7 +178,7 @@ const Blog = ({ currentLanguage: propLanguage }) => {
 
   // Render post content with HTML
   const renderContent = (content) => {
-    return <div dangerouslySetInnerHTML={{ __html: content }} />;
+    return <div className="blog-article-body" dangerouslySetInnerHTML={{ __html: content }} />;
   };
 
   // Get related posts (exclude current post and same category)

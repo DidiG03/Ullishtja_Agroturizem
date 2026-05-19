@@ -1,4 +1,5 @@
 const { createClerkClient } = require('@clerk/backend');
+require('dotenv').config({ path: '.env.local' });
 require('dotenv').config();
 
 const clerkClient = createClerkClient({
@@ -10,9 +11,10 @@ async function getCurrentUser() {
     console.log('🔍 Getting current Clerk users...');
     
     // Get all users to find the one with your email
-    const users = await clerkClient.users.getUserList({ 
-      emailAddress: ['sefridkapllani@gmail.com'],
-      limit: 10 
+    const email = process.env.ADMIN_EMAIL || 'sefridkapllani@gmail.com';
+    const users = await clerkClient.users.getUserList({
+      emailAddress: [email],
+      limit: 10,
     });
     
     console.log('\n📋 Found users:');
@@ -26,7 +28,7 @@ async function getCurrentUser() {
     });
     
     if (users.data.length === 0) {
-      console.log('❌ No users found with email sefridkapllani@gmail.com');
+      console.log(`❌ No users found with email ${email}`);
       console.log('💡 You might be logged in with a different email');
     }
     

@@ -1,4 +1,8 @@
-require('dotenv').config();
+const path = require('path');
+// Load env files in the same order as Create React App
+['.env.local', '.env.development.local', '.env.development', '.env'].forEach((file) => {
+  require('dotenv').config({ path: path.resolve(process.cwd(), file) });
+});
 
 // Validate environment before starting server
 const { logEnvironmentStatus } = require('../src/utils/envValidation.js');
@@ -48,24 +52,17 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Routes - All API functionality moved to Vercel serverless functions
-// Express server is now only used for development health checks
+const { registerVercelApiRoutes } = require('./vercelRoutes.js');
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'OK', 
+  res.json({
+    status: 'OK',
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
-    uptime: process.uptime()
+    uptime: process.uptime(),
   });
 });
-
-// 404 handler
-app.use(notFoundHandler);
-
-// Global error handler
-app.use(globalErrorHandler);
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
@@ -78,12 +75,25 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log(`\n🚀 API endpoints are served by Vercel serverless functions in /api/`);
-  console.log(`📝 All business logic moved to Vercel for better performance`);
-});
+// Start server (mount /api/* after listen so startup errors are visible)
+async function startServer() {
+  try {
+    await registerVercelApiRoutes(app);
+    // Re-register 404 after API routes (Express matches in registration order)
+    app.use(notFoundHandler);
+    app.use(globalErrorHandler);
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
+      console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`📊 Health check: http://localhost:${PORT}/health`);
+      console.log(`📡 API: http://localhost:${PORT}/api/* (Vercel handlers for local dev)`);
+    });
+  } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+startServer();
   

@@ -59,7 +59,7 @@ class MenuService {
 
   async updateCategoryOrders(orders) {
     try {
-      const response = await fetch(`/api/menu/categories`, {
+      const response = await fetch(`/api/menu-complete?path=categories`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +67,8 @@ class MenuService {
         body: JSON.stringify({ orders }),
       });
       if (!response.ok) throw new Error('Failed to update category orders');
-      return { success: true };
+      const result = await response.json();
+      return result;
     } catch (error) {
       console.error('Error updating category orders:', error);
       return { success: false, error: error.message };

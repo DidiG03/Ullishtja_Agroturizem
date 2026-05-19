@@ -257,17 +257,18 @@
 }
 
 .mobile-item-price {
-  background: #c9a96e;
-  color: #0d1b12;
-  padding: 0.3rem 0.75rem;
+  background: #ffffff;
+  color: #1a1a1a;
+  padding: 0.25rem 0.5rem;
   border-radius: 0;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 400;
   font-family: 'Inter', sans-serif;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.02em;
   white-space: nowrap;
   flex-shrink: 0;
   box-shadow: none;
+  border: none;
 }
 
 .mobile-item-description {
@@ -730,12 +731,18 @@
     border-bottom-color: #c9a96e;
   }
   
-  /* Desktop grid — Premium */
+  /* Desktop list — one item per row, full width */
   .mobile-menu-items {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    display: flex;
+    flex-direction: column;
     gap: 1.25rem;
+    width: 100%;
     animation: slideInContent 0.5s ease;
+  }
+
+  .mobile-menu-item {
+    width: 100%;
+    box-sizing: border-box;
   }
   
   @keyframes slideInContent {
@@ -765,8 +772,8 @@
   }
   
   .mobile-item-price {
-    font-size: 0.85rem;
-    padding: 0.35rem 0.9rem;
+    font-size: 1rem;
+    padding: 0.25rem 0.5rem;
   }
   
   .mobile-item-description {
@@ -813,10 +820,9 @@
   }
   
   .mobile-menu-items {
-    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
     gap: 1.5rem;
   }
-  
+
   .mobile-menu-item {
     padding: 2rem;
   }

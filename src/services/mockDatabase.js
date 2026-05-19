@@ -4,7 +4,6 @@
 const STORAGE_KEYS = {
   RESERVATIONS: 'ullishtja_reservations',
   CUSTOMERS: 'ullishtja_customers',
-  SETTINGS: 'ullishtja_settings',
   MENU: 'ullishtja_menu',
   REVIEWS: 'ullishtja_reviews',
   ACTIVITIES: 'ullishtja_activities'
@@ -264,26 +263,6 @@ export const menuService = {
   },
   async createCategory(categoryData) {
     return { success: true, data: categoryData };
-  }
-};
-
-// Settings Services (simplified)
-export const settingsService = {
-  async get() {
-    const settings = getFromStorage(STORAGE_KEYS.SETTINGS);
-    return { 
-      success: true, 
-      data: settings.length > 0 ? settings[0] : {
-        id: 'default',
-        restaurantName: 'Ullishtja Agriturizem',
-        email: 'hi@ullishtja-agroturizem.com',
-        phone: '+355 XX XXX XXX'
-      }
-    };
-  },
-  async update(settingsData) {
-    saveToStorage(STORAGE_KEYS.SETTINGS, [settingsData]);
-    return { success: true, data: settingsData };
   }
 };
 

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSignIn, useUser } from '@clerk/clerk-react';
 import { Navigate } from 'react-router-dom';
+import { isClerkProductionOnLocalhost, CLERK_LOCALHOST_HELP } from '../utils/clerkLocalDev';
 import './AdminLogin.css';
 
 const AdminLogin = () => {
@@ -311,6 +312,13 @@ const AdminLogin = () => {
           <p>Sign in to access the admin dashboard</p>
         </div>
         
+        {isClerkProductionOnLocalhost() && (
+          <div className="error-message" style={{ marginBottom: '1rem' }}>
+            <span className="error-icon">⚠️</span>
+            {CLERK_LOCALHOST_HELP}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="custom-login-form">
           {error && (
             <div className="error-message">
