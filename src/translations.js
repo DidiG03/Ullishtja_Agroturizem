@@ -55,11 +55,10 @@ export const translations = {
     events: {
       title: "Eventet",
       subtitle: "Krijoni Kujtime të Përhershme",
-      text1: "Ullishtja Agriturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga fejesat tradicionale, tek eventet korporative dhe ato familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
-      text2: "Stafi ynë i dedikuar bashkëpunon me ju për të planifikuar çdo detaj, nga menuja me specialitete lokale, tek dekorimi dhe koordinimi i plotë i eveentit.",
+      text1: "Ullishtja Agriturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga fejesat tradicionale dhe eventet familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
+      text2: "Stafi ynë i dedikuar bashkëpunon me ju për të planifikuar çdo detaj, nga menuja me specialitete lokale, tek dekorimi dhe koordinimi i plotë i eventit.",
       features: {
         weddings: "Fejesë Tradicionale",
-        corporate: "Evente Korporative", 
         family: "Festa Familjare",
         capacity: "Deri në 120 mysafirë"
       }
