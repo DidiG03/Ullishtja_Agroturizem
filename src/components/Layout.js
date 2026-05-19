@@ -98,15 +98,6 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
 
   return (
     <div className="layout">
-      {/* Navigation Header */}
-      <header className="navbar">
-        <div className="nav-container nav-container--logo-only">
-          <a href="/" className="logo-container logo-home-link" aria-label={t.nav.home}>
-            <img src="https://ucarecdn.com/f2ebac4d-52d3-45f7-997d-3e2dea09557b/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Authentic Albanian Restaurant Logo" className="logo" loading="eager" decoding="async" fetchpriority="high" width="100" height="50" />
-          </a>
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="main-content">
         {React.cloneElement(children, { currentLanguage, translations: t })}

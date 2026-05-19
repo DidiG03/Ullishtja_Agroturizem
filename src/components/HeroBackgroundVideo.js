@@ -1,36 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './HeroBackgroundVideo.css';
 
-const MOBILE_BREAKPOINT = 768;
-const FAST_TYPES = new Set(['4g', '5g']);
+const MOBILE_MEDIA = '(max-width: 768px)';
 
 function shouldLoadVideo() {
   if (typeof window === 'undefined') return false;
 
-  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
     return false;
   }
 
-  if (window.innerWidth > MOBILE_BREAKPOINT) return false;
-
-  const conn =
-    navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-
-  if (!conn) {
-    return true;
-  }
-
-  if (conn.saveData) return false;
-
-  if (conn.effectiveType && !FAST_TYPES.has(conn.effectiveType)) {
-    return false;
-  }
-
-  if (typeof conn.downlink === 'number' && conn.downlink > 0 && conn.downlink < 2) {
-    return false;
-  }
-
-  return true;
+  return window.matchMedia?.(MOBILE_MEDIA).matches ?? window.innerWidth <= 768;
 }
 
 export default function HeroBackgroundVideo({ poster, src }) {
@@ -39,20 +19,18 @@ export default function HeroBackgroundVideo({ poster, src }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
-    const evaluate = () => setEnabled(shouldLoadVideo());
-    evaluate();
+    const mobileQuery = window.matchMedia(MOBILE_MEDIA);
+    const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-    const conn =
-      navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-    if (conn && typeof conn.addEventListener === 'function') {
-      conn.addEventListener('change', evaluate);
-    }
-    window.addEventListener('resize', evaluate);
+    const evaluate = () => setEnabled(shouldLoadVideo());
+
+    evaluate();
+    mobileQuery.addEventListener('change', evaluate);
+    motionQuery.addEventListener('change', evaluate);
+
     return () => {
-      if (conn && typeof conn.removeEventListener === 'function') {
-        conn.removeEventListener('change', evaluate);
-      }
-      window.removeEventListener('resize', evaluate);
+      mobileQuery.removeEventListener('change', evaluate);
+      motionQuery.removeEventListener('change', evaluate);
     };
   }, []);
 

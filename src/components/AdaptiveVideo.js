@@ -19,10 +19,11 @@ const AdaptiveVideo = ({
   const [isInView, setIsInView] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [videoSrc, setVideoSrc] = useState('');
+  const containerRef = useRef(null);
   const videoRef = useRef(null);
 
-  // Simplified device detection
-  const isMobile = window.innerWidth <= 768;
+  const isMobile =
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
 
   // Simple video source selection
   useEffect(() => {
@@ -54,14 +55,27 @@ const AdaptiveVideo = ({
       { threshold: 0.1, rootMargin: '50px' }
     );
 
-    if (videoRef.current) {
-      observer.observe(videoRef.current);
+    const node = containerRef.current;
+    if (node) {
+      observer.observe(node);
     }
 
     return () => {
       observer.disconnect();
     };
   }, [lazy]);
+
+  const playVideo = () => {
+    const video = videoRef.current;
+    if (!video || typeof video.play !== 'function') return;
+    video.play().catch(() => {});
+  };
+
+  const pauseVideo = () => {
+    const video = videoRef.current;
+    if (!video || typeof video.pause !== 'function') return;
+    video.pause();
+  };
 
   // Simple video event handlers
   const handleVideoLoad = () => {
@@ -74,19 +88,17 @@ const AdaptiveVideo = ({
 
   // Auto-play when in view
   useEffect(() => {
-    if (isLoaded && videoRef.current && autoPlay && isInView) {
-      videoRef.current.play().catch(() => {
-        // Auto-play prevented, ignore
-      });
-    } else if (videoRef.current && !isInView) {
-      videoRef.current.pause();
+    if (isLoaded && autoPlay && isInView) {
+      playVideo();
+    } else if (!isInView) {
+      pauseVideo();
     }
   }, [isLoaded, autoPlay, isInView]);
 
   // Error state
   if (hasError && fallbackImage) {
     return (
-      <div ref={videoRef} className={`adaptive-video-container ${className}`} style={style}>
+      <div ref={containerRef} className={`adaptive-video-container ${className}`} style={style}>
         <img
           src={fallbackImage}
           alt={alt}
@@ -97,7 +109,7 @@ const AdaptiveVideo = ({
   }
 
   return (
-    <div ref={videoRef} className={`adaptive-video-container ${className}`} style={style}>
+    <div ref={containerRef} className={`adaptive-video-container ${className}`} style={style}>
       {/* Poster image */}
       {!isLoaded && poster && (
         <div className="video-poster">

@@ -106,7 +106,7 @@
     <!-- Mobile hero CSS background — small WebP (~100KB vs 1.4MB PNG) -->
     <link rel="preload" href="/images/posters/hero-poster-mobile-900.webp" as="image" type="image/webp" media="(max-width: 768px)" fetchpriority="high">
     <!-- Desktop hero column image -->
-    <link rel="preload" href="/images/posters/hero-poster-1200.webp" as="image" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
+    <link rel="preload" href="/images/posters/hero-poster-1600.webp" as="image" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
     <link rel="preload" href="/videos/dji-20240806130059-0020-d-poster.jpg" as="image">
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//www.google-analytics.com">
@@ -148,11 +148,12 @@
       .hero-visual{z-index:10;display:none}
       .hero-main-image{position:relative;width:100%;height:500px;border-radius:4px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
       .main-img{width:100%;height:100%;object-fit:cover;display:block}
-      .floating-card{position:absolute;top:50px;right:-50px;background:rgba(13,27,18,.9);border:1px solid rgba(201,169,110,.3);border-radius:4px;padding:1.2rem 1.5rem;box-shadow:0 10px 40px rgba(0,0,0,.3);z-index:5}
-      .card-content{display:flex;align-items:center;gap:1rem}
-      .card-icon{font-size:2rem}
-      .card-title{font-weight:600;color:#fff;font-size:1rem;font-family:'Inter',sans-serif;letter-spacing:.5px}
-      .card-subtitle{color:var(--accent-gold);font-size:.85rem;font-family:'Inter',sans-serif}
+      .hero-meta{display:flex;align-items:stretch;margin-bottom:2rem;padding:1rem 0;border-top:1px solid rgba(201,169,110,.22);border-bottom:1px solid rgba(201,169,110,.22)}
+      .hero-meta-item{display:flex;flex-direction:column;gap:.35rem;padding-right:1.5rem}
+      .hero-meta-item:last-child{padding-right:0;padding-left:1.5rem}
+      .hero-meta-label{font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent-gold);font-family:'Inter',sans-serif}
+      .hero-meta-value{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;color:#fff}
+      .hero-meta-divider{width:1px;background:linear-gradient(to bottom,transparent,rgba(201,169,110,.45),transparent)}
 
       /* Sections */
       .container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
@@ -201,7 +202,6 @@
       /* Tablet tweaks */
       @media(min-width:769px) and (max-width:1024px){
         .hero-main-image{height:320px}
-        .floating-card{top:20px;right:-16px;padding:1rem 1.25rem}
       }
     </style>
     <link rel="dns-prefetch" href="//ucarecdn.com">

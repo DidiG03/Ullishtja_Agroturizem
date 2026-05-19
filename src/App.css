@@ -210,7 +210,7 @@ h2::after {
   min-height: calc(var(--vh, 1vh) * 100);
   position: relative;
   overflow: hidden;
-  padding-top: 60px;
+  padding-top: 0;
   display: flex;
   align-items: center;
   
@@ -222,12 +222,10 @@ h2::after {
   backface-visibility: hidden;
 }
 
-/* Desktop adjustments */
+/* Desktop — full-bleed hero background */
 @media (min-width: 769px) {
   .hero {
-    padding-top: 100px;
-    /* Hide the inline background-image on desktop — show solid dark bg instead */
-    background-image: none !important;
+    padding-top: 0;
   }
 }
 
@@ -256,8 +254,37 @@ h2::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--dark-bg);
+  background-color: var(--dark-bg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   animation: none;
+}
+
+.hero-bg-image--desktop {
+  display: none;
+  background-position: center 35%;
+}
+
+@media (min-width: 769px) {
+  .hero-bg-image--mobile {
+    display: none;
+  }
+
+  .hero-bg-image--desktop {
+    display: block;
+  }
+}
+
+/* On mobile, fade static poster once background video is ready */
+@media (max-width: 768px) {
+  .hero-bg-image--mobile {
+    transition: opacity 600ms ease;
+  }
+
+  .hero-background:has(.hero-bg-video.is-ready) .hero-bg-image--mobile {
+    opacity: 0;
+  }
 }
 
 .hero-overlay {
@@ -274,6 +301,18 @@ h2::after {
     rgba(13, 27, 18, 0.85) 100%
   );
   z-index: 2;
+}
+
+@media (min-width: 769px) {
+  .hero-overlay {
+    background: linear-gradient(
+      105deg,
+      rgba(13, 27, 18, 0.92) 0%,
+      rgba(13, 27, 18, 0.78) 32%,
+      rgba(13, 27, 18, 0.45) 58%,
+      rgba(13, 27, 18, 0.2) 100%
+    );
+  }
 }
 
 /* Floating Elements Animation */
@@ -337,10 +376,20 @@ h2::after {
   z-index: 10;
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  grid-template-columns: 1fr;
+  gap: 2rem;
   align-items: center;
   width: 100%;
+}
+
+@media (min-width: 769px) {
+  .hero-container {
+    max-width: 720px;
+    margin-left: 0;
+    margin-right: auto;
+    padding-left: clamp(24px, 5vw, 80px);
+    padding-right: 24px;
+  }
 }
 
 /* Hero Content */
@@ -437,7 +486,7 @@ h2::after {
 }
 
 .title-line {
-  margin-top: 100px;
+  margin-top: 0;
   display: block;
   font-weight: 700;
 }
@@ -517,11 +566,99 @@ h2::after {
 .hero-description {
   font-size: 1.25rem;
   color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   line-height: 1.9;
   max-width: 90%;
   font-weight: 300;
   animation: fadeInUp 1s ease-out 1.1s both;
+}
+
+/* Hero meta — hours & rating inline (replaces floating chips) */
+.hero-meta {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin-bottom: 2.5rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid rgba(201, 169, 110, 0.22);
+  border-bottom: 1px solid rgba(201, 169, 110, 0.22);
+  animation: fadeInUp 1s ease-out 1.2s both;
+}
+
+.hero-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding-right: 2rem;
+}
+
+.hero-meta-item:last-child {
+  padding-right: 0;
+  padding-left: 2rem;
+}
+
+.hero-meta-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  color: var(--accent-gold);
+}
+
+.hero-meta-value {
+  font-family: 'Playfair Display', 'Georgia', serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.hero-meta-value--loading {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.hero-meta-rating {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+}
+
+.hero-meta-sep {
+  color: rgba(201, 169, 110, 0.6);
+  font-weight: 300;
+}
+
+.hero-meta-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.hero-meta-stars {
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.hero-meta-divider {
+  flex-shrink: 0;
+  width: 1px;
+  align-self: stretch;
+  min-height: 44px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(201, 169, 110, 0.45),
+    transparent
+  );
 }
 
 /* Hero Actions — Premium Buttons */
@@ -529,7 +666,7 @@ h2::after {
   display: flex;
   gap: 1rem;
   margin-bottom: 3rem;
-  margin-top: 100px;
+  margin-top: 0;
   animation: fadeInUp 1s ease-out 1.3s both;
 }
 
@@ -625,10 +762,9 @@ h2::after {
   background: linear-gradient(to bottom, transparent, var(--accent-gold), transparent);
 }
 
-/* Hero Visual */
+/* Hero Visual — image is full-bleed background; column hidden */
 .hero-visual {
-  z-index: 10;
-  animation: slideInRight 1s ease-out 0.5s both;
+  display: none;
 }
 
 @keyframes slideInRight {
@@ -995,6 +1131,46 @@ h2::after {
   font-size: 0.95rem;
   font-weight: 600;
   color: var(--primary-forest);
+}
+
+/* Section media — poster on desktop, video on mobile */
+.section-media--mobile {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.section-media--desktop {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.section-media--mobile .adaptive-video-container,
+.section-media--mobile .adaptive-video,
+.section-media--mobile .video-fallback-image,
+.section-media--mobile .video-poster,
+.section-media--mobile .poster-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.section-media--mobile .adaptive-video-container {
+  position: absolute;
+  inset: 0;
+}
+
+@media (max-width: 768px) {
+  .section-media--desktop {
+    display: none;
+  }
+
+  .section-media--mobile {
+    display: block;
+    position: absolute;
+    inset: 0;
+  }
 }
 
 /* Section Image — Premium */
@@ -2119,8 +2295,7 @@ body.scroll-locked {
   /* Hero Section - Mobile Optimized */
   .hero {
     min-height: 100vh;
-    /* Ensure content is visible below fixed navbar */
-    padding: 96px 0 64px;
+    padding: 48px 0 64px;
   }
 
   .hero-container {
@@ -2211,9 +2386,7 @@ body.scroll-locked {
     display: none;
   }
 
-  /* On mobile, let the inline background-image show through */
   .hero-bg-image {
-    background: transparent;
     animation: none;
   }
 
@@ -2228,16 +2401,38 @@ body.scroll-locked {
     );
   }
 
-  .floating-card {
-    top: 20px;
-    right: -30px;
-    padding: 1rem;
+  .hero-meta {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
-  .floating-rating {
-    bottom: 20px;
-    left: -40px;
-    padding: 0.8rem 1rem;
+  .hero-meta-item,
+  .hero-meta-item:last-child {
+    padding: 0;
+    align-items: center;
+  }
+
+  .hero-meta-rating {
+    justify-content: center;
+  }
+
+  .hero-meta-divider {
+    width: 100%;
+    height: 1px;
+    min-height: 0;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgba(201, 169, 110, 0.45),
+      transparent
+    );
   }
 
   .decoration-1,
@@ -2788,9 +2983,8 @@ body.scroll-locked {
     margin-top: 0.5rem; /* Smaller margin on very small screens */
   }
 
-  .floating-card,
-  .floating-rating {
-    display: none;
+  .hero-meta-value {
+    font-size: 1.15rem;
   }
 
 
@@ -3297,23 +3491,13 @@ body {
   }
 }
 
-/* iPad/tablet layout fixes for hero chips */
+/* iPad/tablet layout for hero image */
 @media (min-width: 768px) and (max-width: 1024px) {
   .hero-image-container {
     height: 360px;
   }
   .hero-main-image {
     height: 320px;
-  }
-  .floating-card {
-    top: 20px;
-    right: -16px; /* nudge slightly outside image to reveal more photo */
-    padding: 1rem 1.25rem;
-  }
-  .floating-rating {
-    left: -12px; /* create separation from photo edge */
-    bottom: 20px;
-    padding: 0.9rem 1.1rem;
   }
 }
 

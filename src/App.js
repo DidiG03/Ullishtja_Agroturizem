@@ -9,8 +9,8 @@ import useScrollOptimization from './hooks/useScrollOptimization';
 import useMobileOptimizations from './hooks/useMobileOptimizations';
 import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
 import SEOHead from './components/SEOHead';
-import PosterPicture from './components/PosterPicture';
 import HeroBackgroundVideo from './components/HeroBackgroundVideo';
+import SectionMedia from './components/SectionMedia';
 
 // Lazy load components for better performance
 const MobileMenu = React.lazy(() => import('./components/MobileMenu'));
@@ -304,34 +304,25 @@ function App() {
         <MobileLoadingOptimizer />
       </Suspense>
       
-      {/* Navigation Header */}
-      <header className="navbar">
-        <div className="nav-container nav-container--logo-only">
-          <a href="#home" className="logo-container logo-home-link" aria-label={t.nav.home}>
-            <img
-              src="/images/ullishtja_logo.jpeg"
-              alt="Ullishtja Agroturizem - Authentic Albanian Restaurant Logo"
-              className="logo"
-              fetchPriority="high"
-              decoding="sync"
-            />
-          </a>
-        </div>
-      </header>
-
       {/* Hero Section */}
-      <section
-        id="home"
-        className="hero"
-        style={{
-          backgroundImage: "url('/images/posters/hero-poster-mobile-900.webp')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
+      <section id="home" className="hero">
         {/* Animated Background */}
         <div className="hero-background">
-          <div className="hero-bg-image"></div>
+          <div
+            className="hero-bg-image hero-bg-image--mobile"
+            role="img"
+            aria-label="Ullishtja Agroturizem restaurant and garden in Durrës, Albania"
+            style={{
+              backgroundImage: "url('/images/posters/hero-poster-mobile-900.webp')",
+            }}
+          />
+          <div
+            className="hero-bg-image hero-bg-image--desktop"
+            aria-hidden="true"
+            style={{
+              backgroundImage: "url('/images/posters/hero-poster-1600.webp')",
+            }}
+          />
           <HeroBackgroundVideo
             src="/videos/hero/hero-bg-mobile.mp4"
             poster="/images/posters/hero-poster-mobile-900.webp"
@@ -369,6 +360,7 @@ function App() {
             <p className="hero-description">
               {t.hero.description}
             </p>
+
 
             <div className="hero-actions">
               <a href="#contact" className="cta-button primary">
@@ -419,53 +411,6 @@ function App() {
             </div>
           </div>
 
-          <div className="hero-visual">
-            <div className="hero-image-container">
-              <div className="hero-main-image">
-                <Suspense>
-                  <PosterPicture
-                    base="hero-poster"
-                    variant="hero"
-                    alt="Ullishtja Agroturizem Restaurant showcasing authentic Albanian cuisine with stunning panoramic mountain views"
-                    className="main-img"
-                    sizes="(max-width: 1200px) 50vw, min(600px, 45vw)"
-                    loading="eager"
-                    fetchPriority="high"
-                    width={600}
-                    height={400}
-                  />
-                </Suspense>
-                <div className="image-decoration decoration-1"></div>
-                <div className="image-decoration decoration-2"></div>
-              </div>
-              
-              <div className="floating-card">
-                <div className="card-content">
-                  <div className="card-icon">🍽️</div>
-                  <div className="card-text">
-                    <div className="card-title">{t.hero.openDaily}</div>
-                    <div className="card-subtitle">11:00 - 22:00</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="floating-rating">
-                <div className="rating-stars">
-                  {reviewsDisplay.stars}
-                </div>
-                <div className="rating-text">
-                  {reviewsData ? (
-                    <>
-                      <div className="rating-number">{reviewsDisplay.rating}</div>
-                      <div className="rating-count">{reviewsDisplay.count} {t.hero.googleReviews}</div>
-                    </>
-                  ) : (
-                    t.hero.loadingReviews
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
       </section>
@@ -525,18 +470,12 @@ function App() {
           </div>
         </div>
         <div className="section-image section-image-breakout">
-          <Suspense>
-            <PosterPicture
-              base="events-poster"
-              alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
-              className="section-img"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
-              loading="lazy"
-              fetchPriority="low"
-              width={1200}
-              height={874}
-            />
-          </Suspense>
+          <SectionMedia
+            posterBase="events-poster"
+            videoId="dji-20240806130609-0022-d"
+            alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
+          />
           <div className="image-overlay">
             <div className="overlay-content">
               <span className="overlay-icon">🎊</span>
@@ -551,18 +490,12 @@ function App() {
         <div className="container">
           <div className="section-grid reverse">
             <div className="section-image">
-              <Suspense>
-                <PosterPicture
-                  base="alacarte-poster"
-                  alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
-                  className="section-img"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 42vw"
-                  loading="lazy"
-                  fetchPriority="low"
-                  width={1200}
-                  height={874}
-                />
-              </Suspense>
+              <SectionMedia
+                posterBase="alacarte-poster"
+                videoId="dji-20240806130059-0020-d"
+                alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 42vw"
+              />
               <div className="image-overlay">
                 <div className="overlay-content">
                   <span className="overlay-icon">🍽️</span>

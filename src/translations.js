@@ -53,7 +53,7 @@ export const translations = {
     },
     // Events Section
     events: {
-      title: "Eventet dhe Festimet",
+      title: "Eventet",
       subtitle: "Krijoni Kujtime të Përhershme",
       text1: "Ullishtja Agriturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga fejesat tradicionale, tek eventet korporative dhe ato familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
       text2: "Stafi ynë i dedikuar bashkëpunon me ju për të planifikuar çdo detaj, nga menuja me specialitete lokale, tek dekorimi dhe koordinimi i plotë i eveentit.",
@@ -925,7 +925,7 @@ export const translations = {
     },
     // Events Section
     events: {
-      title: "Events & Celebrations",
+      title: "Events",
       subtitle: "Create Lasting Memories",
       text1: "Ullishtja Agriturizem offers beautiful spaces and warm atmosphere for all your special occasions. From traditional Albanian engagements to corporate retreats and family celebrations, we ensure every moment is unforgettable.",
       text2: "Our dedicated staff works with you to plan every detail, from personalized menus featuring local specialties to décor and complete event coordination.",
@@ -1797,7 +1797,7 @@ export const translations = {
     },
     // Events Section
     events: {
-      title: "Eventi e Celebrazioni",
+      title: "Eventi",
       subtitle: "Creare Ricordi Indimenticabili",
       text1: "Ullishtja Agriturizem offre spazi bellissimi e un'atmosfera calorosa per tutte le vostre occasioni speciali. Dai fidanzamenti tradizionali albanesi ai ritiri aziendali e alle celebrazioni familiari, assicuriamo che ogni momento sia indimenticabile.",
       text2: "Il nostro staff dedicato lavora con voi per pianificare ogni dettaglio, dai menu personalizzati con specialità locali alla decorazione e al coordinamento completo dell'evento.",

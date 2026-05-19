@@ -5,7 +5,7 @@
   height: 100%;
   object-fit: cover;
   object-position: center;
-  z-index: 0;
+  z-index: 1;
   pointer-events: none;
   opacity: 0;
   transition: opacity 600ms ease;
