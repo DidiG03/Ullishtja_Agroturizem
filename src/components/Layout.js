@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { translations } from '../translations';
 import googleReviewsService from '../services/googleReviews';
-import googleAdsService from '../services/googleAdsService';
 import '../App.css'; // Import main app styles for navbar and footer
 
 // Helper function to get language from localStorage or detect browser language
@@ -80,11 +79,6 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
     }));
   };
 
-  // Handle directions click with conversion tracking
-  const handleDirectionsClick = () => {
-    googleAdsService.trackGetDirectionsConversion();
-  };
-
   // Memoize review display components
   const reviewsDisplay = useMemo(() => {
     if (!reviewsData) return { stars: '⭐⭐⭐⭐⭐', rating: '0.0', count: '0' };
@@ -161,17 +155,6 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
                   <a href="/#contact" className="footer-link">{t.nav.contact}</a>
                 </nav>
               </div>
-
-              {/* Services */}
-              <div className="footer-section footer-services">
-                <h4 className="footer-title">{t.footer.services}</h4>
-                <div className="service-list">
-                  <span className="service-item">🍽️ {t.footer.alaCarte}</span>
-                  <span className="service-item">🎉 {t.footer.events}</span>
-                  <span className="service-item">🌿 {t.footer.organic}</span>
-                  <span className="service-item">🏔️ {t.footer.views}</span>
-                </div>
-              </div>
             </div>
 
             {/* Footer Bottom */}
@@ -180,16 +163,6 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
                 <p>{t.footer.copyright}</p>
               </div>
               <div className="footer-links-bottom">
-                <a href="https://maps.google.com/?q=41.340278,19.433569+(Ullishtja+Agroturizem)" 
-                   target="_blank" 
-                   rel="noopener noreferrer"
-                   className="footer-map-link"
-                   onClick={handleDirectionsClick}>
-                  🗺️ {t.footer.directions}
-                </a>
-                <a href="tel:+355684090405" className="footer-phone-link">
-                  📞 {t.footer.callUs}
-                </a>
                 <div className="language-selector footer-lang">
                   <button 
                     className={`lang-btn ${currentLanguage === 'al' ? 'active' : ''}`}

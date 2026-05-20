@@ -1793,7 +1793,7 @@ h2::after {
 /* Footer Main Content */
 .footer-main {
   display: grid;
-  grid-template-columns: 2fr 1.5fr 1fr 1fr;
+  grid-template-columns: 2fr 1.5fr 1fr;
   gap: 3rem;
   align-items: start;
 }
@@ -1881,10 +1881,13 @@ h2::after {
 /* Contact Section */
 .footer-contact .contact-item {
   display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 0.75rem;
   padding: 0.35rem 0;
   border-bottom: none;
+  flex: none;
 }
 
 .contact-icon {
@@ -1911,6 +1914,22 @@ h2::after {
 
 .contact-value.contact-link {
   color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.footer-contact .contact-link {
+  display: inline;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  font-weight: 500;
+}
+
+.footer-contact .contact-link:hover {
+  background: none;
+  transform: none;
+  box-shadow: none;
+  color: var(--accent-gold);
 }
 
 .contact-link:hover {
@@ -1941,25 +1960,6 @@ h2::after {
   padding-left: 1rem;
 }
 
-/* Services Section */
-.service-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.service-item {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.9rem;
-  font-family: 'Inter', sans-serif;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.service-item:last-child {
-  border-bottom: none;
-}
-
 /* Footer Bottom */
 .footer-bottom {
   display: flex;
@@ -1982,22 +1982,6 @@ h2::after {
   align-items: center;
   gap: 2rem;
   flex-wrap: wrap;
-}
-
-.footer-map-link,
-.footer-phone-link {
-  color: rgba(255, 255, 255, 0.6);
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-family: 'Inter', sans-serif;
-  transition: color 0.3s ease;
-  white-space: nowrap;
-  font-weight: 500;
-}
-
-.footer-map-link:hover,
-.footer-phone-link:hover {
-  color: var(--accent-gold);
 }
 
 .admin-link-container {
@@ -2815,10 +2799,12 @@ body.scroll-locked {
     }
 
     .footer-contact .contact-item {
+      flex-direction: row;
       text-align: left;
       justify-content: flex-start;
       margin: 0;
       max-width: none;
+      width: auto;
     }
 
     .footer-nav {
@@ -2855,11 +2841,17 @@ body.scroll-locked {
   }
 
   .footer-contact .contact-item {
-    justify-content: center;
+    flex-direction: row;
+    justify-content: flex-start;
     text-align: left;
-    max-width: 260px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 0.3rem 0;
+    width: fit-content;
+  }
+
+  .footer-contact {
+    align-items: center;
   }
 
   .footer-nav {
@@ -3174,14 +3166,11 @@ body.scroll-locked {
   }
 
   .footer-contact .contact-item {
+    flex-direction: row;
     padding: 0.25rem 0;
   }
 
   .footer-link {
-    font-size: 0.9rem;
-  }
-
-  .service-item {
     font-size: 0.9rem;
   }
 
