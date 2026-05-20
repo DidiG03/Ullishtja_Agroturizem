@@ -141,6 +141,42 @@ class MenuService {
     }
   }
 
+  async clearMenu() {
+    try {
+      const response = await fetch('/api/menu-complete?path=clear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirm: true }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to clear menu');
+      }
+      return result;
+    } catch (error) {
+      console.error('Error clearing menu:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  async importMenu({ categories, items }) {
+    try {
+      const response = await fetch('/api/menu-complete?path=import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ categories, items }),
+      });
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to import menu');
+      }
+      return result;
+    } catch (error) {
+      console.error('Error importing menu:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
   // Get complete menu structure
   async getCompleteMenu() {
     try {

@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import MenuService from '../services/menuService';
+import { parseMenuExcelFile } from '../utils/menuExcelImport';
 import './MenuManagement.css';
 
 function sortCategories(cats) {
@@ -33,6 +34,13 @@ function MenuManagement() {
   const [categorySearch, setCategorySearch] = useState('');
   const [itemSearch, setItemSearch] = useState('');
   const [viewMode, setViewMode] = useState('list');
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importPreview, setImportPreview] = useState(null);
+  const [importFileName, setImportFileName] = useState('');
+  const [importParsing, setImportParsing] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [clearingMenu, setClearingMenu] = useState(false);
+  const importInputRef = useRef(null);
 
   // Form states
   const [categoryForm, setCategoryForm] = useState({
@@ -364,6 +372,125 @@ function MenuManagement() {
     setShowItemForm(true);
   };
 
+  const closeImportModal = () => {
+    setShowImportModal(false);
+    setImportPreview(null);
+    setImportFileName('');
+    if (importInputRef.current) importInputRef.current.value = '';
+  };
+
+  const handleImportFileSelect = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    if (!['xlsx', 'xls', 'csv'].includes(ext)) {
+      setError('Please upload an Excel file (.xlsx or .xls).');
+      return;
+    }
+
+    setImportParsing(true);
+    setError(null);
+    setImportFileName(file.name);
+
+    try {
+      const parsed = await parseMenuExcelFile(file);
+      setImportPreview(parsed);
+      setShowImportModal(true);
+
+      if (parsed.categories.length === 0 && parsed.items.length === 0) {
+        setError('No menu rows found. Check that your sheet matches the template format.');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Could not read the Excel file. Make sure it is a valid .xlsx or .xls file.');
+    } finally {
+      setImportParsing(false);
+      if (importInputRef.current) importInputRef.current.value = '';
+    }
+  };
+
+  const handleClearMenu = async () => {
+    if (categories.length === 0 && allItems.length === 0) {
+      setError('Menu is already empty.');
+      return;
+    }
+
+    const summary = `${categories.length} categor${categories.length === 1 ? 'y' : 'ies'} and ${allItems.length} item${allItems.length === 1 ? '' : 's'}`;
+    if (
+      !window.confirm(
+        `Delete the entire menu?\n\nThis permanently removes ${summary}. You cannot undo this.`
+      )
+    ) {
+      return;
+    }
+    if (!window.confirm('Are you absolutely sure? The menu will be empty.')) {
+      return;
+    }
+
+    setClearingMenu(true);
+    setError(null);
+
+    try {
+      const result = await MenuService.clearMenu();
+      if (!result.success) {
+        setError(result.error || 'Failed to clear menu');
+        return;
+      }
+
+      setCategories([]);
+      setAllItems([]);
+      setSelectedCategory(null);
+      setShowCategoryForm(false);
+      setShowItemForm(false);
+      closeImportModal();
+    } catch (err) {
+      console.error(err);
+      setError('Failed to clear menu. Please try again.');
+    } finally {
+      setClearingMenu(false);
+    }
+  };
+
+  const handleConfirmImport = async () => {
+    if (!importPreview?.categories?.length && !importPreview?.items?.length) return;
+
+    setImporting(true);
+    setError(null);
+
+    try {
+      const result = await MenuService.importMenu({
+        categories: importPreview.categories,
+        items: importPreview.items,
+      });
+
+      if (!result.success) {
+        setError(result.error || 'Import failed');
+        return;
+      }
+
+      const { createdCategories, updatedCategories, createdItems, updatedItems } =
+        result.data || {};
+      await refreshMenu();
+      closeImportModal();
+      const parts = [];
+      if (createdCategories || updatedCategories) {
+        parts.push(
+          `${createdCategories || 0} new / ${updatedCategories || 0} updated categories`
+        );
+      }
+      if (createdItems || updatedItems) {
+        parts.push(`${createdItems || 0} new / ${updatedItems || 0} updated items`);
+      }
+      window.alert(`Menu imported successfully.\n${parts.join('\n')}`);
+    } catch (err) {
+      console.error(err);
+      setError('Import failed. Please try again.');
+    } finally {
+      setImporting(false);
+    }
+  };
+
   // Generate slug from Albanian name
   const generateSlug = (name) => {
     return name
@@ -394,6 +521,32 @@ function MenuManagement() {
           </p>
         </div>
         <div className="header-actions">
+          <input
+            ref={importInputRef}
+            type="file"
+            accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+            className="import-file-input"
+            onChange={handleImportFileSelect}
+            aria-hidden
+            tabIndex={-1}
+          />
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => importInputRef.current?.click()}
+            disabled={importParsing || clearingMenu}
+          >
+            {importParsing ? 'Reading…' : 'Import Excel'}
+          </button>
+          <button
+            type="button"
+            className="btn btn-danger"
+            onClick={handleClearMenu}
+            disabled={clearingMenu || (categories.length === 0 && allItems.length === 0)}
+            title="Delete all categories and items"
+          >
+            {clearingMenu ? 'Clearing…' : 'Clear menu'}
+          </button>
           <button type="button" className="btn btn-primary" onClick={() => setShowCategoryForm(true)}>
             + Category
           </button>
@@ -864,6 +1017,110 @@ function MenuManagement() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showImportModal && importPreview && (
+        <div className="modal-overlay" onClick={closeImportModal}>
+          <div
+            className="modal large import-modal"
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-labelledby="import-modal-title"
+          >
+            <div className="modal-header">
+              <div>
+                <h3 id="import-modal-title">Import menu from Excel</h3>
+                <p className="import-modal-subtitle">{importFileName}</p>
+              </div>
+              <button type="button" className="btn-icon" onClick={closeImportModal} aria-label="Close">
+                ×
+              </button>
+            </div>
+
+            <div className="import-summary">
+              <span>{importPreview.stats.categoryCount} categories</span>
+              <span>{importPreview.stats.itemCount} items</span>
+              {importPreview.errors.length > 0 && (
+                <span className="import-warnings">
+                  {importPreview.errors.length} row warning
+                  {importPreview.errors.length !== 1 ? 's' : ''}
+                </span>
+              )}
+            </div>
+
+            <p className="import-hint">
+              Columns: <strong>Category</strong> · <strong>Albanian Name</strong> ·{' '}
+              <strong>English Name</strong> · <strong>Price (Lekë)</strong>. Use a section row with only
+              the category (e.g. &quot;Sallata / Salad&quot;), then item rows below it.
+            </p>
+
+            {importPreview.errors.length > 0 && (
+              <ul className="import-errors">
+                {importPreview.errors.slice(0, 8).map((err) => (
+                  <li key={`${err.row}-${err.message}`}>
+                    Row {err.row}: {err.message}
+                  </li>
+                ))}
+                {importPreview.errors.length > 8 && (
+                  <li>…and {importPreview.errors.length - 8} more</li>
+                )}
+              </ul>
+            )}
+
+            <div className="import-preview-table-wrap">
+              <table className="import-preview-table">
+                <thead>
+                  <tr>
+                    <th>Category</th>
+                    <th>Albanian</th>
+                    <th>English</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {importPreview.categories.flatMap((cat) => {
+                    const catItems = importPreview.items.filter((i) => i.categorySlug === cat.slug);
+                    return [
+                      <tr key={`cat-${cat.slug}`} className="import-row-section">
+                        <td colSpan={4}>
+                          {cat.nameAL} / {cat.nameEN}
+                        </td>
+                      </tr>,
+                      ...catItems.map((item, idx) => (
+                        <tr key={`${item.categorySlug}-${item.nameAL}-${idx}`}>
+                          <td className="import-cell-muted">{cat.nameAL}</td>
+                          <td>{item.nameAL}</td>
+                          <td>{item.nameEN}</td>
+                          <td className="import-cell-price">{item.price}</td>
+                        </tr>
+                      )),
+                    ];
+                  })}
+                </tbody>
+              </table>
+              {importPreview.items.length > 200 && (
+                <p className="import-more-hint">Showing first 200 items of {importPreview.items.length}.</p>
+              )}
+            </div>
+
+            <div className="form-actions import-actions">
+              <button type="button" onClick={closeImportModal} disabled={importing}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={handleConfirmImport}
+                disabled={
+                  importing ||
+                  (importPreview.categories.length === 0 && importPreview.items.length === 0)
+                }
+              >
+                {importing ? 'Importing…' : 'Import to menu'}
+              </button>
+            </div>
           </div>
         </div>
       )}

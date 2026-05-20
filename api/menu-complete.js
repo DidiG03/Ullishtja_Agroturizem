@@ -162,6 +162,160 @@ export default async function handler(req, res) {
           });
         }
       }
+    } else if (pathArray[0] === 'import') {
+      // POST /api/menu-complete?path=import — bulk upsert from parsed Excel
+      if (req.method === 'POST') {
+        const { categories = [], items = [] } = req.body;
+
+        if (!Array.isArray(categories) || !Array.isArray(items)) {
+          return res.status(400).json({
+            success: false,
+            error: 'categories and items arrays are required'
+          });
+        }
+
+        const existingCategories = await prisma.menuCategory.findMany();
+        const existingItems = await prisma.menuItem.findMany();
+
+        const slugToCategoryId = new Map(
+          existingCategories.map((c) => [c.slug, c.id])
+        );
+        const itemKeyToId = new Map(
+          existingItems.map((i) => [
+            `${i.categoryId}::${i.nameAL.trim().toLowerCase()}`,
+            i.id
+          ])
+        );
+
+        let createdCategories = 0;
+        let updatedCategories = 0;
+        let createdItems = 0;
+        let updatedItems = 0;
+
+        await prisma.$transaction(async (tx) => {
+          for (const cat of categories) {
+            const {
+              slug,
+              nameAL,
+              nameEN,
+              nameIT,
+              displayOrder = 0,
+              isActive = true
+            } = cat;
+
+            if (!slug || !nameAL) continue;
+
+            const existingId = slugToCategoryId.get(slug);
+            const categoryData = {
+              nameAL,
+              nameEN: nameEN || nameAL,
+              nameIT: nameIT || nameEN || nameAL,
+              displayOrder: Number(displayOrder) || 0,
+              isActive: isActive !== false
+            };
+
+            if (existingId) {
+              await tx.menuCategory.update({
+                where: { id: existingId },
+                data: categoryData
+              });
+              updatedCategories += 1;
+            } else {
+              const created = await tx.menuCategory.create({
+                data: { slug, ...categoryData }
+              });
+              slugToCategoryId.set(slug, created.id);
+              createdCategories += 1;
+            }
+          }
+
+          for (const item of items) {
+            const {
+              categorySlug,
+              nameAL,
+              nameEN,
+              nameIT,
+              price,
+              displayOrder = 0,
+              isActive = true
+            } = item;
+
+            const categoryId = slugToCategoryId.get(categorySlug);
+            if (!categoryId || !nameAL) continue;
+
+            const itemData = {
+              nameAL,
+              nameEN: nameEN || nameAL,
+              nameIT: nameIT || nameEN || nameAL,
+              price: price != null ? parseFloat(price) : 0,
+              displayOrder: Number(displayOrder) || 0,
+              categoryId,
+              isActive: isActive !== false,
+              currency: 'ALL'
+            };
+
+            const key = `${categoryId}::${nameAL.trim().toLowerCase()}`;
+            const existingId = itemKeyToId.get(key);
+
+            if (existingId) {
+              await tx.menuItem.update({
+                where: { id: existingId },
+                data: itemData
+              });
+              updatedItems += 1;
+            } else {
+              const created = await tx.menuItem.create({ data: itemData });
+              itemKeyToId.set(key, created.id);
+              createdItems += 1;
+            }
+          }
+        });
+
+        return res.status(200).json({
+          success: true,
+          data: {
+            createdCategories,
+            updatedCategories,
+            createdItems,
+            updatedItems
+          }
+        });
+      }
+    } else if (pathArray[0] === 'clear') {
+      // POST /api/menu-complete?path=clear — remove all categories and items
+      if (req.method === 'POST' || req.method === 'DELETE') {
+        const confirm =
+          req.body?.confirm === true ||
+          req.body?.confirm === 'true' ||
+          req.query.confirm === 'true';
+
+        if (!confirm) {
+          return res.status(400).json({
+            success: false,
+            error: 'Send { "confirm": true } to clear the menu'
+          });
+        }
+
+        const result = await prisma.$transaction(async (tx) => {
+          const deletedItems = await tx.menuItem.deleteMany();
+          const deletedCategories = await tx.menuCategory.deleteMany();
+          return {
+            deletedItems: deletedItems.count,
+            deletedCategories: deletedCategories.count
+          };
+        });
+
+        return res.status(200).json({
+          success: true,
+          data: result,
+          message: 'Menu cleared successfully'
+        });
+      }
+
+      return res.status(405).json({
+        success: false,
+        error: 'Method not allowed. Use POST with { "confirm": true }.'
+      });
     } else if (pathArray[0] === 'items') {
       // Items operations
       if (pathArray.length === 1) {

@@ -22,15 +22,23 @@ const API_ROUTES = [
 const handlerCache = new Map();
 
 async function loadHandler(apiFile) {
-  if (handlerCache.has(apiFile)) {
+  const isDev = process.env.NODE_ENV !== 'production';
+
+  if (!isDev && handlerCache.has(apiFile)) {
     return handlerCache.get(apiFile);
   }
+
   const fullPath = path.join(__dirname, '..', 'api', apiFile);
-  const module = await import(pathToFileURL(fullPath).href);
+  const importUrl = isDev
+    ? `${pathToFileURL(fullPath).href}?t=${Date.now()}`
+    : pathToFileURL(fullPath).href;
+  const module = await import(importUrl);
   if (typeof module.default !== 'function') {
     throw new Error(`API module ${apiFile} has no default export handler`);
   }
-  handlerCache.set(apiFile, module.default);
+  if (!isDev) {
+    handlerCache.set(apiFile, module.default);
+  }
   return module.default;
 }
 
