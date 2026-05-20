@@ -41,7 +41,6 @@ const Blog = ({ currentLanguage: propLanguage }) => {
   const { slug } = useParams();
   const [currentLanguage, setCurrentLanguage] = useState(propLanguage || getInitialLanguage());
   const [selectedPost, setSelectedPost] = useState(null);
-  const [expandedPosts, setExpandedPosts] = useState({});
   const [selectedCategory, setSelectedCategory] = useState('all');
   
   // New state for database data
@@ -101,7 +100,15 @@ const Blog = ({ currentLanguage: propLanguage }) => {
     };
 
     // Listen for storage changes (when language is changed in other tabs/components)
+    const handleLanguageChanged = (event) => {
+      const lang = event.detail?.language;
+      if (lang && lang !== currentLanguage) {
+        setCurrentLanguage(lang);
+      }
+    };
+
     window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('languageChanged', handleLanguageChanged);
     
     // Also check for prop changes
     if (propLanguage && propLanguage !== currentLanguage) {
@@ -110,6 +117,7 @@ const Blog = ({ currentLanguage: propLanguage }) => {
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('languageChanged', handleLanguageChanged);
     };
   }, [propLanguage, currentLanguage]);
 
@@ -167,14 +175,6 @@ const Blog = ({ currentLanguage: propLanguage }) => {
     
     return date.toLocaleDateString(locale, options);
   }
-
-  // Toggle expanded state for post excerpt
-  const togglePostExpansion = (postId) => {
-    setExpandedPosts(prev => ({
-      ...prev,
-      [postId]: !prev[postId]
-    }));
-  };
 
   // Render post content with HTML
   const renderContent = (content) => {
@@ -267,7 +267,7 @@ const Blog = ({ currentLanguage: propLanguage }) => {
                   {t.blog.publishedOn} {formatDate(selectedPost.publishDate)}
                 </span>
                 <span className="post-category">
-                  {t.blog.categories[selectedPost.category]}
+                  {selectedPost.category?.name || selectedPost.category?.nameAL || 'Blog'}
                 </span>
               </div>
             </header>
@@ -400,25 +400,10 @@ const Blog = ({ currentLanguage: propLanguage }) => {
                       
                       <div className="post-card-content">
                         <p className="post-excerpt">
-                          {expandedPosts[post.id] 
-                            ? post.excerpt 
-                            : truncateExcerpt(post.excerpt || '', 150)
-                          }
+                          {post.excerpt || ''}
                         </p>
                         
                         <div className="post-card-actions">
-                          {post.excerpt && post.excerpt.length > 150 && (
-                            <button 
-                              className="expand-btn"
-                              onClick={() => togglePostExpansion(post.id)}
-                            >
-                              {expandedPosts[post.id] ? 
-                                (currentLanguage === 'al' ? 'Më pak' : currentLanguage === 'it' ? 'Meno' : 'Less') :
-                                (currentLanguage === 'al' ? 'Më shumë' : currentLanguage === 'it' ? 'Di più' : 'More')
-                              }
-                            </button>
-                          )}
-                          
                           <button 
                             className="read-full-btn"
                             onClick={() => {

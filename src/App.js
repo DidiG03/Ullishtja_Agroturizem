@@ -9,6 +9,7 @@ import useScrollOptimization from './hooks/useScrollOptimization';
 import useMobileOptimizations from './hooks/useMobileOptimizations';
 import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
 import SEOHead from './components/SEOHead';
+import SiteNav from './components/SiteNav';
 import HeroBackgroundVideo from './components/HeroBackgroundVideo';
 import SectionMedia from './components/SectionMedia';
 
@@ -291,12 +292,21 @@ function App() {
   // Memoize minimum date for date input
   // Removed minDate memo (unused)
 
+  const blogPath = currentLanguage === 'al' ? '/blog' : `/blog?lang=${currentLanguage}`;
+
   return (
-    <div className="App">
+    <div className="App has-site-nav">
       {/* SEO Head Component */}
       <SEOHead 
         currentLanguage={currentLanguage}
         pageSection="home"
+      />
+
+      <SiteNav
+        t={t}
+        currentLanguage={currentLanguage}
+        onLanguageChange={changeLanguage}
+        onOpenFoodMenu={openNewMobileMenu}
       />
       
       {/* Mobile Loading Optimizer */}
@@ -363,24 +373,35 @@ function App() {
 
 
             <div className="hero-actions">
-              <a href="#contact" className="cta-button primary">
+              <div className="hero-actions-top">
+                <a
+                  href="#alacarte"
+                  className="cta-button secondary"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    openNewMobileMenu();
+                  }}
+                >
+                  <span className="btn-text">{t.hero.viewMenu}</span>
+                </a>
+                <a href={blogPath} className="cta-button secondary">
+                  <span className="btn-text">{t.nav.blog}</span>
+                </a>
+                <a
+                  href="https://maps.google.com/?q=41.340278,19.433569+(Ullishtja+Agroturizem)"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cta-button secondary"
+                  onClick={handleDirectionsClick}
+                >
+                  <span className="btn-text">{t.footer.directions}</span>
+                </a>
+              </div>
+              <a href="#contact" className="cta-button primary hero-cta-reservations">
                 <span className="btn-text">{t.hero.cta}</span>
                 <span className="btn-arrow">→</span>
               </a>
-              <a
-                href="#alacarte"
-                className="cta-button secondary"
-                onClick={(e) => {
-                  e.preventDefault();
-                  openNewMobileMenu();
-                }}
-              >
-                <span className="btn-text">{t.hero.viewMenu}</span>
-              </a>
-              <a href="#contact" className="cta-button secondary">
-                <span className="btn-text">{t.footer.directions}</span>
-              </a>
-              
+
                 {/* Compact language selector below "Shiko Menunë" on small screens */}
                 <div className="lang-switcher-compact">
                   <button
@@ -389,7 +410,7 @@ function App() {
                     onClick={() => changeLanguage('al')}
                     aria-label="Switch language to Albanian"
                   >
-                    Albanian
+                    AL
                   </button>
                   <button
                     type="button"
@@ -397,7 +418,7 @@ function App() {
                     onClick={() => changeLanguage('en')}
                     aria-label="Switch language to English"
                   >
-                    English
+                    EN
                   </button>
                   <button
                     type="button"
@@ -405,7 +426,7 @@ function App() {
                     onClick={() => changeLanguage('it')}
                     aria-label="Switch language to Italian"
                   >
-                    Italian
+                    IT
                   </button>
                 </div>
             </div>

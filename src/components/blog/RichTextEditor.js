@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, useState } from 'react';
+import React, { useRef, useEffect, useLayoutEffect, useCallback, useState } from 'react';
 import {
   buildImageBlock,
   findFigureFromNode,
@@ -24,10 +24,17 @@ const TOOLBAR_ACTIONS = [
   { cmd: 'createLink', label: 'Link', title: 'Insert link' },
 ];
 
+function isEmptyEditorHtml(html = '') {
+  const normalized = normalizeContentHtml(html);
+  if (!normalized) return true;
+  const text = normalized.replace(/<[^>]+>/g, '').replace(/&nbsp;/gi, ' ').trim();
+  return !text;
+}
+
 function RichTextEditor({ value, onChange, placeholder = 'Write your story…', minHeight = 280 }) {
   const editorRef = useRef(null);
   const fileInputRef = useRef(null);
-  const lastValueRef = useRef(value || '');
+  const lastValueRef = useRef(null);
   const isComposingRef = useRef(false);
   const [selectedFigure, setSelectedFigure] = useState(null);
   const [selectedAlign, setSelectedAlign] = useState('center');
@@ -90,16 +97,41 @@ function RichTextEditor({ value, onChange, placeholder = 'Write your story…', 
     insertImage(url.trim(), alt, 'center');
   }, [insertImage]);
 
+  const syncEditorFromValue = useCallback(
+    (force = false) => {
+      if (!editorRef.current) return;
+      const external = normalizeContentHtml(value || '');
+      if (!force && external === lastValueRef.current) return;
+      if (
+        !force &&
+        (document.activeElement === editorRef.current ||
+          editorRef.current.contains(document.activeElement))
+      ) {
+        return;
+      }
+      editorRef.current.innerHTML = external;
+      lastValueRef.current = external;
+    },
+    [value]
+  );
+
+  useLayoutEffect(() => {
+    syncEditorFromValue(true);
+  }, [syncEditorFromValue]);
+
   useEffect(() => {
-    if (!editorRef.current) return;
-    const external = value || '';
-    if (external === lastValueRef.current) return;
-    if (document.activeElement === editorRef.current || editorRef.current.contains(document.activeElement)) {
-      return;
-    }
-    editorRef.current.innerHTML = normalizeContentHtml(external);
-    lastValueRef.current = external;
-  }, [value]);
+    syncEditorFromValue(false);
+  }, [syncEditorFromValue]);
+
+  const handleBlur = useCallback(() => {
+    if (!editorRef.current || !onChange) return;
+    const html = normalizeContentHtml(editorRef.current.innerHTML);
+    const propHtml = normalizeContentHtml(value || '');
+    if (isEmptyEditorHtml(html) && !isEmptyEditorHtml(propHtml)) return;
+    if (html === lastValueRef.current) return;
+    lastValueRef.current = html;
+    onChange(html);
+  }, [onChange, value]);
 
   const clearFigureSelection = useCallback(() => {
     editorRef.current?.querySelectorAll('.blog-figure.is-selected').forEach((el) => {
@@ -276,7 +308,7 @@ function RichTextEditor({ value, onChange, placeholder = 'Write your story…', 
         onInput={() => {
           if (!isComposingRef.current) emitChange();
         }}
-        onBlur={emitChange}
+        onBlur={handleBlur}
         onClick={handleEditorClick}
         onPaste={handlePaste}
         onDragOver={(e) => {

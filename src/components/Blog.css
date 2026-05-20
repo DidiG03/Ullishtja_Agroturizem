@@ -69,6 +69,7 @@
   height: 200px;
   overflow: hidden;
   border-radius: 12px 12px 0 0;
+  margin-bottom: 1.25rem;
 }
 
 .post-card-image img {
@@ -85,14 +86,14 @@
 .blog-container {
   min-height: 100vh;
   background: var(--cream);
-  padding-top: 100px; /* Increased to account for fixed navbar height */
+  padding-top: 88px;
 }
 
 /* Blog Header */
 .blog-header {
   background: linear-gradient(135deg, var(--primary-forest) 0%, var(--olive-green) 100%);
   color: white;
-  padding: 4rem 0;
+  padding: 2rem 0 1.75rem;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -112,9 +113,9 @@
 /* Blog header styles simplified - language selector moved to Layout */
 
 .blog-title {
-  font-size: 3.5rem;
+  font-size: 2.25rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   position: relative;
   z-index: 2;
   color: white;
@@ -122,13 +123,14 @@
 }
 
 .blog-subtitle {
-  font-size: 1.3rem;
+  font-size: 1.05rem;
   opacity: 0.9;
   max-width: 600px;
   margin: 0 auto;
   position: relative;
   z-index: 2;
   font-style: italic;
+  line-height: 1.4;
 }
 
 /* Back to Blog Button */
@@ -230,6 +232,10 @@
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
+.post-card-image + .post-card-header {
+  padding-top: 0.5rem;
+}
+
 .post-card-header {
   margin-bottom: 1.5rem;
 }
@@ -281,7 +287,7 @@
   display: flex;
   gap: 1rem;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   flex-wrap: wrap;
 }
 
@@ -452,19 +458,19 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .blog-container {
-    padding-top: 100px; /* Increased to ensure title is visible below navbar on mobile */
+    padding-top: 80px;
   }
 
   .blog-header {
-    padding: 2rem 0; /* Reduced padding since we have more top spacing */
+    padding: 1.5rem 0 1.25rem;
   }
 
   .blog-title {
-    font-size: 2.5rem;
+    font-size: 1.85rem;
   }
 
   .blog-subtitle {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
   }
 
   .blog-content {
@@ -525,19 +531,19 @@
 
 @media (max-width: 480px) {
   .blog-container {
-    padding-top: 90px; /* Slightly less padding for very small screens */
+    padding-top: 76px;
   }
 
   .blog-header {
-    padding: 1.5rem 0; /* Less padding for smaller screens */
+    padding: 1.25rem 0 1rem;
   }
 
   .blog-title {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 
   .blog-subtitle {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .blog-post-card {

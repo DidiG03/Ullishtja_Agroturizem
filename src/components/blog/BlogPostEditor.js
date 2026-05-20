@@ -29,6 +29,11 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
   useEffect(() => {
     if (post) {
       setForm(postFormFromRecord(post));
+      try {
+        localStorage.removeItem(draftKey);
+      } catch {
+        /* ignore */
+      }
       return;
     }
     try {
@@ -247,8 +252,10 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
             </section>
           )}
 
-          {step === 'content' && (
-            <section className="bpe-panel">
+          <section
+            className={`bpe-panel bpe-panel--content${step === 'content' ? '' : ' bpe-panel--hidden'}`}
+            aria-hidden={step !== 'content'}
+          >
               <div className="bpe-panel-head">
                 <h3>Content</h3>
                 <div className="bpe-lang-tabs">
@@ -287,7 +294,6 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
                 />
               </div>
             </section>
-          )}
 
           {step === 'seo' && (
             <section className="bpe-panel">

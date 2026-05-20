@@ -123,8 +123,8 @@ h2::after {
 }
 
 .logo-container .logo {
-  height: 80px;
-  width: 100px;
+  height: 56px;
+  width: 70px;
   aspect-ratio: 2 / 1;
   border-radius: 6px;
   transition: opacity 0.3s ease;
@@ -224,6 +224,10 @@ h2::after {
 
 /* Desktop — full-bleed hero background */
 @media (min-width: 769px) {
+  .has-site-nav .hero {
+    padding-top: 100px;
+  }
+
   .hero {
     padding-top: 0;
   }
@@ -664,10 +668,30 @@ h2::after {
 /* Hero Actions — Premium Buttons */
 .hero-actions {
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
   gap: 1rem;
+  width: 100%;
+  max-width: 520px;
   margin-bottom: 3rem;
   margin-top: 0;
   animation: fadeInUp 1s ease-out 1.3s both;
+}
+
+.hero-actions-top {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}
+
+.hero-actions-top .cta-button {
+  flex: 1;
+  justify-content: center;
+}
+
+.hero-cta-reservations {
+  width: 100%;
+  justify-content: center;
 }
 
 .cta-button {
@@ -2035,6 +2059,18 @@ h2::after {
   border-color: var(--accent-gold);
 }
 
+/* Mobile nav backdrop */
+.mobile-nav-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(13, 27, 18, 0.55);
+  cursor: pointer;
+}
+
 /* Mobile Navigation Styles — Premium */
 .hamburger-btn {
   display: none;
@@ -2074,12 +2110,12 @@ h2::after {
   position: fixed;
   top: 0;
   right: -100%;
-  width: 300px;
+  width: min(300px, 88vw);
   height: 100vh;
   height: calc(var(--vh, 1vh) * 100);
   background: var(--dark-bg);
   box-shadow: -10px 0 40px rgba(0, 0, 0, 0.3);
-  z-index: 1000;
+  z-index: 1002;
   transition: right 0.3s ease;
   padding: 2rem;
   overflow-y: auto;
@@ -2255,11 +2291,16 @@ body.scroll-locked {
 /* Enhanced Mobile-First Responsive Design */
 @media (max-width: 768px) {
   .hamburger-btn {
-    display: none !important;
+    display: flex !important;
   }
-  
+
+  .nav-menu,
+  .navbar .navbar-lang {
+    display: none;
+  }
+
   .nav-container {
-    justify-content: flex-start;
+    justify-content: space-between;
     padding: 0 12px;
   }
 
@@ -2272,11 +2313,16 @@ body.scroll-locked {
   }
 
   .logo {
-    height: 50px;
+    height: 42px;
+    width: 52px;
     aspect-ratio: 2 / 1;
   }
 
   /* Hero Section - Mobile Optimized */
+  .has-site-nav .hero {
+    padding-top: calc(72px + env(safe-area-inset-top, 0px));
+  }
+
   .hero {
     min-height: 100vh;
     padding: 48px 0 64px;
@@ -2333,15 +2379,23 @@ body.scroll-locked {
   }
 
   .hero-actions {
-    flex-direction: column;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem; /* Add bottom margin to separate from video */
+    max-width: 300px;
+    margin-bottom: 2rem;
+  }
+
+  .hero-actions-top {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-actions-top .cta-button,
+  .hero-cta-reservations {
+    width: 100%;
+    max-width: 300px;
   }
 
   .cta-button {
-    width: 100%;
-    max-width: 300px;
     justify-content: center;
     padding: 1.1rem 2rem;
     font-size: 0.75rem;

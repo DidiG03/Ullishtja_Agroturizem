@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { translations } from '../translations';
 import googleReviewsService from '../services/googleReviews';
+import SiteNav from './SiteNav';
 import '../App.css'; // Import main app styles for navbar and footer
 
 // Helper function to get language from localStorage or detect browser language
@@ -91,7 +92,13 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
   }, [reviewsData]);
 
   return (
-    <div className="layout">
+    <div className="layout has-site-nav">
+      <SiteNav
+        t={t}
+        currentLanguage={currentLanguage}
+        onLanguageChange={changeLanguage}
+      />
+
       {/* Main Content */}
       <main className="main-content">
         {React.cloneElement(children, { currentLanguage, translations: t })}

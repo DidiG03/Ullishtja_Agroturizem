@@ -86,6 +86,10 @@
   border: 1px solid #e2e8f0;
 }
 
+.bpe-panel--hidden {
+  display: none;
+}
+
 .bpe-panel h3 {
   margin: 0 0 1.25rem;
   color: #2d4a36;
