@@ -92,6 +92,13 @@ const BlogManagement = () => {
       setLoading(true);
       clearMessages();
 
+      const hasEmbeddedImages = ['contentAL', 'contentEN', 'contentIT', 'featuredImageUrl'].some(
+        (key) => String(postForm[key] || '').includes('data:image')
+      );
+      if (hasEmbeddedImages) {
+        setSuccess('Uploading images before save…');
+      }
+
       const payload = {
         ...postForm,
         isPublished: publish ? true : postForm.isPublished,

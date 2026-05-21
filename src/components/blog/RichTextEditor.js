@@ -1,11 +1,11 @@
 import React, { useRef, useEffect, useLayoutEffect, useCallback, useState } from 'react';
+import blogService from '../../services/blogService';
 import {
   buildImageBlock,
   findFigureFromNode,
   getFigureAlignment,
   setFigureAlignment,
   normalizeContentHtml,
-  readFileAsDataUrl,
   IMAGE_ALIGNMENTS,
 } from './blogImageUtils';
 import './blogContentImages.css';
@@ -122,11 +122,16 @@ function RichTextEditor({ value, onChange, placeholder = 'Write your story…', 
     async (file) => {
       if (!file?.type?.startsWith('image/')) return;
       try {
-        const dataUrl = await readFileAsDataUrl(file);
-        const alt = window.prompt('Image description (alt text)', file.name.replace(/\.[^.]+$/, '')) || '';
-        await insertImage(dataUrl, alt, 'center');
+        const alt =
+          window.prompt('Image description (alt text)', file.name.replace(/\.[^.]+$/, '')) || '';
+        const result = await blogService.uploadImage(file, { altText: alt });
+        const url = result?.data?.url;
+        if (!url) {
+          throw new Error('Upload did not return an image URL');
+        }
+        await insertImage(url, alt, 'center');
       } catch (err) {
-        window.alert(err.message);
+        window.alert(err.message || 'Failed to upload image');
       }
     },
     [insertImage]

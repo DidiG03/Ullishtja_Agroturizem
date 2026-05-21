@@ -2,6 +2,36 @@
 // Frontend service for blog operations
 
 import apiClient from '../utils/apiClient.js';
+import {
+  findEmbeddedDataUrls,
+  replaceEmbeddedImagesInHtml,
+  estimateJsonBytes,
+} from '../utils/blogEmbeddedImages.js';
+
+const MAX_POST_PAYLOAD_BYTES = 4 * 1024 * 1024;
+
+async function parseApiResponse(response) {
+  const text = await response.text();
+  let data = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = null;
+  }
+  return { data, text, ok: response.ok, status: response.status };
+}
+
+function apiErrorMessage(parsed, fallback) {
+  if (parsed.status === 413) {
+    return 'Post is too large to save. Wait for embedded images to upload, or use “Image URL” instead of uploading files into the editor.';
+  }
+  if (parsed.data?.error) return parsed.data.error;
+  if (parsed.text?.startsWith('Request Entity')) {
+    return 'Post is too large to save. Use hosted image URLs (e.g. https://ucarecdn.com/…) instead of pasting large images into the editor.';
+  }
+  if (parsed.text && parsed.text.length < 200) return parsed.text;
+  return fallback;
+}
 
 class BlogService {
   constructor() {
@@ -71,23 +101,80 @@ class BlogService {
     }
   }
 
+  async uploadDataUrl(dataUrl, options = {}) {
+    const response = await fetch(`${this.apiBaseUrl}/api/blog/upload`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ dataUrl, ...options }),
+    });
+    const parsed = await parseApiResponse(response);
+    if (!parsed.ok) {
+      throw new Error(apiErrorMessage(parsed, 'Failed to upload image'));
+    }
+    return parsed.data;
+  }
+
+  async uploadHostedUrl(dataUrl) {
+    const result = await this.uploadDataUrl(dataUrl);
+    const url = result?.data?.url;
+    if (!url) throw new Error('Upload did not return an image URL');
+    return url;
+  }
+
+  /** Upload inline base64 images so the save payload stays under Vercel limits */
+  async preparePostForSave(form, blogPostId) {
+    const next = { ...form };
+    const uploadOne = async (dataUrl) => this.uploadHostedUrl(dataUrl);
+
+    const contentFields = ['contentAL', 'contentEN', 'contentIT'];
+    for (const field of contentFields) {
+      if (next[field]?.includes('data:image')) {
+        next[field] = await replaceEmbeddedImagesInHtml(next[field], uploadOne);
+      }
+    }
+
+    if (next.featuredImageUrl?.startsWith('data:image')) {
+      next.featuredImageUrl = await uploadOne(next.featuredImageUrl);
+    }
+
+    const remaining = [
+      ...findEmbeddedDataUrls(next.contentAL),
+      ...findEmbeddedDataUrls(next.contentEN),
+      ...findEmbeddedDataUrls(next.contentIT),
+    ];
+    if (remaining.length > 0) {
+      throw new Error(
+        'Some images could not be uploaded. Use “Image URL” with a hosted link, or connect Vercel Blob storage.'
+      );
+    }
+
+    const bytes = estimateJsonBytes(next);
+    if (bytes > MAX_POST_PAYLOAD_BYTES) {
+      throw new Error(
+        `Post is still too large (${Math.round(bytes / 1024 / 1024)}MB). Remove duplicate images or use smaller hosted URLs.`
+      );
+    }
+
+    return next;
+  }
+
   async createPost(postData) {
     try {
+      const prepared = await this.preparePostForSave(postData);
       const response = await fetch(`${this.apiBaseUrl}/api/blog`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(postData)
+        body: JSON.stringify(prepared),
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to create post');
+      const parsed = await parseApiResponse(response);
+      if (!parsed.ok) {
+        throw new Error(apiErrorMessage(parsed, 'Failed to create post'));
       }
 
-      return result;
+      return parsed.data;
     } catch (error) {
       console.error('Error creating blog post:', error);
       throw error;
@@ -96,21 +183,21 @@ class BlogService {
 
   async updatePost(id, postData) {
     try {
+      const prepared = await this.preparePostForSave(postData, id);
       const response = await fetch(`${this.apiBaseUrl}/api/blog?id=${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(postData)
+        body: JSON.stringify(prepared),
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to update post');
+      const parsed = await parseApiResponse(response);
+      if (!parsed.ok) {
+        throw new Error(apiErrorMessage(parsed, 'Failed to update post'));
       }
 
-      return result;
+      return parsed.data;
     } catch (error) {
       console.error('Error updating blog post:', error);
       throw error;
@@ -245,16 +332,15 @@ class BlogService {
     try {
       const response = await fetch(`${this.apiBaseUrl}/api/blog/upload`, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to upload image');
+      const parsed = await parseApiResponse(response);
+      if (!parsed.ok) {
+        throw new Error(apiErrorMessage(parsed, 'Failed to upload image'));
       }
 
-      return result;
+      return parsed.data;
     } catch (error) {
       console.error('Error uploading image:', error);
       throw error;

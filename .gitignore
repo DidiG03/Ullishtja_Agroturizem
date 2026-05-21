@@ -15,3 +15,4 @@ coverage/
 
 # macOS metadata
 .DS_Store
+.env*.local
