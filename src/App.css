@@ -2379,20 +2379,30 @@ body.scroll-locked {
   }
 
   .hero-actions {
-    align-items: center;
+    align-items: stretch;
+    width: 100%;
     max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: 2rem;
   }
 
   .hero-actions-top {
     flex-direction: column;
+    align-items: stretch;
     width: 100%;
   }
 
   .hero-actions-top .cta-button,
   .hero-cta-reservations {
     width: 100%;
-    max-width: 300px;
+    max-width: none;
+    align-self: stretch;
+  }
+
+  .lang-switcher-compact {
+    align-self: stretch;
+    justify-content: center;
   }
 
   .cta-button {
