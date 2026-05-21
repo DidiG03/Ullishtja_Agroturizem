@@ -10,19 +10,53 @@ import {
 } from './blogImageUtils';
 import './blogContentImages.css';
 
-const TOOLBAR_ACTIONS = [
+const FONT_FAMILIES = [
+  { id: 'default', label: 'Font', value: '' },
+  { id: 'inter', label: 'Inter', value: "'Inter', 'Helvetica Neue', sans-serif" },
+  { id: 'playfair', label: 'Playfair', value: "'Playfair Display', Georgia, serif" },
+  { id: 'cormorant', label: 'Cormorant', value: "'Cormorant Garamond', Georgia, serif" },
+  { id: 'georgia', label: 'Georgia', value: 'Georgia, serif' },
+];
+
+const FONT_SIZES = [
+  { id: 'default', label: 'Size', value: '' },
+  { id: 'sm', label: 'Small', value: '0.875rem' },
+  { id: 'md', label: 'Normal', value: '1rem' },
+  { id: 'lg', label: 'Large', value: '1.25rem' },
+  { id: 'xl', label: 'Extra large', value: '1.5rem' },
+  { id: 'xxl', label: 'Title', value: '1.75rem' },
+];
+
+const STYLE_ACTIONS = [
   { cmd: 'bold', label: 'B', title: 'Bold' },
   { cmd: 'italic', label: 'I', title: 'Italic', style: { fontStyle: 'italic' } },
   { cmd: 'underline', label: 'U', title: 'Underline', style: { textDecoration: 'underline' } },
-  { cmd: 'separator' },
+];
+
+const BLOCK_ACTIONS = [
   { cmd: 'formatBlock', arg: 'h2', label: 'H2', title: 'Heading 2' },
   { cmd: 'formatBlock', arg: 'h3', label: 'H3', title: 'Heading 3' },
-  { cmd: 'separator' },
-  { cmd: 'insertUnorderedList', label: '• List', title: 'Bullet list' },
-  { cmd: 'insertOrderedList', label: '1. List', title: 'Numbered list' },
-  { cmd: 'separator' },
-  { cmd: 'createLink', label: 'Link', title: 'Insert link' },
 ];
+
+const LIST_ACTIONS = [
+  { cmd: 'insertUnorderedList', label: '•', title: 'Bullet list' },
+  { cmd: 'insertOrderedList', label: '1.', title: 'Numbered list' },
+];
+
+function ToolbarButton({ action, onRun }) {
+  return (
+    <button
+      type="button"
+      className="rte-btn"
+      title={action.title}
+      style={action.style}
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={() => onRun(action.cmd, action.arg)}
+    >
+      {action.label}
+    </button>
+  );
+}
 
 function isEmptyEditorHtml(html = '') {
   const normalized = normalizeContentHtml(html);
@@ -34,6 +68,7 @@ function isEmptyEditorHtml(html = '') {
 function RichTextEditor({ value, onChange, placeholder = 'Write your story…', minHeight = 280 }) {
   const editorRef = useRef(null);
   const fileInputRef = useRef(null);
+  const savedRangeRef = useRef(null);
   const lastValueRef = useRef(null);
   const lastEmittedRef = useRef(null);
   const onChangeRef = useRef(onChange);
@@ -216,6 +251,89 @@ function RichTextEditor({ value, onChange, placeholder = 'Write your story…', 
     emitChange();
   };
 
+  const saveSelection = useCallback(() => {
+    const editor = editorRef.current;
+    const sel = window.getSelection();
+    if (!editor || !sel?.rangeCount) return;
+    const range = sel.getRangeAt(0);
+    if (editor.contains(range.commonAncestorContainer)) {
+      savedRangeRef.current = range.cloneRange();
+    }
+  }, []);
+
+  const restoreSelection = useCallback(() => {
+    const editor = editorRef.current;
+    const saved = savedRangeRef.current;
+    if (!editor || !saved) return false;
+    editor.focus();
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(saved);
+    return true;
+  }, []);
+
+  const applyInlineStyle = useCallback(
+    (styles) => {
+      const editor = editorRef.current;
+      if (!editor) return;
+
+      if (!restoreSelection()) {
+        editor.focus();
+      }
+
+      const sel = window.getSelection();
+      if (!sel?.rangeCount) return;
+
+      const range = sel.getRangeAt(0);
+      if (!editor.contains(range.commonAncestorContainer)) return;
+
+      const styleEntries = Object.entries(styles);
+      if (!styleEntries.length) return;
+
+      const span = document.createElement('span');
+      styleEntries.forEach(([key, val]) => {
+        span.style[key] = val;
+      });
+
+      if (range.collapsed) {
+        span.appendChild(document.createTextNode('\u200b'));
+        range.insertNode(span);
+        const textNode = span.firstChild;
+        range.setStart(textNode, 1);
+        range.collapse(true);
+      } else {
+        try {
+          range.surroundContents(span);
+        } catch {
+          const fragment = range.extractContents();
+          span.appendChild(fragment);
+          range.insertNode(span);
+        }
+        range.selectNodeContents(span);
+        range.collapse(false);
+      }
+
+      sel.removeAllRanges();
+      sel.addRange(range);
+      emitChange();
+    },
+    [emitChange, restoreSelection]
+  );
+
+  const applyFontFamily = useCallback(
+    (fontValue) => {
+      applyInlineStyle({ fontFamily: fontValue || 'inherit' });
+    },
+    [applyInlineStyle]
+  );
+
+  const applyFontSize = useCallback(
+    (sizeValue) => {
+      applyInlineStyle({ fontSize: sizeValue || 'inherit' });
+    },
+    [applyInlineStyle]
+  );
+
   const runCommand = (cmd, arg) => {
     if (cmd === 'createLink') {
       const url = window.prompt('Link URL (https://…)');
@@ -293,42 +411,110 @@ function RichTextEditor({ value, onChange, placeholder = 'Write your story…', 
         </div>
       )}
 
-      <div className="rte-toolbar" role="toolbar" aria-label="Formatting">
-        {TOOLBAR_ACTIONS.map((action, i) =>
-          action.cmd === 'separator' ? (
-            <span key={`sep-${i}`} className="rte-sep" aria-hidden />
-          ) : (
-            <button
-              key={action.cmd + (action.arg || '')}
-              type="button"
-              className="rte-btn"
-              title={action.title}
-              style={action.style}
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => runCommand(action.cmd, action.arg)}
-            >
-              {action.label}
-            </button>
-          )
-        )}
-        <button
-          type="button"
-          className="rte-btn"
-          title="Upload image — place anywhere in the text"
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={() => fileInputRef.current?.click()}
-        >
-          🖼 Upload
-        </button>
-        <button
-          type="button"
-          className="rte-btn rte-btn-muted"
-          title="Insert image from URL"
-          onMouseDown={(e) => e.preventDefault()}
-          onClick={insertImageFromUrl}
-        >
-          Image URL
-        </button>
+      <div
+        className="rte-toolbar"
+        role="toolbar"
+        aria-label="Formatting"
+        onMouseDown={(e) => {
+          if (e.target.closest('select')) {
+            saveSelection();
+            return;
+          }
+          if (e.target.closest('button')) {
+            e.preventDefault();
+          }
+        }}
+      >
+        <div className="rte-toolbar-group rte-toolbar-group--type">
+          <select
+            className="rte-select"
+            defaultValue=""
+            aria-label="Font family"
+            onPointerDown={saveSelection}
+            onChange={(e) => {
+              applyFontFamily(e.target.value);
+              e.target.selectedIndex = 0;
+            }}
+          >
+            {FONT_FAMILIES.map((f) => (
+              <option key={f.id} value={f.value}>
+                {f.label}
+              </option>
+            ))}
+          </select>
+          <select
+            className="rte-select"
+            defaultValue=""
+            aria-label="Font size"
+            onPointerDown={saveSelection}
+            onChange={(e) => {
+              applyFontSize(e.target.value);
+              e.target.selectedIndex = 0;
+            }}
+          >
+            {FONT_SIZES.map((s) => (
+              <option key={s.id} value={s.value}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="rte-toolbar-divider" aria-hidden />
+
+        <div className="rte-toolbar-group rte-btn-cluster">
+          {STYLE_ACTIONS.map((action) => (
+            <ToolbarButton key={action.cmd} action={action} onRun={runCommand} />
+          ))}
+        </div>
+
+        <div className="rte-toolbar-divider" aria-hidden />
+
+        <div className="rte-toolbar-group rte-btn-cluster">
+          {BLOCK_ACTIONS.map((action) => (
+            <ToolbarButton key={action.cmd + action.arg} action={action} onRun={runCommand} />
+          ))}
+        </div>
+
+        <div className="rte-toolbar-divider" aria-hidden />
+
+        <div className="rte-toolbar-group rte-btn-cluster">
+          {LIST_ACTIONS.map((action) => (
+            <ToolbarButton key={action.cmd} action={action} onRun={runCommand} />
+          ))}
+        </div>
+
+        <div className="rte-toolbar-divider" aria-hidden />
+
+        <div className="rte-toolbar-group rte-btn-cluster">
+          <ToolbarButton
+            action={{ cmd: 'createLink', label: 'Link', title: 'Insert link' }}
+            onRun={runCommand}
+          />
+        </div>
+
+        <div className="rte-toolbar-spacer" aria-hidden />
+
+        <div className="rte-toolbar-group rte-toolbar-group--media">
+          <button
+            type="button"
+            className="rte-btn rte-btn--media"
+            title="Upload image"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            Upload
+          </button>
+          <button
+            type="button"
+            className="rte-btn rte-btn--media rte-btn--ghost"
+            title="Insert image from URL"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={insertImageFromUrl}
+          >
+            URL
+          </button>
+        </div>
       </div>
 
       <input
@@ -370,7 +556,9 @@ function RichTextEditor({ value, onChange, placeholder = 'Write your story…', 
           emitChange();
         }}
       />
-      <p className="rte-hint">Tip: click an image to change layout (left, right, center, full). Drag & drop or paste images into the text.</p>
+      <p className="rte-hint">
+        Tip: select text, then choose Font or Size. Click an image to change layout. Drag & drop or paste images into the text.
+      </p>
     </div>
   );
 }

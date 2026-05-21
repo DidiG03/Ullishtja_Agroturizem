@@ -6,6 +6,7 @@ import SEOHead from './SEOHead';
 import Layout from './Layout';
 import blogService from '../services/blogService';
 import { normalizeContentHtml } from './blog/blogImageUtils';
+import BlogPostCard from './blog/BlogPostCard';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // Helper function to get language from localStorage or detect browser language
@@ -190,10 +191,10 @@ const Blog = ({ currentLanguage: propLanguage }) => {
       .slice(0, 3);
   };
 
-  // Truncate excerpt for preview
-  const truncateExcerpt = (text, maxLength = 200) => {
-    if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+  const openPost = (post) => {
+    setSelectedPost(post);
+    navigate(buildBlogPath(post.slug), { replace: false });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Handle back to blog from single post view
@@ -281,21 +282,15 @@ const Blog = ({ currentLanguage: propLanguage }) => {
             {relatedPosts.length > 0 && (
               <section className="related-posts">
                 <h3>{t.blog.relatedPosts}</h3>
-                <div className="related-posts-grid">
-                  {relatedPosts.map(post => (
-                    <article 
-                      key={post.id} 
-                      className="related-post-card"
-                      onClick={() => {
-                        setSelectedPost(post);
-                        navigate(buildBlogPath(post.slug), { replace: false });
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }}
-                    >
-                      <h4>{post.title}</h4>
-                      <p>{truncateExcerpt(post.excerpt, 100)}</p>
-                      <span className="read-more-link">{t.blog.readMore}</span>
-                    </article>
+                <div className="blog-posts-grid related-posts-grid">
+                  {relatedPosts.map((post) => (
+                    <BlogPostCard
+                      key={post.id}
+                      post={post}
+                      currentLanguage={currentLanguage}
+                      formatDate={formatDate}
+                      onRead={openPost}
+                    />
                   ))}
                 </div>
               </section>
@@ -370,57 +365,14 @@ const Blog = ({ currentLanguage: propLanguage }) => {
                          'No posts in this category.'}</p>
                   </div>
                 ) : (
-                  filteredPosts.map(post => (
-                    <article key={post.id} className="blog-post-card">
-                      {post.featuredImageUrl && (
-                        <div className="post-card-image">
-                          <img 
-                            src={post.featuredImageUrl} 
-                            alt={post.featuredImageAlt || post.title}
-                          />
-                        </div>
-                      )}
-                      
-                      <div className="post-card-header">
-                        <h2 className="post-card-title">{post.title}</h2>
-                        <div className="post-card-meta">
-                          <span className="post-date">
-                            {formatDate(post.publishedAt || post.createdAt)}
-                          </span>
-                          <span className="post-category">
-                            {post.category.name}
-                          </span>
-                          {post.isFeatured && (
-                            <span className="featured-badge">
-                              {currentLanguage === 'al' ? 'I Zgjedhur' : 
-                               currentLanguage === 'it' ? 'In Evidenza' : 
-                               'Featured'}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="post-card-content">
-                        <p className="post-excerpt">
-                          {post.excerpt || ''}
-                        </p>
-                        
-                        <div className="post-card-actions">
-                          <button 
-                            className="read-full-btn"
-                            onClick={() => {
-                              setSelectedPost(post);
-                              navigate(buildBlogPath(post.slug), { replace: false });
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }}
-                          >
-                            {currentLanguage === 'al' ? 'Lexo Artikullin e Plotë' : 
-                             currentLanguage === 'it' ? 'Leggi Articolo Completo' : 
-                             'Read Full Article'}
-                          </button>
-                        </div>
-                      </div>
-                    </article>
+                  filteredPosts.map((post) => (
+                    <BlogPostCard
+                      key={post.id}
+                      post={post}
+                      currentLanguage={currentLanguage}
+                      formatDate={formatDate}
+                      onRead={openPost}
+                    />
                   ))
                 )}
               </div>

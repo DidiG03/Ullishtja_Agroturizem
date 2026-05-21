@@ -412,46 +412,9 @@
   margin-bottom: 2rem;
 }
 
+/* Uses .blog-posts-grid for the same card layout as the listing page */
 .related-posts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-}
-
-.related-post-card {
-  background: white;
-  border: 2px solid var(--light-green);
-  border-radius: 12px;
-  padding: 1.5rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.related-post-card:hover {
-  border-color: var(--olive-green);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-.related-post-card h4 {
-  color: var(--primary-forest);
-  font-size: 1.1rem;
-  margin-bottom: 0.8rem;
-  font-weight: 600;
-}
-
-.related-post-card p {
-  color: var(--primary-forest);
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: 1rem;
-}
-
-.read-more-link {
-  color: var(--olive-green);
-  font-weight: 500;
-  font-size: 0.9rem;
-  text-decoration: underline;
+  margin-top: 0;
 }
 
 /* No Posts Message */

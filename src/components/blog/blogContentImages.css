@@ -104,10 +104,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  padding: 0.5rem;
-  background: #2d4a36;
-  border-radius: 8px;
-  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  background: linear-gradient(135deg, #2d4a36 0%, #4a6741 100%);
+  border-radius: 9px;
+  margin: 0.5rem 0.65rem 0;
   align-items: center;
 }
 
