@@ -5,6 +5,7 @@ import { translations } from '../translations';
 import SEOHead from './SEOHead';
 import Layout from './Layout';
 import blogService from '../services/blogService';
+import { normalizeContentHtml } from './blog/blogImageUtils';
 import { useNavigate, useParams } from 'react-router-dom';
 
 // Helper function to get language from localStorage or detect browser language
@@ -176,9 +177,10 @@ const Blog = ({ currentLanguage: propLanguage }) => {
     return date.toLocaleDateString(locale, options);
   }
 
-  // Render post content with HTML
+  // Render post content with HTML (strip pasted white backgrounds from Word/Docs)
   const renderContent = (content) => {
-    return <div className="blog-article-body" dangerouslySetInnerHTML={{ __html: content }} />;
+    const html = normalizeContentHtml(content);
+    return <div className="blog-article-body" dangerouslySetInnerHTML={{ __html: html }} />;
   };
 
   // Get related posts (exclude current post and same category)

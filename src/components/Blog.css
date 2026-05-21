@@ -369,6 +369,14 @@
 
 .post-content p {
   margin-bottom: 1.5rem;
+  background: transparent;
+}
+
+.post-content .blog-article-body h2 {
+  color: var(--primary-forest);
+  font-size: 1.75rem;
+  margin: 2.5rem 0 1rem;
+  font-weight: 600;
 }
 
 .post-content strong {

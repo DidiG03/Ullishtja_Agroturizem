@@ -48,10 +48,32 @@ export function findFigureFromNode(node, root) {
   return null;
 }
 
+const BACKGROUND_STYLE_PROPS = ['background', 'background-color', 'background-image'];
+
+function stripBackgroundFromStyleAttr(style = '') {
+  const kept = style
+    .split(';')
+    .map((decl) => decl.trim())
+    .filter((decl) => {
+      if (!decl) return false;
+      const prop = decl.split(':')[0]?.trim().toLowerCase();
+      return !BACKGROUND_STYLE_PROPS.some((p) => prop === p || prop.startsWith(`${p}-`));
+    });
+  return kept.join('; ');
+}
+
 /** Wrap bare <img> tags and normalize legacy inline styles into figure blocks. */
 export function normalizeContentHtml(html = '') {
   if (!html?.trim()) return '';
   const doc = new DOMParser().parseFromString(html, 'text/html');
+
+  doc.body.querySelectorAll('*').forEach((el) => {
+    if (el.hasAttribute('bgcolor')) el.removeAttribute('bgcolor');
+    if (!el.hasAttribute('style')) return;
+    const cleaned = stripBackgroundFromStyleAttr(el.getAttribute('style') || '');
+    if (cleaned) el.setAttribute('style', cleaned);
+    else el.removeAttribute('style');
+  });
 
   doc.body.querySelectorAll('img').forEach((img) => {
     const parent = img.parentElement;

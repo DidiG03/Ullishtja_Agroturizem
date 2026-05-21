@@ -5,6 +5,27 @@
   overflow: hidden;
 }
 
+/* Remove white boxes from pasted Word/Docs inline backgrounds */
+.post-content .blog-article-body p,
+.post-content .blog-article-body div:not(.blog-figure),
+.post-content .blog-article-body span,
+.post-content .blog-article-body h1,
+.post-content .blog-article-body h2,
+.post-content .blog-article-body h3,
+.post-content .blog-article-body li,
+.post-content .blog-article-body blockquote {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.post-content .blog-article-body blockquote {
+  border-left: 3px solid var(--olive-green, #6b8e23);
+  padding: 0.25rem 0 0.25rem 1.25rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: inherit;
+}
+
 .blog-article-body::after,
 .post-content.bpe-preview-content::after {
   content: '';
