@@ -35,17 +35,59 @@ function RichTextEditor({ value, onChange, placeholder = 'Write your story…', 
   const editorRef = useRef(null);
   const fileInputRef = useRef(null);
   const lastValueRef = useRef(null);
+  const lastEmittedRef = useRef(null);
+  const onChangeRef = useRef(onChange);
+  const emitTimerRef = useRef(null);
   const isComposingRef = useRef(false);
   const [selectedFigure, setSelectedFigure] = useState(null);
   const [selectedAlign, setSelectedAlign] = useState('center');
   const [isDragOver, setIsDragOver] = useState(false);
 
-  const emitChange = useCallback(() => {
-    if (!editorRef.current || !onChange) return;
-    const html = normalizeContentHtml(editorRef.current.innerHTML);
-    lastValueRef.current = html;
-    onChange(html);
+  useEffect(() => {
+    onChangeRef.current = onChange;
   }, [onChange]);
+
+  const readEditorHtml = useCallback(() => {
+    if (!editorRef.current) return '';
+    return normalizeContentHtml(editorRef.current.innerHTML);
+  }, []);
+
+  const pushChangeToParent = useCallback(() => {
+    if (!editorRef.current || !onChangeRef.current) return;
+    const html = readEditorHtml();
+    lastValueRef.current = html;
+    if (html === lastEmittedRef.current) return;
+    lastEmittedRef.current = html;
+    onChangeRef.current(html);
+  }, [readEditorHtml]);
+
+  const flushChange = useCallback(() => {
+    if (emitTimerRef.current) {
+      clearTimeout(emitTimerRef.current);
+      emitTimerRef.current = null;
+    }
+    pushChangeToParent();
+  }, [pushChangeToParent]);
+
+  const emitChange = useCallback(() => {
+    if (!editorRef.current) return;
+    if (emitTimerRef.current) clearTimeout(emitTimerRef.current);
+    emitTimerRef.current = setTimeout(() => {
+      emitTimerRef.current = null;
+      pushChangeToParent();
+    }, 200);
+  }, [pushChangeToParent]);
+
+  const flushChangeRef = useRef(flushChange);
+  flushChangeRef.current = flushChange;
+
+  useEffect(
+    () => () => {
+      if (emitTimerRef.current) clearTimeout(emitTimerRef.current);
+      flushChangeRef.current();
+    },
+    []
+  );
 
   const insertHtmlAtCursor = useCallback(
     (html) => {
@@ -97,41 +139,39 @@ function RichTextEditor({ value, onChange, placeholder = 'Write your story…', 
     insertImage(url.trim(), alt, 'center');
   }, [insertImage]);
 
-  const syncEditorFromValue = useCallback(
-    (force = false) => {
-      if (!editorRef.current) return;
-      const external = normalizeContentHtml(value || '');
-      if (!force && external === lastValueRef.current) return;
-      if (
-        !force &&
-        (document.activeElement === editorRef.current ||
-          editorRef.current.contains(document.activeElement))
-      ) {
-        return;
-      }
-      editorRef.current.innerHTML = external;
-      lastValueRef.current = external;
-    },
-    [value]
-  );
-
+  // Initialize editor HTML once on mount (language switches remount via key)
   useLayoutEffect(() => {
-    syncEditorFromValue(true);
-  }, [syncEditorFromValue]);
+    if (!editorRef.current) return;
+    const external = normalizeContentHtml(value || '');
+    editorRef.current.innerHTML = external;
+    lastValueRef.current = external;
+    lastEmittedRef.current = external;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  // Sync when value changes externally while editor is not focused
   useEffect(() => {
-    syncEditorFromValue(false);
-  }, [syncEditorFromValue]);
+    if (!editorRef.current) return;
+    const external = normalizeContentHtml(value || '');
+    if (external === lastValueRef.current) return;
+    if (
+      document.activeElement === editorRef.current ||
+      editorRef.current.contains(document.activeElement)
+    ) {
+      return;
+    }
+    editorRef.current.innerHTML = external;
+    lastValueRef.current = external;
+    lastEmittedRef.current = external;
+  }, [value]);
 
   const handleBlur = useCallback(() => {
-    if (!editorRef.current || !onChange) return;
-    const html = normalizeContentHtml(editorRef.current.innerHTML);
+    if (!editorRef.current) return;
+    const html = readEditorHtml();
     const propHtml = normalizeContentHtml(value || '');
     if (isEmptyEditorHtml(html) && !isEmptyEditorHtml(propHtml)) return;
-    if (html === lastValueRef.current) return;
-    lastValueRef.current = html;
-    onChange(html);
-  }, [onChange, value]);
+    flushChange();
+  }, [flushChange, readEditorHtml, value]);
 
   const clearFigureSelection = useCallback(() => {
     editorRef.current?.querySelectorAll('.blog-figure.is-selected').forEach((el) => {
