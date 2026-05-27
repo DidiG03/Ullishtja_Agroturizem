@@ -172,7 +172,10 @@ const GoogleReviews = ({ currentLanguage, translations }) => {
     loadReviews();
   }, []);
 
-  const reviews = reviewsData?.reviews || [];
+  const reviews = useMemo(
+    () => reviewsData?.reviews || [],
+    [reviewsData]
+  );
 
   const carouselReviews = useMemo(() => {
     if (!reviews.length) return [];
