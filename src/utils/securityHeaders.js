@@ -1,8 +1,20 @@
 // Security Headers for Production
 // Keep Content-Security-Policy in sync with vercel.json headers for /(.*)
-
-const productionCsp =
-  "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com https://*.clerk.accounts.dev https://clerk.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https: blob:; media-src 'self' blob:; connect-src 'self' https:; frame-src 'self' https://www.google.com https://maps.google.com https://accounts.google.com https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests";
+export const productionCsp = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com https://*.clerk.accounts.dev https://*.clerk.com https://clerk.com https://clerk.ullishtja-agroturizem.com",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self' data:",
+  "img-src 'self' data: https: blob:",
+  "media-src 'self' blob:",
+  "connect-src 'self' https:",
+  "frame-src 'self' https://www.google.com https://maps.google.com https://accounts.google.com https://challenges.cloudflare.com https://clerk.ullishtja-agroturizem.com https://*.clerk.com",
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "frame-ancestors 'self'",
+  "upgrade-insecure-requests",
+].join('; ');
 
 export const securityHeaders = {
   // Prevent clickjacking
