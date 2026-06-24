@@ -91,14 +91,7 @@
     <meta name="msapplication-wide310x150logo" content="%PUBLIC_URL%/logo192.png" />
     <meta name="msapplication-square310x310logo" content="%PUBLIC_URL%/logo512.png" />
     
-    <!-- Google Ads tag (gtag.js) - async to avoid render-blocking -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17442877024"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'AW-17442877024');
-    </script>
+    <!-- Google Ads / Analytics loaded via src/services/googleAnalytics.js (no external script tags for SRI compliance) -->
 
     <!-- Performance and Loading Optimization -->
     <!-- Preload and fetch-prioritize the LCP assets used in the hero and navbar -->
@@ -108,15 +101,10 @@
     <!-- Desktop hero column image -->
     <link rel="preload" href="/images/posters/hero-poster-1600.webp" as="image" type="image/webp" media="(min-width: 769px)" fetchpriority="high">
     <link rel="preload" href="/videos/dji-20240806130059-0020-d-poster.jpg" as="image">
-    <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//www.google-analytics.com">
     <link rel="dns-prefetch" href="//maps.googleapis.com">
     
-    <!-- Premium Typography -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <!-- Subset font weights + display=swap (Lighthouse) -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Fonts are self-hosted via @fontsource (bundled in JS) for SRI compliance -->
     
     <!-- Inline critical CSS for faster first paint on mobile -->
     <style>
@@ -206,7 +194,6 @@
     </style>
     <link rel="dns-prefetch" href="//ucarecdn.com">
     <link rel="dns-prefetch" href="//vercel-insights.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://ucarecdn.com" crossorigin>
     
     
@@ -399,16 +386,5 @@
     </noscript>
 
     <div id="root"></div>
-
-    <!-- Deferred: Google Ads phone-call conversion tracking (non-critical) -->
-    <script>
-      window.addEventListener('load', function() {
-        document.addEventListener('click', function(e) {
-          if (e.target.closest('[href*="tel:"]')) {
-            gtag('event', 'conversion', {'send_to': 'AW-17442877024/5cBuCOq0tr8bEODctP1A'});
-          }
-        }, {capture: true});
-      });
-    </script>
   </body>
 </html>

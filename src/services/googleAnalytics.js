@@ -1,42 +1,61 @@
-// Google Analytics 4 Service for Ullishtja Agroturizem
+// Google Analytics 4 & Google Ads (gtag.js) for Ullishtja Agroturizem
+
+const GOOGLE_ADS_ID = 'AW-17442877024';
+
+let gtagLoadPromise = null;
+
+function loadGtagScript() {
+  if (gtagLoadPromise) {
+    return gtagLoadPromise;
+  }
+
+  gtagLoadPromise = new Promise((resolve, reject) => {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function gtag() {
+      window.dataLayer.push(arguments);
+    };
+    window.gtag('js', new Date());
+
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load gtag.js'));
+    document.head.appendChild(script);
+  });
+
+  return gtagLoadPromise;
+}
+
 class GoogleAnalyticsService {
   constructor() {
     this.trackingId = process.env.REACT_APP_GA_TRACKING_ID;
-    this.isEnabled = !!this.trackingId;
+    this.isEnabled = true;
     this.initialized = false;
   }
 
-  // Initialize Google Analytics
-  initialize() {
-    if (!this.isEnabled || this.initialized) return;
+  // Initialize Google Ads + optional GA4
+  async initialize() {
+    if (this.initialized) return;
 
     try {
-      // Load gtag script
-      const gtagScript = document.createElement('script');
-      gtagScript.async = true;
-      gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${this.trackingId}`;
-      document.head.appendChild(gtagScript);
+      await loadGtagScript();
 
-      // Initialize gtag
-      window.dataLayer = window.dataLayer || [];
-      window.gtag = function() {
-        window.dataLayer.push(arguments);
-      };
+      window.gtag('config', GOOGLE_ADS_ID);
 
-      window.gtag('js', new Date());
-      window.gtag('config', this.trackingId, {
-        // Enhanced e-commerce and restaurant-specific settings
-        page_title: 'Ullishtja Agroturizem',
-        custom_map: {
-          'custom_definition_1': 'language',
-          'custom_definition_2': 'menu_category',
-          'custom_definition_3': 'reservation_status'
-        },
-        // Privacy settings
-        anonymize_ip: true,
-        allow_google_signals: false,
-        allow_ad_personalization_signals: false
-      });
+      if (this.trackingId) {
+        window.gtag('config', this.trackingId, {
+          page_title: 'Ullishtja Agroturizem',
+          custom_map: {
+            custom_definition_1: 'language',
+            custom_definition_2: 'menu_category',
+            custom_definition_3: 'reservation_status',
+          },
+          anonymize_ip: true,
+          allow_google_signals: false,
+          allow_ad_personalization_signals: false,
+        });
+      }
 
       this.initialized = true;
     } catch (error) {
@@ -46,7 +65,7 @@ class GoogleAnalyticsService {
 
   // Track page views
   trackPageView(pagePath, pageTitle, language = 'al') {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('config', this.trackingId, {
@@ -70,7 +89,7 @@ class GoogleAnalyticsService {
 
   // Track menu interactions
   trackMenuView(language = 'al', menuType = 'full') {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'menu_view', {
@@ -87,7 +106,7 @@ class GoogleAnalyticsService {
 
   // Track PDF downloads
   trackPDFDownload(language = 'al', menuItemsCount = 0) {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'pdf_download', {
@@ -106,7 +125,7 @@ class GoogleAnalyticsService {
 
   // Track reservation attempts
   trackReservationAttempt(data = {}) {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'reservation_attempt', {
@@ -125,7 +144,7 @@ class GoogleAnalyticsService {
 
   // Track successful reservations
   trackReservationSuccess(data = {}) {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'reservation_success', {
@@ -153,7 +172,7 @@ class GoogleAnalyticsService {
 
   // Track language changes
   trackLanguageChange(newLanguage, previousLanguage) {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'language_change', {
@@ -169,7 +188,7 @@ class GoogleAnalyticsService {
 
   // Track menu category interactions
   trackMenuCategoryView(categoryName, language = 'al') {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'menu_category_view', {
@@ -186,7 +205,7 @@ class GoogleAnalyticsService {
 
   // Track contact interactions
   trackContactInteraction(type, method = '') {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'contact_interaction', {
@@ -202,7 +221,7 @@ class GoogleAnalyticsService {
 
   // Track video interactions
   trackVideoInteraction(action, videoId = 'hero_video') {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'video_interaction', {
@@ -218,7 +237,7 @@ class GoogleAnalyticsService {
 
   // Track search functionality (if implemented)
   trackSearch(searchTerm, language = 'al') {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'search', {
@@ -232,7 +251,7 @@ class GoogleAnalyticsService {
 
   // Track scroll depth for engagement
   trackScrollDepth(percentage) {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'scroll', {
@@ -247,7 +266,7 @@ class GoogleAnalyticsService {
 
   // Track time spent on page
   trackTimeOnPage(timeInSeconds, pageName) {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'time_on_page', {
@@ -263,7 +282,7 @@ class GoogleAnalyticsService {
 
   // Track errors
   trackError(error, context = '') {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'exception', {
@@ -277,7 +296,7 @@ class GoogleAnalyticsService {
 
   // Track user preferences
   trackUserPreference(preference, value) {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', 'user_preference', {
@@ -293,7 +312,7 @@ class GoogleAnalyticsService {
 
   // Custom event tracker for any additional needs
   trackCustomEvent(eventName, parameters = {}) {
-    if (!this.isEnabled || !window.gtag) return;
+    if (!this.initialized || !window.gtag) return;
 
     try {
       window.gtag('event', eventName, {

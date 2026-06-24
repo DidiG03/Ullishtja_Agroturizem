@@ -3,22 +3,25 @@
 class GoogleAdsService {
   constructor() {
     this.adsId = 'AW-17442877024';
-    this.isEnabled = typeof window !== 'undefined' && typeof window.gtag === 'function';
-    
+    this.initialized = false;
+
     // Conversion IDs from Google Ads
     this.conversions = {
       getDirections: 'AW-17442877024/SWLiC06_u4EbODctP1A',
-      reservation: 'AW-17442877024/RESERVATION_ID', // Replace with actual ID when created
-      phoneCall: 'AW-17442877024/PHONE_ID', // Replace with actual ID when created
-      contact: 'AW-17442877024/CONTACT_ID', // Replace with actual ID when created
-      menuDownload: 'AW-17442877024/MENU_ID' // Replace with actual ID when created
+      reservation: 'AW-17442877024/RESERVATION_ID',
+      phoneCall: 'AW-17442877024/5cBuCOq0tr8bEODctP1A',
+      contact: 'AW-17442877024/CONTACT_ID',
+      menuDownload: 'AW-17442877024/MENU_ID',
     };
+  }
+
+  isGtagReady() {
+    return typeof window !== 'undefined' && typeof window.gtag === 'function';
   }
 
   // Generic conversion tracking method
   trackConversion(conversionId, conversionValue = null, currency = 'EUR') {
-    if (!this.isEnabled) {
-      console.warn('Google Ads tracking not available');
+    if (!this.isGtagReady()) {
       return;
     }
 
@@ -52,7 +55,7 @@ class GoogleAdsService {
     this.trackConversion(this.conversions.reservation, value);
     
     // Also track as a custom event for additional insights
-    if (this.isEnabled) {
+    if (this.isGtagReady()) {
       window.gtag('event', 'reservation_made', {
         event_category: 'Restaurant',
         event_label: 'Table Reservation',
@@ -66,7 +69,7 @@ class GoogleAdsService {
   trackGetDirections() {
     this.trackConversion(this.conversions.getDirections);
     
-    if (this.isEnabled) {
+    if (this.isGtagReady()) {
       window.gtag('event', 'get_directions', {
         event_category: 'Navigation',
         event_label: 'Directions Requested'
@@ -78,7 +81,7 @@ class GoogleAdsService {
   trackPhoneCall() {
     this.trackConversion(this.conversions.phoneCall);
     
-    if (this.isEnabled) {
+    if (this.isGtagReady()) {
       window.gtag('event', 'phone_call', {
         event_category: 'Contact',
         event_label: 'Phone Call Initiated'
@@ -90,7 +93,7 @@ class GoogleAdsService {
   trackContactForm(formType = 'general') {
     this.trackConversion(this.conversions.contact);
     
-    if (this.isEnabled) {
+    if (this.isGtagReady()) {
       window.gtag('event', 'contact_form', {
         event_category: 'Contact',
         event_label: `Contact Form - ${formType}`
@@ -102,7 +105,7 @@ class GoogleAdsService {
   trackMenuDownload(menuType = 'complete') {
     this.trackConversion(this.conversions.menuDownload);
     
-    if (this.isEnabled) {
+    if (this.isGtagReady()) {
       window.gtag('event', 'menu_download', {
         event_category: 'Engagement',
         event_label: `Menu Download - ${menuType}`
@@ -112,7 +115,7 @@ class GoogleAdsService {
 
   // Track high engagement actions
   trackEngagement(action, category = 'Engagement') {
-    if (!this.isEnabled) return;
+    if (!this.isGtagReady()) return;
 
     window.gtag('event', action, {
       event_category: category,
@@ -122,7 +125,7 @@ class GoogleAdsService {
 
   // Track page views with enhanced data
   trackPageView(pageName, pageCategory = 'Website') {
-    if (!this.isEnabled) return;
+    if (!this.isGtagReady()) return;
 
     window.gtag('event', 'page_view', {
       page_title: pageName,
@@ -132,20 +135,38 @@ class GoogleAdsService {
 
   // Helper method to check if Google Ads is loaded
   isGoogleAdsLoaded() {
-    return this.isEnabled;
+    return this.isGtagReady();
   }
 
-  // Initialize enhanced tracking (call this on app start)
-  initialize() {
-    if (!this.isEnabled) {
-      console.warn('Google Ads not available - make sure gtag is loaded');
+  setupPhoneCallConversionTracking() {
+    if (this.initialized || typeof document === 'undefined') {
       return;
     }
 
-    // Track initial page load
+    document.addEventListener(
+      'click',
+      (event) => {
+        if (event.target.closest('[href*="tel:"]')) {
+          this.trackConversion(this.conversions.phoneCall);
+        }
+      },
+      { capture: true }
+    );
+  }
+
+  // Initialize enhanced tracking (call after gtag is loaded)
+  initialize() {
+    if (this.initialized) {
+      return;
+    }
+
+    if (!this.isGtagReady()) {
+      return;
+    }
+
+    this.setupPhoneCallConversionTracking();
     this.trackPageView('Home Page', 'Landing');
-    
-    console.info('Google Ads conversion tracking initialized');
+    this.initialized = true;
   }
 }
 

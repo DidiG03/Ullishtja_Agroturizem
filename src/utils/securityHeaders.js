@@ -1,8 +1,12 @@
 // Security Headers for Production
+// Keep Content-Security-Policy in sync with vercel.json headers for /(.*)
+
+const productionCsp =
+  "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com https://*.clerk.accounts.dev https://clerk.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: https: blob:; media-src 'self' blob:; connect-src 'self' https:; frame-src 'self' https://www.google.com https://maps.google.com https://accounts.google.com https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; frame-ancestors 'self'; upgrade-insecure-requests";
 
 export const securityHeaders = {
   // Prevent clickjacking
-  'X-Frame-Options': 'DENY',
+  'X-Frame-Options': 'SAMEORIGIN',
   
   // Prevent MIME type sniffing
   'X-Content-Type-Options': 'nosniff',
@@ -14,8 +18,8 @@ export const securityHeaders = {
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   
   // Content Security Policy (restrictive but functional)
-  'Content-Security-Policy': process.env.NODE_ENV === 'production' 
-    ? "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; media-src 'self' blob:; object-src 'none'; frame-ancestors 'none';"
+  'Content-Security-Policy': process.env.NODE_ENV === 'production'
+    ? productionCsp
     : "default-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' http: https: ws: wss:;",
   
   // Strict Transport Security (HTTPS only)

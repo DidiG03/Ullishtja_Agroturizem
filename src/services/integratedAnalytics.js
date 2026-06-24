@@ -1,5 +1,6 @@
 // Integrated Analytics Service - Combines Google Analytics & Vercel Analytics
 import googleAnalyticsService from './googleAnalytics';
+import googleAdsService from './googleAdsService';
 import vercelAnalyticsService from './vercelAnalytics';
 
 class IntegratedAnalyticsService {
@@ -7,19 +8,16 @@ class IntegratedAnalyticsService {
     this.initialized = false;
   }
 
-  // Initialize both analytics services
-  initialize() {
+  // Initialize analytics services (gtag loads dynamically for SRI compliance)
+  async initialize() {
     if (this.initialized) return;
 
     try {
-      // Initialize Google Analytics
-      googleAnalyticsService.initialize();
-      
-      // Initialize Vercel Analytics
+      await googleAnalyticsService.initialize();
+      googleAdsService.initialize();
       vercelAnalyticsService.initialize();
 
       this.initialized = true;
-
     } catch (error) {
       console.error('Failed to initialize integrated analytics:', error);
     }
@@ -241,7 +239,8 @@ class IntegratedAnalyticsService {
 
   getActiveServices() {
     return {
-      googleAnalytics: googleAnalyticsService.isEnabled,
+      googleAnalytics: googleAnalyticsService.initialized,
+      googleAds: googleAdsService.isGoogleAdsLoaded(),
       vercelAnalytics: vercelAnalyticsService.isAnalyticsEnabled(),
       vercelSpeedInsights: vercelAnalyticsService.isSpeedInsightsEnabled()
     };

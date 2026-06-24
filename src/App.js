@@ -87,12 +87,6 @@ function App() {
     };
   }, [analytics]);
 
-  
-
-  // Initialize Google Ads conversion tracking
-  useEffect(() => {
-    googleAdsService.initialize();
-  }, []);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   
   // Initialize scroll optimization
