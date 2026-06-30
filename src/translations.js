@@ -16,6 +16,7 @@ export const translations = {
       description: "Zbuloni shijen e traditës në zemrën e Shqipërisë. Përbërës të freskët, receta të vjetra dhe mikpritje e ngrohtë që nga viti 2021.",
       cta: "Rezervime",
       viewMenu: "Shiko Menunë",
+      viewMore: "Shiko Më Shumë",
       highlights: {
         farmFresh: "Përbërës të Freskët",
         traditionalRecipes: "Receta Tradicionale",
@@ -887,6 +888,7 @@ export const translations = {
       description: "Discover the taste of tradition in the heart of Albania. Fresh ingredients, time-honored recipes, and warm hospitality since 2021.",
       cta: "Reservations",
       viewMenu: "Menu",
+      viewMore: "View More",
       highlights: {
         farmFresh: "Fresh Ingredients",
         traditionalRecipes: "Traditional Recipes",
@@ -1759,6 +1761,7 @@ export const translations = {
       description: "Scoprite il sapore della tradizione nel cuore dell'Albania. Ingredienti freschi, ricette antiche e calorosa ospitalità dal 2021.",
       cta: "Prenotazioni",
       viewMenu: "Menu",
+      viewMore: "Scopri di Più",
       highlights: {
         farmFresh: "Ingredienti Freschi",
         traditionalRecipes: "Ricette Tradizionali",

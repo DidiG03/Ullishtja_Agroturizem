@@ -428,6 +428,16 @@ function App() {
 
         </div>
 
+        <a href="#about" className="hero-scroll-hint">
+          <span className="hero-view-more">{t.hero.viewMore}</span>
+          <span className="hero-scroll-arrow" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 4v13" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" />
+              <path d="M6.5 13.5L12 19l5.5-5.5" stroke="currentColor" strokeWidth="2.75" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+        </a>
+
       </section>
 
 
@@ -853,7 +863,7 @@ function App() {
             <div className="footer-main">
               {/* Company Info */}
               <div className="footer-section footer-company">
-                <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Footer Logo" className="footer-logo" loading="lazy" width="120" height="60" />
+                <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Footer Logo" className="footer-logo" loading="lazy" width="144" height="72" />
                 <p className="footer-description">{t.footer.tagline}</p>
                 <div className="footer-rating">
                   <div className="rating-stars">
@@ -869,23 +879,19 @@ function App() {
               <div className="footer-section footer-contact">
                 <h4 className="footer-title">{t.contact.title}</h4>
                 <div className="contact-item">
-                  <span className="contact-icon">📍</span>
                   <span className="contact-value">Ullishtja Agroturizem, Durres, Albania</span>
                 </div>
                 <div className="contact-item">
-                  <span className="contact-icon">📞</span>
                   <a href="tel:+355684090405" className="contact-value contact-link" onClick={handlePhoneClick}>
                     +355 68 409 0405
                   </a>
                 </div>
                 <div className="contact-item">
-                  <span className="contact-icon">📧</span>
                   <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-value contact-link" onClick={handleEmailClick}>
                     hi@ullishtja-agroturizem.com
                   </a>
                 </div>
                 <div className="contact-item">
-                  <span className="contact-icon">🕒</span>
                   <span className="contact-value">
                     {t.contact.info.hours.text.replace('\n', ' • ')}
                   </span>

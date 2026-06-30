@@ -128,23 +128,19 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
               <div className="footer-section footer-contact">
                 <h4 className="footer-title">{t.contact.title}</h4>
                 <div className="contact-item">
-                  <span className="contact-icon">📍</span>
                   <span className="contact-value">Ullishtja Agroturizem, Durres, Albania</span>
                 </div>
                 <div className="contact-item">
-                  <span className="contact-icon">📞</span>
                   <a href="tel:+355684090405" className="contact-value contact-link">
                     +355 68 409 0405
                   </a>
                 </div>
                 <div className="contact-item">
-                  <span className="contact-icon">📧</span>
                   <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-value contact-link">
                     hi@ullishtja-agroturizem.com
                   </a>
                 </div>
                 <div className="contact-item">
-                  <span className="contact-icon">🕒</span>
                   <span className="contact-value">
                     {t.contact.info.hours.text.replace('\n', ' • ')}
                   </span>

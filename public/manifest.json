@@ -23,7 +23,7 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#2d4a36",
-  "background_color": "#fafafa",
+  "theme_color": "#0d1b12",
+  "background_color": "#0d1b12",
   "categories": ["food", "lifestyle", "travel"]
 }
