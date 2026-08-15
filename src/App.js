@@ -21,8 +21,6 @@ const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 
 
 const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
-const AnalyticsTest = React.lazy(() => import('./components/AnalyticsTest'));
-
 
 //
 
@@ -765,11 +763,6 @@ function App() {
         </div>
       </footer>
 
-      {process.env.NODE_ENV === 'development' && (
-        <Suspense fallback={null}>
-          {/* <AnalyticsTest /> */}
-        </Suspense>
-      )}
     </div>
   );
 }
