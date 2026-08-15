@@ -13,6 +13,12 @@ build/
 dist/
 coverage/
 
+# Original camera footage — the site uses compressed files in public/videos/
+public/images/Images_restorant/*.mov
+public/images/Images_restorant/*.MOV
+public/images/Images_restorant/*.heic
+public/images/Images_restorant/*.HEIC
+
 # macOS metadata
 .DS_Store
 .env*.local

@@ -300,7 +300,7 @@ const SEOHead = ({
 
     // Add section-specific structured data
     if (pageSection === 'menu') {
-      baseStructuredData.hasMenu = "https://ullishtja-agroturizem.com/#menu";
+      baseStructuredData.hasMenu = "https://ullishtja-agroturizem.com/menu";
       baseStructuredData["@type"] = ["Restaurant", "FoodEstablishment"];
     } else if (pageSection === 'events') {
       baseStructuredData.amenityFeature = [

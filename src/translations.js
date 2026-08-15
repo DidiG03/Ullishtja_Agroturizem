@@ -176,9 +176,65 @@ export const translations = {
         timeRestriction: "Orari i rezervimit duhet të jetë midis 10:00 dhe 22:00"
       }
     },
+    whatsappFloat: {
+      label: "Rezervo",
+      ariaLabel: "Hap WhatsApp për të rezervuar një tavolinë",
+      message: "Përshëndetje! Dua të rezervoj një tavolinë në Ullishtja Agroturizem."
+    },
+    menuPage: {
+      title: "Menuja",
+      subtitle: "Përbërës të freskët, receta tradicionale shqiptare",
+      share: "Ndaj",
+      copyLink: "Kopjo linkun",
+      bookmark: "Ruaj",
+      pdf: "PDF",
+      copied: "Linku u kopjua",
+      bookmarkHint: "Linku u kopjua. Shtypni Ctrl+D (ose ⌘D) për ta ruajtur te shënuesit.",
+      shareText: "Shiko menunë e Ullishtja Agroturizem",
+      pdfPreparing: "Duke përgatitur PDF...",
+      pdfError: "Gabim gjatë krijimit të PDF-së. Provoni përsëri.",
+      vegetarian: "Vegjetarian",
+      spicy: "I Djegët",
+      recommended: "I Rekomanduar",
+      ingredients: "Përbërësit",
+      loading: "Po ngarkohet menuja...",
+      error: "Dështoi ngarkimi i menusë. Provo përsëri.",
+      retry: "Provo Përsëri",
+      empty: "Menuja është duke u përditësuar."
+    },
+    faq: {
+      title: "Pyetjet e Shpeshta",
+      subtitle: "Gjithçka që duhet të dini para se të na vizitoni",
+      items: [
+        {
+          q: "A duhet të rezervoj tavolinë?",
+          a: "Po, rekomandojmë rezervim, sidomos për darkë dhe fundjavë. Na shkruani në WhatsApp ose na telefononi në +355 68 409 0405."
+        },
+        {
+          q: "Cili është orari juaj?",
+          a: "Jemi hapur çdo ditë, nga e hëna në të diel, 11:00–22:00."
+        },
+        {
+          q: "Si mund të vij te Ullishtja? A ka parkim?",
+          a: "Ndodhemi pranë Durrësit. Përdorni Google Maps ose Apple Maps nga seksioni i kontaktit. Parkimi falas është i disponueshëm në vend."
+        },
+        {
+          q: "A keni opsione vegjetariane?",
+          a: "Po. Në menu gjeni sallata, meze dhe pjata të tjera vegjetariane, të shënuara qartë."
+        },
+        {
+          q: "A organizoni dasma dhe evente?",
+          a: "Po. Hapësira jonë pret festa familjare dhe evente deri në rreth 120 mysafirë. Na kontaktoni për të planifikuar menunë dhe detajet."
+        },
+        {
+          q: "Si mund të rezervoj?",
+          a: "Mënyra më e shpejtë është WhatsApp ose telefonata. Butoni jeshil në faqe hap një mesazh gati për dërgim."
+        }
+      ]
+    },
     // Footer
     footer: {
-      copyright: "© 2024 Ullishtja Agriturizem. Të gjitha të drejtat e rezervuara.",
+      copyright: "© 2026 Ullishtja Agriturizem. Të gjitha të drejtat e rezervuara.",
       tagline: "Duke shërbyer kuzhinë autentike shqiptare që nga viti 2021",
       quickLinks: "Linqe të Shpejta",
       services: "Shërbimet",
@@ -1049,9 +1105,65 @@ export const translations = {
         timeRestriction: "Reservation time must be between 10:00 AM and 10:00 PM"
       }
     },
+    whatsappFloat: {
+      label: "Book a table",
+      ariaLabel: "Open WhatsApp to book a table",
+      message: "Hello! I would like to book a table at Ullishtja Agroturizem."
+    },
+    menuPage: {
+      title: "Menu",
+      subtitle: "Fresh ingredients, traditional Albanian recipes",
+      share: "Share",
+      copyLink: "Copy link",
+      bookmark: "Bookmark",
+      pdf: "PDF",
+      copied: "Link copied",
+      bookmarkHint: "Link copied. Press Ctrl+D (or ⌘D) to bookmark this page.",
+      shareText: "See the menu at Ullishtja Agroturizem",
+      pdfPreparing: "Preparing PDF...",
+      pdfError: "Error creating PDF. Please try again.",
+      vegetarian: "Vegetarian",
+      spicy: "Spicy",
+      recommended: "Recommended",
+      ingredients: "Ingredients",
+      loading: "Loading menu...",
+      error: "Failed to load menu. Please try again.",
+      retry: "Retry",
+      empty: "The menu is being updated."
+    },
+    faq: {
+      title: "Frequently Asked Questions",
+      subtitle: "Everything you need to know before you visit",
+      items: [
+        {
+          q: "Do I need a reservation?",
+          a: "We recommend booking ahead, especially for dinner and weekends. Message us on WhatsApp or call +355 68 409 0405."
+        },
+        {
+          q: "What are your opening hours?",
+          a: "We are open every day, Monday to Sunday, 11:00–22:00."
+        },
+        {
+          q: "How do I get there? Is there parking?",
+          a: "We are near Durrës. Use Google Maps or Apple Maps from the contact section. Free parking is available on site."
+        },
+        {
+          q: "Do you have vegetarian options?",
+          a: "Yes. The menu includes salads, meze, and other vegetarian dishes, clearly marked."
+        },
+        {
+          q: "Can we host a wedding or event?",
+          a: "Yes. Our venue hosts family celebrations and events for up to about 120 guests. Contact us to plan the menu and details."
+        },
+        {
+          q: "How can I book a table?",
+          a: "The fastest way is WhatsApp or a phone call. The green button on the site opens a message ready to send."
+        }
+      ]
+    },
     // Footer
     footer: {
-      copyright: "© 2024 Ullishtja Agriturizem. All rights reserved.",
+      copyright: "© 2026 Ullishtja Agriturizem. All rights reserved.",
       tagline: "Serving authentic Albanian cuisine since 2021",
       quickLinks: "Quick Links",
       services: "Our Services",
@@ -1922,9 +2034,65 @@ export const translations = {
         timeRestriction: "L'orario di prenotazione deve essere tra le 10:00 e le 22:00"
       }
     },
+    whatsappFloat: {
+      label: "Prenota",
+      ariaLabel: "Apri WhatsApp per prenotare un tavolo",
+      message: "Buongiorno! Vorrei prenotare un tavolo da Ullishtja Agroturizem."
+    },
+    menuPage: {
+      title: "Menu",
+      subtitle: "Ingredienti freschi, ricette tradizionali albanesi",
+      share: "Condividi",
+      copyLink: "Copia link",
+      bookmark: "Salva",
+      pdf: "PDF",
+      copied: "Link copiato",
+      bookmarkHint: "Link copiato. Premi Ctrl+D (o ⌘D) per aggiungere ai segnalibri.",
+      shareText: "Guarda il menu di Ullishtja Agroturizem",
+      pdfPreparing: "Preparazione PDF...",
+      pdfError: "Errore durante la creazione del PDF. Riprovare.",
+      vegetarian: "Vegetariano",
+      spicy: "Piccante",
+      recommended: "Consigliato",
+      ingredients: "Ingredienti",
+      loading: "Caricamento menu...",
+      error: "Errore nel caricamento del menu. Riprova.",
+      retry: "Riprova",
+      empty: "Il menu è in aggiornamento."
+    },
+    faq: {
+      title: "Domande Frequenti",
+      subtitle: "Tutto quello che serve sapere prima di venirci a trovare",
+      items: [
+        {
+          q: "Serve una prenotazione?",
+          a: "Consigliamo di prenotare, soprattutto per la cena e nel weekend. Scriveteci su WhatsApp o chiamate il +355 68 409 0405."
+        },
+        {
+          q: "Quali sono gli orari di apertura?",
+          a: "Siamo aperti tutti i giorni, dal lunedì alla domenica, 11:00–22:00."
+        },
+        {
+          q: "Come si arriva? C’è parcheggio?",
+          a: "Ci troviamo vicino a Durazzo. Usate Google Maps o Apple Maps dalla sezione contatti. Il parcheggio in loco è gratuito."
+        },
+        {
+          q: "Avete opzioni vegetariane?",
+          a: "Sì. Nel menu trovate insalate, mezé e altri piatti vegetariani, chiaramente indicati."
+        },
+        {
+          q: "Si possono organizzare matrimoni ed eventi?",
+          a: "Sì. Lo spazio accoglie feste di famiglia ed eventi fino a circa 120 ospiti. Contattateci per pianificare menu e dettagli."
+        },
+        {
+          q: "Come posso prenotare un tavolo?",
+          a: "Il modo più veloce è WhatsApp o una telefonata. Il pulsante verde sul sito apre un messaggio pronto da inviare."
+        }
+      ]
+    },
     // Footer
     footer: {
-      copyright: "© 2024 Ullishtja Agriturizem. Tutti i diritti riservati.",
+      copyright: "© 2026 Ullishtja Agriturizem. Tutti i diritti riservati.",
       tagline: "Servendo autentica cucina albanese dal 2021",
       quickLinks: "Link Rapidi",
       services: "I Nostri Servizi",

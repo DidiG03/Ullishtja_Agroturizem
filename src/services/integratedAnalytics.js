@@ -53,7 +53,7 @@ class IntegratedAnalyticsService {
 
   trackMenuCategoryClick(category, language = 'al') {
     try {
-      googleAnalyticsService.trackMenuCategoryClick(category, language);
+      googleAnalyticsService.trackMenuCategoryView(category, language);
       vercelAnalyticsService.trackMenuInteraction('category_click', category, language);
     } catch (error) {
       console.error('Failed to track menu category click:', error);

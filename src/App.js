@@ -1,20 +1,20 @@
 import React, { useState, useEffect, Suspense, useCallback, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import './App.css';
 import { translations } from './translations';
-import MenuService from './services/menuService';
 import googleReviewsService from './services/googleReviews';
 import googleAdsService from './services/googleAdsService';
-import pdfExportService from './services/pdfExportService';
 import useScrollOptimization from './hooks/useScrollOptimization';
 import useMobileOptimizations from './hooks/useMobileOptimizations';
 import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
 import SEOHead from './components/SEOHead';
 import SiteNav from './components/SiteNav';
+import LanguageSwitcher from './components/LanguageSwitcher';
 import HeroBackgroundVideo from './components/HeroBackgroundVideo';
 import SectionMedia from './components/SectionMedia';
+import FaqSection from './components/FaqSection';
+import AboutStoryVideo from './components/AboutStoryVideo';
 
-// Lazy load components for better performance
-const MobileMenu = React.lazy(() => import('./components/MobileMenu'));
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
   
@@ -87,23 +87,11 @@ function App() {
     };
   }, [analytics]);
 
-  const [showMobileMenu, setShowMobileMenu] = useState(false);
-  
-  // Initialize scroll optimization
-  useScrollOptimization();
-  
-  // Initialize mobile optimizations
-  const { enableBodyScroll } = useMobileOptimizations();
-  
-  // Dynamic menu state
-  const [menuCategories, setMenuCategories] = useState([]);
-  
-  // Google Reviews state
   const [reviewsData, setReviewsData] = useState(null);
-  
-  // Reservation form temporarily disabled; remove related state to avoid unused warnings
-  
-  // Memoize translations to avoid recalculating on every render
+
+  useScrollOptimization();
+  const { enableBodyScroll } = useMobileOptimizations();
+
   const t = useMemo(() => translations[currentLanguage], [currentLanguage]);
 
   // Removed localization helpers (unused)
@@ -132,28 +120,6 @@ function App() {
     };
   }, [enableBodyScroll]);
 
-  // Load dynamic menu data
-  useEffect(() => {
-    const loadMenu = async () => {
-      try {
-        const response = await MenuService.getCompleteMenu();
-
-        if (response && response.success) {
-          const categories = response.data || [];
-          setMenuCategories(Array.isArray(categories) ? categories : []);
-        } else {
-          console.error('Failed to load menu:', response?.error || 'Unknown error');
-          setMenuCategories([]);
-        }
-      } catch (error) {
-        console.error('Error loading menu:', error);
-        setMenuCategories([]);
-      }
-    };
-
-    loadMenu();
-  }, []);
-
   // Load Google Reviews data
   useEffect(() => {
     const loadReviews = async () => {
@@ -181,98 +147,6 @@ function App() {
     }
   }, [currentLanguage, analytics]);
 
-
-
-  // Reservation form handlers removed while form is disabled
-
-  // Fetch available time slots for a specific date
-  // Removed time slot fetcher to avoid unused warnings
-
-  const openNewMobileMenu = useCallback(() => {
-    // Scroll to the top so the overlay is fully visible
-    window.scrollTo({ top: 0, behavior: 'instant' });
-    // Lock body scroll
-    document.body.classList.add('mobile-menu-open');
-
-    setShowMobileMenu(true);
-    // Track menu view
-    analytics.trackMenuView(currentLanguage, 'full-menu');
-  }, [currentLanguage, analytics]);
-
-  const closeNewMobileMenu = useCallback(() => {
-    setShowMobileMenu(false);
-    // Restore body scroll
-    document.body.classList.remove('mobile-menu-open');
-  }, []);
-
-  // eslint-disable-next-line no-unused-vars
-  const handlePDFExport = useCallback(async () => {
-    
-    
-    try {
-      // Check if we have menu data
-      const menuDataForPDF = menuCategories.length > 0 ? menuCategories : [];
-      
-          // Track PDF download attempt
-    analytics.trackPDFDownload(currentLanguage, menuDataForPDF.length);
-
-    // Track Google Ads conversion for menu download
-    googleAdsService.trackMenuDownload(currentLanguage);
-
-    // Generate and open/download PDF
-    await pdfExportService.openPDFInNewWindow(menuDataForPDF, currentLanguage);
-      
-    } catch (error) {
-      console.error('Error exporting PDF:', error);
-      console.error('Error stack:', error.stack);
-      
-      // Show user-friendly error message
-      const isMobile = window.innerWidth <= 768;
-      const errorMessage = currentLanguage === 'al' 
-        ? 'Gabim gjatë krijimit të PDF-së. Provoni përsëri.' 
-        : currentLanguage === 'en' 
-        ? 'Error creating PDF. Please try again.' 
-        : 'Errore durante la creazione del PDF. Riprovare.';
-      
-      if (isMobile) {
-        // Create mobile-friendly error notification
-        const errorElement = document.createElement('div');
-        errorElement.style.cssText = `
-          position: fixed;
-          top: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: #f44336;
-          color: white;
-          padding: 12px 24px;
-          border-radius: 25px;
-          font-size: 14px;
-          font-weight: 600;
-          z-index: 10000;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        `;
-        errorElement.textContent = errorMessage;
-        document.body.appendChild(errorElement);
-        
-        // Remove error notification after delay
-        setTimeout(() => {
-          if (errorElement.parentNode) {
-            errorElement.parentNode.removeChild(errorElement);
-          }
-        }, 4000);
-      } else {
-        // Desktop: use alert as fallback
-        alert(errorMessage);
-      }
-    }
-  }, [menuCategories, currentLanguage, analytics]);
-
-  // Reservation submission removed while form is disabled
-
-  // Memoize complex computations
-  // Removed formatted time slots memo
-
-  // Memoize review display components
   const reviewsDisplay = useMemo(() => {
     if (!reviewsData) return { stars: '⭐⭐⭐⭐⭐', rating: '0.0', count: '0' };
     
@@ -283,10 +157,8 @@ function App() {
     };
   }, [reviewsData]);
 
-  // Memoize minimum date for date input
-  // Removed minDate memo (unused)
-
   const blogPath = currentLanguage === 'al' ? '/blog' : `/blog?lang=${currentLanguage}`;
+  const menuPath = currentLanguage === 'al' ? '/menu' : `/menu?lang=${currentLanguage}`;
 
   return (
     <div className="App has-site-nav">
@@ -300,7 +172,6 @@ function App() {
         t={t}
         currentLanguage={currentLanguage}
         onLanguageChange={changeLanguage}
-        onOpenFoodMenu={openNewMobileMenu}
       />
       
       {/* Mobile Loading Optimizer */}
@@ -368,19 +239,9 @@ function App() {
 
             <div className="hero-actions">
               <div className="hero-actions-top">
-                <a
-                  href="#alacarte"
-                  className="cta-button secondary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    openNewMobileMenu();
-                  }}
-                >
+                <Link to={menuPath} className="cta-button secondary">
                   <span className="btn-text">{t.hero.viewMenu}</span>
-                </a>
-                <a href={blogPath} className="cta-button secondary">
-                  <span className="btn-text">{t.nav.blog}</span>
-                </a>
+                </Link>
                 <a
                   href="https://maps.google.com/?q=41.340278,19.433569+(Ullishtja+Agroturizem)"
                   target="_blank"
@@ -396,33 +257,11 @@ function App() {
                 <span className="btn-arrow">→</span>
               </a>
 
-                {/* Compact language selector below "Shiko Menunë" on small screens */}
-                <div className="lang-switcher-compact">
-                  <button
-                    type="button"
-                    className={`lang-circle-btn ${currentLanguage === 'al' ? 'active' : ''}`}
-                    onClick={() => changeLanguage('al')}
-                    aria-label="Switch language to Albanian"
-                  >
-                    AL
-                  </button>
-                  <button
-                    type="button"
-                    className={`lang-circle-btn ${currentLanguage === 'en' ? 'active' : ''}`}
-                    onClick={() => changeLanguage('en')}
-                    aria-label="Switch language to English"
-                  >
-                    EN
-                  </button>
-                  <button
-                    type="button"
-                    className={`lang-circle-btn ${currentLanguage === 'it' ? 'active' : ''}`}
-                    onClick={() => changeLanguage('it')}
-                    aria-label="Switch language to Italian"
-                  >
-                    IT
-                  </button>
-                </div>
+                <LanguageSwitcher
+                  variant="hero"
+                  currentLanguage={currentLanguage}
+                  onLanguageChange={changeLanguage}
+                />
             </div>
           </div>
 
@@ -458,6 +297,7 @@ function App() {
             </div>
           </div>
         </div>
+        <AboutStoryVideo alt={`${t.about.title} — Ullishtja Agroturizem`} />
       </section>
 
 
@@ -558,20 +398,9 @@ function App() {
 
               {/* Moved CTAs here: show green on desktop/tablet, orange on mobile */}
               <div className="menu-cta-container alacarte-cta">
-                <button className="mobile-menu-btn show-desktop-tablet" onClick={openNewMobileMenu}>
-                  {currentLanguage === 'al'
-                    ? 'Shiko Menunë'
-                    : currentLanguage === 'en'
-                    ? 'Menu'
-                    : 'Menu'}
-                </button>
-                <button className="mobile-menu-btn show-mobile" onClick={openNewMobileMenu}>
-                  {currentLanguage === 'al'
-                    ? 'Shiko Menunë'
-                    : currentLanguage === 'en'
-                    ? 'Menu'
-                    : 'Menu'}
-                </button>
+                <Link to={menuPath} className="mobile-menu-btn">
+                  {t.hero.viewMenu}
+                </Link>
               </div>
             </div>
           </div>
@@ -855,6 +684,8 @@ function App() {
         </div>
       </section>
 
+      <FaqSection t={t} />
+
       {/* Footer */}
       <footer className="footer">
         <div className="container">
@@ -904,9 +735,10 @@ function App() {
                 <nav className="footer-nav">
                   <a href="#home" className="footer-link">{t.nav.home}</a>
                   <a href="#about" className="footer-link">{t.nav.about}</a>
-          <a href="#alacarte" className="footer-link">{t.nav.menu}</a>
-                  <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.blog}</a>
+                  <a href={menuPath} className="footer-link">{t.nav.menu}</a>
+                  <a href={blogPath} className="footer-link">{t.nav.blog}</a>
                   <a href="#contact" className="footer-link">{t.nav.contact}</a>
+                  <a href="#faq" className="footer-link">{t.faq.title}</a>
                 </nav>
               </div>
             </div>
@@ -917,26 +749,13 @@ function App() {
                 <p>{t.footer.copyright}</p>
               </div>
               <div className="footer-links-bottom">
-                <div className="language-selector footer-lang">
-                  <button 
-                    className={`lang-btn ${currentLanguage === 'al' ? 'active' : ''}`}
-                    onClick={() => changeLanguage('al')}
-                  >
-                    Albanian
-                  </button>
-                  <button 
-                    className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
-                    onClick={() => changeLanguage('en')}
-                  >
-                    English
-                  </button>
-                  <button 
-                    className={`lang-btn ${currentLanguage === 'it' ? 'active' : ''}`}
-                    onClick={() => changeLanguage('it')}
-                  >
-                    Italian
-                  </button>
-                </div>
+                <LanguageSwitcher
+                  variant="footer"
+                  label="full"
+                  className="footer-lang"
+                  currentLanguage={currentLanguage}
+                  onLanguageChange={changeLanguage}
+                />
                 <div className="admin-link-container">
                   <a href="/admin-login" className="admin-link">Admin</a>
                 </div>
@@ -946,37 +765,9 @@ function App() {
         </div>
       </footer>
 
-
-
-      {/* Mobile Menu */}
-      {showMobileMenu && (
-        <Suspense fallback={
-          <div className="mobile-menu-overlay">
-            <div className="mobile-menu-container">
-              <div className="mobile-menu-loading">
-                <div className="loading-spinner"></div>
-                <p>
-                  {currentLanguage === 'al' && 'Po ngarkohet menuja...'}
-                  {currentLanguage === 'en' && 'Loading menu...'}
-                  {currentLanguage === 'it' && 'Caricamento menu...'}
-                </p>
-              </div>
-            </div>
-          </div>
-        }>
-          <MobileMenu 
-            currentLanguage={currentLanguage}
-            onClose={closeNewMobileMenu}
-          />
-        </Suspense>
-      )}
-      
-      
-
-      {/* Analytics Test Component - Development Only */}
       {process.env.NODE_ENV === 'development' && (
         <Suspense fallback={null}>
-          <AnalyticsTest />
+          {/* <AnalyticsTest /> */}
         </Suspense>
       )}
     </div>

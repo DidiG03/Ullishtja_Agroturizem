@@ -6,6 +6,10 @@ function homeUrl(lang) {
   return lang === 'al' ? `${BASE}/` : `${BASE}/?lang=${lang}`;
 }
 
+function menuUrl(lang) {
+  return lang === 'al' ? `${BASE}/menu` : `${BASE}/menu?lang=${lang}`;
+}
+
 function blogUrl(lang) {
   return lang === 'al' ? `${BASE}/blog` : `${BASE}/blog?lang=${lang}`;
 }
@@ -57,6 +61,24 @@ export default async function handler(req, res) {
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>${hreflangLinks(homeUrl)}
+  </url>
+  <url>
+    <loc>${BASE}/menu</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>${hreflangLinks(menuUrl)}
+  </url>
+  <url>
+    <loc>${BASE}/menu?lang=en</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>${hreflangLinks(menuUrl)}
+  </url>
+  <url>
+    <loc>${BASE}/menu?lang=it</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>${hreflangLinks(menuUrl)}
   </url>`;
 
     if (hasBlogPosts) {

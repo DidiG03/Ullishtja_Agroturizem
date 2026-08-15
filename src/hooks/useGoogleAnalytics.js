@@ -122,6 +122,7 @@ export const useAnalyticsTracking = () => {
 function getPageTitle(path) {
   const titles = {
     '/': 'Home - Ullishtja Agroturizem',
+    '/menu': 'Menu - Ullishtja Agroturizem',
     '/admin-login': 'Admin Login - Ullishtja Agroturizem',
     '/dashboard': 'Dashboard - Ullishtja Agroturizem'
   };

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { translations } from '../translations';
 import googleReviewsService from '../services/googleReviews';
 import SiteNav from './SiteNav';
+import LanguageSwitcher from './LanguageSwitcher';
 import '../App.css'; // Import main app styles for navbar and footer
 
 // Helper function to get language from localStorage or detect browser language
@@ -153,7 +154,7 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
                 <nav className="footer-nav">
                   <a href="/#home" className="footer-link">{t.nav.home}</a>
                   <a href="/#about" className="footer-link">{t.nav.about}</a>
-                  <a href="/#alacarte" className="footer-link">{t.nav.menu}</a>
+                  <a href={`/menu${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.menu}</a>
                   <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.blog}</a>
                   <a href="/#contact" className="footer-link">{t.nav.contact}</a>
                 </nav>
@@ -166,26 +167,13 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
                 <p>{t.footer.copyright}</p>
               </div>
               <div className="footer-links-bottom">
-                <div className="language-selector footer-lang">
-                  <button 
-                    className={`lang-btn ${currentLanguage === 'al' ? 'active' : ''}`}
-                    onClick={() => changeLanguage('al')}
-                  >
-                    Albanian
-                  </button>
-                  <button 
-                    className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
-                    onClick={() => changeLanguage('en')}
-                  >
-                    English
-                  </button>
-                  <button 
-                    className={`lang-btn ${currentLanguage === 'it' ? 'active' : ''}`}
-                    onClick={() => changeLanguage('it')}
-                  >
-                    Italian
-                  </button>
-                </div>
+                <LanguageSwitcher
+                  variant="footer"
+                  label="full"
+                  className="footer-lang"
+                  currentLanguage={currentLanguage}
+                  onLanguageChange={changeLanguage}
+                />
                 <div className="admin-link-container">
                   <a href="/admin-login" className="admin-link">Admin</a>
                 </div>

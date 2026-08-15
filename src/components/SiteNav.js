@@ -1,16 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import LanguageSwitcher from './LanguageSwitcher';
+import FloatingWhatsApp from './FloatingWhatsApp';
 
-function buildBlogPath(lang) {
-  return lang === 'al' ? '/blog' : `/blog?lang=${lang}`;
+function buildLangPath(path, lang) {
+  return lang === 'al' ? path : `${path}?lang=${lang}`;
 }
 
-function SiteNav({ t, currentLanguage, onLanguageChange, onOpenFoodMenu }) {
+function SiteNav({ t, currentLanguage, onLanguageChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === '/';
+  const isMenuPage = location.pathname === '/menu';
+  const isBlogPage = location.pathname.startsWith('/blog');
 
-  const blogPath = buildBlogPath(currentLanguage);
+  const blogPath = buildLangPath('/blog', currentLanguage);
+  const menuPath = buildLangPath('/menu', currentLanguage);
 
   const closeMobile = useCallback(() => {
     setMobileOpen(false);
@@ -30,34 +35,22 @@ function SiteNav({ t, currentLanguage, onLanguageChange, onOpenFoodMenu }) {
     return () => document.body.classList.remove('scroll-locked');
   }, []);
 
-  const handleMenuClick = (e) => {
-    if (isHome && onOpenFoodMenu) {
-      e.preventDefault();
-      onOpenFoodMenu();
-      closeMobile();
-    }
-  };
-
   const navLinks = [
     { href: isHome ? '#home' : '/#home', label: t.nav.home, isHash: true },
     { href: isHome ? '#about' : '/#about', label: t.nav.about, isHash: true },
-    {
-      href: isHome ? '#alacarte' : '/#alacarte',
-      label: t.nav.menu,
-      isHash: true,
-      onClick: handleMenuClick,
-    },
-    { href: blogPath, label: t.nav.blog, isHash: false },
+    { href: menuPath, label: t.nav.menu, isHash: false, active: isMenuPage },
+    { href: blogPath, label: t.nav.blog, isHash: false, active: isBlogPage },
     { href: isHome ? '#contact' : '/#contact', label: t.nav.contact, isHash: true },
   ];
 
   const renderLink = (link, className, onNavigate) => {
+    const classes = `${className}${link.active ? ` ${className}--active` : ''}`;
     if (link.isHash) {
       return (
         <a
           key={link.label}
           href={link.href}
-          className={className}
+          className={classes}
           onClick={(e) => {
             link.onClick?.(e);
             onNavigate?.();
@@ -68,7 +61,7 @@ function SiteNav({ t, currentLanguage, onLanguageChange, onOpenFoodMenu }) {
       );
     }
     return (
-      <Link key={link.label} to={link.href} className={className} onClick={onNavigate}>
+      <Link key={link.label} to={link.href} className={classes} onClick={onNavigate}>
         {link.label}
       </Link>
     );
@@ -93,29 +86,11 @@ function SiteNav({ t, currentLanguage, onLanguageChange, onOpenFoodMenu }) {
             {navLinks.map((link) => renderLink(link, 'nav-link'))}
           </div>
 
-          <div className="language-selector navbar-lang">
-            <button
-              type="button"
-              className={`lang-btn ${currentLanguage === 'al' ? 'active' : ''}`}
-              onClick={() => onLanguageChange('al')}
-            >
-              AL
-            </button>
-            <button
-              type="button"
-              className={`lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
-              onClick={() => onLanguageChange('en')}
-            >
-              EN
-            </button>
-            <button
-              type="button"
-              className={`lang-btn ${currentLanguage === 'it' ? 'active' : ''}`}
-              onClick={() => onLanguageChange('it')}
-            >
-              IT
-            </button>
-          </div>
+          <LanguageSwitcher
+            variant="navbar"
+            currentLanguage={currentLanguage}
+            onLanguageChange={onLanguageChange}
+          />
 
           <button
             type="button"
@@ -154,30 +129,14 @@ function SiteNav({ t, currentLanguage, onLanguageChange, onOpenFoodMenu }) {
           {navLinks.map((link) => renderLink(link, 'mobile-nav-link', closeMobile))}
         </nav>
 
-        <div className="mobile-language-selector">
-          <button
-            type="button"
-            className={`mobile-lang-btn ${currentLanguage === 'al' ? 'active' : ''}`}
-            onClick={() => onLanguageChange('al')}
-          >
-            AL
-          </button>
-          <button
-            type="button"
-            className={`mobile-lang-btn ${currentLanguage === 'en' ? 'active' : ''}`}
-            onClick={() => onLanguageChange('en')}
-          >
-            EN
-          </button>
-          <button
-            type="button"
-            className={`mobile-lang-btn ${currentLanguage === 'it' ? 'active' : ''}`}
-            onClick={() => onLanguageChange('it')}
-          >
-            IT
-          </button>
-        </div>
+        <LanguageSwitcher
+          variant="drawer"
+          currentLanguage={currentLanguage}
+          onLanguageChange={onLanguageChange}
+        />
       </div>
+
+      <FloatingWhatsApp currentLanguage={currentLanguage} t={t} />
     </>
   );
 }
