@@ -105,21 +105,6 @@
   filter: grayscale(0.1) opacity(0.9);
 }
 
-/* Debug info (development only) */
-.video-debug-info {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  background: rgba(0, 0, 0, 0.7);
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-family: monospace;
-  font-size: 10px;
-  z-index: 10;
-  pointer-events: none;
-}
-
 /* Mobile-specific optimizations */
 @media (max-width: 768px) {
   .adaptive-video-container {
@@ -147,22 +132,10 @@
     /* Faster poster hiding on mobile */
     transition: opacity 0.2s ease-out;
   }
-  
-  .video-debug-info {
-    font-size: 9px;
-    padding: 2px 6px;
-  }
-}
 
-/* Low-power device optimizations */
-@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
-  .adaptive-video,
-  .video-poster {
-    transition: none;
-  }
-  
-  .adaptive-video-container {
-    will-change: auto;
+  .video-poster img,
+  .poster-image {
+    contain: layout style paint;
   }
 }
 
@@ -204,11 +177,6 @@
     /* More conservative transitions for older/slower phones */
     transition: opacity 0.2s ease-out;
   }
-  
-  .video-debug-info {
-    font-size: 8px;
-    padding: 1px 4px;
-  }
 }
 
 /* Dark mode support */
@@ -238,12 +206,6 @@
 @media (prefers-contrast: high) {
   .adaptive-video-container {
     border: 1px solid #000;
-  }
-  
-  .video-debug-info {
-    background: #000;
-    color: #fff;
-    border: 1px solid #fff;
   }
 }
 

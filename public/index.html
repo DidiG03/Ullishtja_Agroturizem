@@ -109,87 +109,64 @@
     <!-- Inline critical CSS for faster first paint on mobile -->
     <style>
       /* Critical above-the-fold + static pre-render styles — Premium Edition */
-      :root{--primary-forest:#1a2e22;--secondary-terracotta:#a0522d;--accent-gold:#c9a96e;--olive-green:#4a6741;--warm-gold:#b8976a;--cream:#f8f5f0;--dark-bg:#0d1b12;--text-primary:#1a1a1a;--text-secondary:#5a5a5a;--text-light:#8a8a8a}
+      :root{--primary-forest:#1a2e22;--secondary-terracotta:#a0522d;--accent-gold:#c9a96e;--olive-green:#4a6741;--warm-gold:#b8976a;--cream:#f8f5f0;--dark-bg:#0d1b12;--text-primary:#1a1a1a;--text-secondary:#5a5a5a;--text-light:#6e6e6e;--gold-ink:#7d6033;--content-max:1200px;--gutter:20px;--radius-sm:4px;--section-y:120px}
+      @media(max-width:768px){:root{--section-y:72px}}
+      @media(max-width:480px){:root{--section-y:56px}}
       *,*::before,*::after{box-sizing:border-box}
       body{margin:0;background:var(--cream);color:var(--text-primary);font-family:'Cormorant Garamond','Georgia',serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 
       /* Navbar — Premium Glass */
-      .navbar{position:fixed;top:0;left:0;right:0;background:#0d1b12;padding:calc(.8rem + env(safe-area-inset-top,0px)) 0 .8rem;box-shadow:none;border-bottom:1px solid rgba(201,169,110,.15);z-index:1000}
-      .nav-container{max-width:1200px;margin:0 auto;padding:0 1.25rem;display:flex;align-items:center;justify-content:flex-start}
+      .navbar{position:fixed;top:0;left:0;right:0;background:#0d1b12;padding:calc(1rem + env(safe-area-inset-top,0px)) 0 1rem;box-shadow:none;border-bottom:1px solid rgba(201,169,110,.15);z-index:1000}
+      .nav-container{max-width:var(--content-max);margin:0 auto;padding:0 var(--gutter);display:flex;align-items:center;justify-content:flex-start}
       .nav-container--logo-only{justify-content:flex-start}
       .logo-home-link{text-decoration:none;display:inline-flex;align-items:center}
-      .logo{height:50px;width:auto;border-radius:6px;display:block}
+      .logo{height:56px;width:70px;border-radius:var(--radius-sm);display:block}
 
       /* Hero — Dark Cinematic */
-      .hero{min-height:100vh;padding:96px 0 24px;background-size:cover;background-position:center;position:relative;overflow:hidden}
-      .hero-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(180deg,rgba(13,27,18,.75) 0%,rgba(13,27,18,.6) 50%,rgba(13,27,18,.85) 100%);z-index:1}
-      .hero-container{max-width:1200px;margin:0 auto;padding:0 1.5rem;position:relative;z-index:2}
+      .hero{min-height:100vh;display:flex;align-items:center;padding:calc(72px + env(safe-area-inset-top,0px)) 0 64px;background-size:cover;background-position:center;position:relative;overflow:hidden}
+      .hero-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(180deg,rgba(13,27,18,.75) 0%,rgba(13,27,18,.55) 40%,rgba(13,27,18,.7) 70%,rgba(13,27,18,.9) 100%);z-index:1}
+      .hero-container{max-width:var(--content-max);margin:0 auto;padding:0 var(--gutter);position:relative;z-index:2;width:100%}
       .hero-content{z-index:10}
       .hero-title{font-family:'Playfair Display',serif;font-size:2.8rem;line-height:1.15;margin-bottom:1rem;color:#fff;letter-spacing:-.01em}
-      .hero-description{font-size:1.1rem;line-height:1.8;color:rgba(255,255,255,.75);max-width:500px;font-weight:300}
+      .hero-description{font-size:1.25rem;line-height:1.9;color:rgba(255,255,255,.85);max-width:90%;margin-bottom:2rem;font-weight:300}
       .hero-actions{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.5rem}
-      .cta-button{display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.8rem;border-radius:0;text-decoration:none;font-weight:500;font-size:.95rem;transition:all .3s;letter-spacing:1.5px;text-transform:uppercase;font-family:'Inter','Helvetica Neue',sans-serif;font-size:.8rem}
+      .cta-button{display:inline-flex;align-items:center;gap:.5rem;padding:1rem 2.2rem;border-radius:0;text-decoration:none;font-weight:500;font-size:.8rem;transition:all .3s;letter-spacing:2px;text-transform:uppercase;font-family:'Inter',sans-serif}
       .cta-button.primary{background:var(--accent-gold);color:var(--dark-bg);border:1px solid var(--accent-gold)}
       .cta-button.secondary{background:transparent;color:#fff;border:1px solid rgba(201,169,110,.5)}
-
-      /* Hero visual & image */
       .hero-visual{z-index:10;display:none}
-      .hero-main-image{position:relative;width:100%;height:500px;border-radius:4px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
-      .main-img{width:100%;height:100%;object-fit:cover;display:block}
-      .hero-meta{display:flex;align-items:stretch;margin-bottom:2rem;padding:1rem 0;border-top:1px solid rgba(201,169,110,.22);border-bottom:1px solid rgba(201,169,110,.22)}
-      .hero-meta-item{display:flex;flex-direction:column;gap:.35rem;padding-right:1.5rem}
-      .hero-meta-item:last-child{padding-right:0;padding-left:1.5rem}
-      .hero-meta-label{font-size:.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent-gold);font-family:'Inter',sans-serif}
-      .hero-meta-value{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:600;color:#fff}
-      .hero-meta-divider{width:1px;background:linear-gradient(to bottom,transparent,rgba(201,169,110,.45),transparent)}
 
-      /* Sections */
-      .container{max-width:1200px;margin:0 auto;padding:0 1.5rem}
-      .about,.contact{padding:5rem 0}
-      .about h2,.contact h2,.events-section h2,.alacarte-section h2{font-family:'Playfair Display',serif;font-size:2.2rem;margin-bottom:1rem;color:var(--text-primary)}
-      .about p,.section-text{font-size:1.1rem;line-height:1.9;color:var(--text-secondary)}
-      .events-section,.alacarte-section{padding:5rem 0}
-      .section-subtitle{color:var(--accent-gold);font-size:1rem;margin-bottom:1rem;font-weight:500;text-transform:uppercase;letter-spacing:2px;font-family:'Inter',sans-serif}
-      .section-img{width:100%;height:auto;display:block;border-radius:4px;object-fit:cover}
+      /* Sections — values mirror src/App.css so first paint matches the loaded stylesheet */
+      .container{max-width:var(--content-max);margin:0 auto;padding:0 var(--gutter)}
+      .about{padding:var(--section-y) 0 0}
+      .contact,.events-section,.alacarte-section{padding:var(--section-y) 0}
+      .section-text{font-size:1.15rem;line-height:1.9;color:var(--text-secondary)}
+      .section-subtitle{color:var(--gold-ink);font-size:.75rem;margin-bottom:2rem;font-weight:500;text-transform:uppercase;letter-spacing:2.5px;font-family:'Inter',sans-serif}
       .section-image-breakout{margin-top:0;margin-bottom:0}
       .section-grid{display:grid;gap:2rem}
       .section-grid.reverse .section-image{order:1}
       .section-grid.reverse .section-content{order:2}
-
-      /* Contact */
-      .contact-items-container{display:grid;gap:1.5rem}
       .contact-item h4{margin:0 0 .5rem;font-family:'Playfair Display',serif}
-      .contact-email-link{color:var(--primary-forest);text-decoration:none}
-      .directions-container{display:flex;gap:1rem;margin-top:.75rem;flex-wrap:wrap}
-      .directions-link{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.2rem;border-radius:0;text-decoration:none;font-size:.85rem;font-weight:500;background:var(--primary-forest);color:#fff;letter-spacing:1px;text-transform:uppercase;font-family:'Inter',sans-serif}
-      .address-text{margin:.75rem 0;font-size:1rem;line-height:1.6}
 
       /* Footer */
-      .footer{background:var(--dark-bg);color:#fff;padding:3rem 0 1.5rem;border-top:1px solid rgba(201,169,110,.2)}
-      .footer-logo{height:50px;width:auto;border-radius:6px}
-      .footer-title{font-size:1rem;margin-bottom:1rem;font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:2px;font-weight:500}
+      .footer{background:var(--dark-bg);color:#fff;padding:5rem 0 2rem;border-top:1px solid rgba(201,169,110,.15)}
+      .footer-logo{height:72px;width:auto;max-width:160px;border-radius:var(--radius-sm)}
+      .footer-title{color:var(--accent-gold);font-size:.75rem;margin:0;padding-bottom:.75rem;font-family:'Inter',sans-serif;text-transform:uppercase;letter-spacing:2.5px;font-weight:500}
       .footer .contact-value,.footer .contact-link{color:rgba(255,255,255,.7);text-decoration:none}
       .footer-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:2rem;padding-top:1.5rem;text-align:center;font-size:.85rem;color:rgba(255,255,255,.5)}
       .footer-nav{display:flex;flex-direction:column;gap:.5rem}
-      .footer-link{color:rgba(255,255,255,.7);text-decoration:none;font-size:.95rem}
+      .footer-link{color:rgba(255,255,255,.6);text-decoration:none;font-size:.9rem;font-family:'Inter',sans-serif;padding:.25rem 0 .25rem .75rem}
 
       /* Misc */
       .noscript-banner{background:var(--primary-forest);color:#fff;text-align:center;padding:10px 15px;font-size:14px}
 
       /* Desktop breakpoint */
       @media(min-width:769px){
-        .nav-container{padding:0 1.5rem}
-        .hero{min-height:100vh;padding-top:100px}
+        .hero{min-height:100vh;padding:100px 0 24px}
+        .hero-overlay{background:linear-gradient(100deg,rgba(13,27,18,.94) 0%,rgba(13,27,18,.88) 38%,rgba(13,27,18,.62) 62%,rgba(13,27,18,.25) 100%)}
         .hero-title{font-size:4rem}
-        .hero-container{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:3rem}
+        .hero-container{display:grid;grid-template-columns:minmax(0,700px);align-items:center;gap:2rem}
         .hero-visual{display:block}
-        .section-grid{grid-template-columns:1fr 1fr;align-items:center}
-        .contact-items-container{grid-template-columns:1fr 1fr}
-        .footer-main{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem}
-      }
-      /* Tablet tweaks */
-      @media(min-width:769px) and (max-width:1024px){
-        .hero-main-image{height:320px}
+        .section-grid{grid-template-columns:1fr 1fr;align-items:center;gap:4rem}
       }
     </style>
     <link rel="dns-prefetch" href="//ucarecdn.com">

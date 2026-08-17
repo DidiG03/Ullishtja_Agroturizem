@@ -12,10 +12,10 @@
   color: rgba(255, 255, 255, 0.7);
   border-radius: 0;
   font-weight: 500;
-  font-size: 0.78rem;
-  font-family: 'Inter', sans-serif;
+  font-size: var(--label-size);
+  font-family: var(--font-ui);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -49,8 +49,6 @@
 .lang-switcher--hero .lang-switcher__btn {
   height: 34px;
   padding: 0 14px;
-  font-size: 0.72rem;
-  letter-spacing: 1.5px;
   background: rgba(255, 255, 255, 0.08);
 }
 
@@ -61,7 +59,6 @@
 
 .lang-switcher--footer .lang-switcher__btn {
   padding: 6px 12px;
-  font-size: 0.75rem;
   border-color: rgba(201, 169, 110, 0.3);
 }
 
@@ -74,7 +71,6 @@
 
 .lang-switcher--drawer .lang-switcher__btn {
   padding: 10px 16px;
-  font-size: 0.75rem;
   min-width: 50px;
   border-color: rgba(201, 169, 110, 0.3);
 }
@@ -86,14 +82,11 @@
 @media (max-width: 768px) {
   .lang-switcher--hero {
     display: flex;
+    align-self: stretch;
   }
 
   .navbar .lang-switcher--navbar {
     display: none;
-  }
-
-  .lang-switcher--hero {
-    align-self: stretch;
   }
 
   .footer-lang {
@@ -105,7 +98,6 @@
 @media (max-width: 480px) {
   .lang-switcher--drawer .lang-switcher__btn {
     padding: 10px 14px;
-    font-size: 0.9rem;
   }
 }
 

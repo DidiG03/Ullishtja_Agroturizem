@@ -45,10 +45,12 @@
 
 .floating-whatsapp__label {
   display: none;
-  font-family: 'Inter', 'Helvetica Neue', sans-serif;
-  font-size: 0.82rem;
+  font-family: var(--font-ui);
+  font-size: var(--btn-size);
+  /* Dark ink on WhatsApp green — white only reaches 2:1 at this size */
+  color: var(--dark-bg);
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--btn-ls);
   text-transform: uppercase;
   white-space: nowrap;
   line-height: 1;
@@ -61,7 +63,7 @@
 }
 
 .floating-whatsapp:focus-visible {
-  outline: 2px solid var(--accent-gold, #c9a96e);
+  outline: 2px solid var(--accent-gold);
   outline-offset: 3px;
 }
 
@@ -70,7 +72,6 @@
 }
 
 /* Hide behind food-menu overlay and mobile nav drawer */
-body.mobile-menu-open .floating-whatsapp,
 body.scroll-locked .floating-whatsapp {
   opacity: 0;
   visibility: hidden;
@@ -88,7 +89,7 @@ body.scroll-locked .floating-whatsapp {
     min-width: 0;
     min-height: var(--fab-size);
     padding: 0.7rem 1.15rem 0.7rem 0.8rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     gap: 0.7rem;
   }
 

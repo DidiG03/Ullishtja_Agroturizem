@@ -28,27 +28,15 @@ const useMobileOptimizations = () => {
       }
     };
 
-    // Simple touch optimization
-    const handleTouchOptimization = () => {
-      document.body.style.setProperty('-webkit-overflow-scrolling', 'touch');
-      document.body.style.setProperty('overscroll-behavior', 'none');
-    };
-
     // Handle resize events
     const handleResize = () => {
-      const isMobile = checkMobileStatus();
+      checkMobileStatus();
       setVH();
-      if (isMobile) {
-        handleTouchOptimization();
-      }
     };
 
     // Initial setup
     const isMobile = checkMobileStatus();
     setVH();
-    if (isMobile) {
-      handleTouchOptimization();
-    }
 
     // Add event listeners
     window.addEventListener('resize', handleResize, { passive: true });

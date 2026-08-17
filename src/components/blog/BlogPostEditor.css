@@ -1,4 +1,4 @@
-.blog-post-editor {
+.blog-post-editor .blog-post-editor {
   flex: 1;
   min-height: 0;
   display: flex;
@@ -116,40 +116,40 @@
   grid-column: 1 / -1;
 }
 
-.form-group {
+.blog-post-editor .bpe-field {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
 }
 
-.form-group label {
+.blog-post-editor .bpe-field label {
   font-weight: 600;
   font-size: 0.875rem;
   color: #334155;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
+.blog-post-editor .bpe-field input,
+.blog-post-editor .bpe-field select,
+.blog-post-editor .bpe-field textarea {
   padding: 0.65rem 0.75rem;
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   font-size: 0.95rem;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
+.blog-post-editor .bpe-field input:focus,
+.blog-post-editor .bpe-field select:focus,
+.blog-post-editor .bpe-field textarea:focus {
   outline: none;
   border-color: #6b8e23;
 }
 
-.field-hint {
+.blog-post-editor .field-hint {
   font-size: 0.75rem;
   color: #94a3b8;
 }
 
-.btn-link {
+.blog-post-editor .btn-link {
   background: none;
   border: none;
   color: #6b8e23;
@@ -159,7 +159,7 @@
   text-decoration: underline;
 }
 
-.btn-ghost {
+.blog-post-editor .btn-ghost {
   background: transparent;
   border: 2px solid #e2e8f0;
   color: #475569;
@@ -188,7 +188,7 @@
 }
 
 /* Rich text editor */
-.rich-text-editor {
+.blog-post-editor .rich-text-editor {
   border: 1px solid rgba(45, 74, 54, 0.14);
   border-radius: 12px;
   overflow: visible;
@@ -196,7 +196,7 @@
   box-shadow: 0 1px 3px rgba(45, 74, 54, 0.06);
 }
 
-.rte-toolbar {
+.blog-post-editor .rte-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -208,13 +208,13 @@
   z-index: 5;
 }
 
-.rte-toolbar-group {
+.blog-post-editor .rte-toolbar-group {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
 }
 
-.rte-toolbar-group--type {
+.blog-post-editor .rte-toolbar-group--type {
   background: #fff;
   border: 1px solid rgba(45, 74, 54, 0.12);
   border-radius: 9px;
@@ -222,23 +222,23 @@
   box-shadow: 0 1px 2px rgba(45, 74, 54, 0.04);
 }
 
-.rte-toolbar-group--media {
+.blog-post-editor .rte-toolbar-group--media {
   gap: 0.4rem;
 }
 
-.rte-toolbar-divider {
+.blog-post-editor .rte-toolbar-divider {
   width: 1px;
   height: 1.75rem;
   background: rgba(45, 74, 54, 0.15);
   flex-shrink: 0;
 }
 
-.rte-toolbar-spacer {
+.blog-post-editor .rte-toolbar-spacer {
   flex: 1;
   min-width: 0.5rem;
 }
 
-.rte-btn-cluster {
+.blog-post-editor .rte-btn-cluster {
   background: #fff;
   border: 1px solid rgba(45, 74, 54, 0.12);
   border-radius: 9px;
@@ -248,31 +248,31 @@
   box-shadow: 0 1px 2px rgba(45, 74, 54, 0.04);
 }
 
-.rte-btn-cluster .rte-btn {
+.blog-post-editor .rte-btn-cluster .rte-btn {
   border: none;
   border-radius: 0;
   box-shadow: none;
   min-width: 2.1rem;
 }
 
-.rte-btn-cluster .rte-btn + .rte-btn {
+.blog-post-editor .rte-btn-cluster .rte-btn + .rte-btn {
   border-left: 1px solid rgba(45, 74, 54, 0.1);
 }
 
-.rte-btn-cluster .rte-btn:first-child {
+.blog-post-editor .rte-btn-cluster .rte-btn:first-child {
   border-radius: 7px 0 0 7px;
 }
 
-.rte-btn-cluster .rte-btn:last-child {
+.blog-post-editor .rte-btn-cluster .rte-btn:last-child {
   border-radius: 0 7px 7px 0;
 }
 
-.rte-btn-cluster .rte-btn:only-child {
+.blog-post-editor .rte-btn-cluster .rte-btn:only-child {
   border-radius: 7px;
   border-left: none;
 }
 
-.rte-btn {
+.blog-post-editor .rte-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -289,36 +289,36 @@
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.rte-btn:hover {
+.blog-post-editor .rte-btn:hover {
   background: #e8f5cd;
   border-color: #6b8e23;
   color: #1e3324;
 }
 
-.rte-btn--media {
+.blog-post-editor .rte-btn--media {
   padding: 0 0.85rem;
   background: linear-gradient(135deg, #4a6741 0%, #6b8e23 100%);
   border-color: transparent;
   color: #fff;
 }
 
-.rte-btn--media:hover {
+.blog-post-editor .rte-btn--media:hover {
   background: linear-gradient(135deg, #3d5636 0%, #5a7d1f 100%);
   color: #fff;
 }
 
-.rte-btn--ghost {
+.blog-post-editor .rte-btn--ghost {
   background: #fff;
   border-color: rgba(45, 74, 54, 0.18);
   color: #4a6741;
 }
 
-.rte-btn--ghost:hover {
+.blog-post-editor .rte-btn--ghost:hover {
   background: #f4f7ef;
   color: #2d4a36;
 }
 
-.rte-select {
+.blog-post-editor .rte-select {
   height: 2rem;
   min-width: 6.5rem;
   padding: 0 1.75rem 0 0.65rem;
@@ -338,26 +338,26 @@
   z-index: 10;
 }
 
-.rte-toolbar-group--type .rte-select + .rte-select {
+.blog-post-editor .rte-toolbar-group--type .rte-select + .rte-select {
   border-left: 1px solid rgba(45, 74, 54, 0.1);
 }
 
-.rte-select:hover,
-.rte-select:focus {
+.blog-post-editor .rte-select:hover,
+.blog-post-editor .rte-select:focus {
   background-color: #f4f7ef;
   outline: none;
 }
 
-.rte-select option {
+.blog-post-editor .rte-select option {
   color: #2d4a36;
   background: #fff;
 }
 
-.rte-file-input {
+.blog-post-editor .rte-file-input {
   display: none;
 }
 
-.rte-content {
+.blog-post-editor .rte-content {
   padding: 1.15rem 1.25rem;
   outline: none;
   line-height: 1.7;
@@ -368,19 +368,19 @@
   background: #fffdfb;
 }
 
-.rte-content:empty::before {
+.blog-post-editor .rte-content:empty::before {
   content: attr(data-placeholder);
   color: #94a3b8;
   pointer-events: none;
 }
 
-.rte-content h2,
-.rte-content h3 {
+.blog-post-editor .rte-content h2,
+.blog-post-editor .rte-content h3 {
   margin: 1rem 0 0.5rem;
   color: #2d4a36;
 }
 
-.rte-hint {
+.blog-post-editor .rte-hint {
   margin: 0;
   padding: 0.55rem 1rem 0.7rem;
   font-size: 0.75rem;
@@ -391,11 +391,11 @@
 }
 
 @media (max-width: 720px) {
-  .rte-toolbar-spacer {
+  .blog-post-editor .rte-toolbar-spacer {
     display: none;
   }
 
-  .rte-toolbar-group--media {
+  .blog-post-editor .rte-toolbar-group--media {
     width: 100%;
     justify-content: flex-end;
   }
@@ -444,14 +444,14 @@
   margin: 0 0 0.75rem;
 }
 
-.char-ok {
+.blog-post-editor .char-ok {
   float: right;
   font-weight: 400;
   color: #16a34a;
   font-size: 0.75rem;
 }
 
-.char-warn {
+.blog-post-editor .char-warn {
   float: right;
   font-weight: 400;
   color: #dc2626;

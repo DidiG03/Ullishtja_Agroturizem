@@ -32,12 +32,11 @@ const MobileLoadingOptimizer = () => {
         }
       });
       
-      // Enhanced mobile scroll optimizations
-      document.body.style.setProperty('-webkit-overflow-scrolling', 'touch');
-      document.body.style.setProperty('overscroll-behavior', 'none');
-      document.body.style.setProperty('-webkit-transform', 'translateZ(0)');
-      document.body.style.setProperty('transform', 'translateZ(0)');
-      
+      // Scroll behaviour lives in App.css. Never set transform or
+      // -webkit-overflow-scrolling on body: either one makes body the containing
+      // block for position:fixed children, which drops the floating WhatsApp
+      // button to the bottom of the page instead of pinning it to the viewport.
+
       // Set initial viewport height with enhanced mobile support
       const setVH = () => {
         const vh = window.innerHeight * 0.01;

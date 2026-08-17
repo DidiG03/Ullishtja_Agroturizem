@@ -1,12 +1,12 @@
 .about-story-video {
   position: relative;
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
+  width: 100%;
+  max-width: 100%;
   margin-top: 4rem;
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  background: #0d1b12;
+  background: var(--dark-bg);
 }
 
 .about-story-video-poster,

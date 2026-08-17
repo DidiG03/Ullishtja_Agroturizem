@@ -115,25 +115,31 @@ function SiteNav({ t, currentLanguage, onLanguageChange }) {
         />
       )}
 
-      <div className={`mobile-nav ${mobileOpen ? 'active' : ''}`} aria-hidden={!mobileOpen}>
-        <div className="mobile-nav-header">
-          <Link to="/" onClick={closeMobile}>
-            <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja" className="mobile-logo" />
-          </Link>
-          <button type="button" className="mobile-close-btn" onClick={closeMobile} aria-label="Close">
-            ×
-          </button>
+      <div className="mobile-nav-shell">
+        <div
+          className={`mobile-nav ${mobileOpen ? 'active' : ''}`}
+          aria-hidden={!mobileOpen}
+          {...(mobileOpen ? {} : { inert: '' })}
+        >
+          <div className="mobile-nav-header">
+            <Link to="/" onClick={closeMobile}>
+              <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja" className="mobile-logo" />
+            </Link>
+            <button type="button" className="mobile-close-btn" onClick={closeMobile} aria-label="Close">
+              ×
+            </button>
+          </div>
+
+          <nav className="mobile-nav-menu">
+            {navLinks.map((link) => renderLink(link, 'mobile-nav-link', closeMobile))}
+          </nav>
+
+          <LanguageSwitcher
+            variant="drawer"
+            currentLanguage={currentLanguage}
+            onLanguageChange={onLanguageChange}
+          />
         </div>
-
-        <nav className="mobile-nav-menu">
-          {navLinks.map((link) => renderLink(link, 'mobile-nav-link', closeMobile))}
-        </nav>
-
-        <LanguageSwitcher
-          variant="drawer"
-          currentLanguage={currentLanguage}
-          onLanguageChange={onLanguageChange}
-        />
       </div>
 
       <FloatingWhatsApp currentLanguage={currentLanguage} t={t} />

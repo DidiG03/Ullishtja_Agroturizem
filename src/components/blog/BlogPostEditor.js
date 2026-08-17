@@ -195,7 +195,7 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
             <section className="bpe-panel">
               <h3>Post basics</h3>
               <div className="bpe-form-grid">
-                <div className="form-group">
+                <div className="bpe-field">
                   <label>Category *</label>
                   <select
                     value={form.categoryId}
@@ -210,7 +210,7 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
                     ))}
                   </select>
                 </div>
-                <div className="form-group">
+                <div className="bpe-field">
                   <label>URL slug *</label>
                   <input
                     type="text"
@@ -220,7 +220,7 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
                   />
                   <span className="field-hint">/blog/{form.slug || '…'}</span>
                 </div>
-                <div className="form-group full">
+                <div className="bpe-field full">
                   <label>Title (Albanian) *</label>
                   <input
                     type="text"
@@ -229,7 +229,7 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
                     placeholder="Post title"
                   />
                 </div>
-                <div className="form-group">
+                <div className="bpe-field">
                   <label>Title (English)</label>
                   <input
                     type="text"
@@ -237,7 +237,7 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
                     onChange={(e) => updateForm({ titleEN: e.target.value })}
                   />
                 </div>
-                <div className="form-group">
+                <div className="bpe-field">
                   <label>Title (Italian)</label>
                   <input
                     type="text"
@@ -271,7 +271,7 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
                   ))}
                 </div>
               </div>
-              <div className="form-group">
+              <div className="bpe-field">
                 <label>Excerpt ({contentLang})</label>
                 <textarea
                   rows={2}
@@ -283,7 +283,7 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
                   Auto-generate all excerpts from content
                 </button>
               </div>
-              <div className="form-group">
+              <div className="bpe-field">
                 <label>Body ({contentLang}) *</label>
                 <RichTextEditor
                   key={`editor-${contentLang}`}
@@ -329,7 +329,7 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
                 return (
                   <div key={lang.id} className="bpe-seo-block">
                     <h4>{lang.flag} {lang.label}</h4>
-                    <div className="form-group">
+                    <div className="bpe-field">
                       <label>
                         Meta description
                         <span className={meta.ok ? 'char-ok' : 'char-warn'}>
@@ -343,7 +343,7 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
                         placeholder="Shown in Google search results…"
                       />
                     </div>
-                    <div className="form-group">
+                    <div className="bpe-field">
                       <label>Keywords (comma-separated)</label>
                       <input
                         type="text"
@@ -383,7 +383,7 @@ function BlogPostEditor({ post, categories, onSave, onCancel, saving }) {
                     <small>Highlight on the blog homepage</small>
                   </span>
                 </label>
-                <div className="form-group">
+                <div className="bpe-field">
                   <label>Display order</label>
                   <input
                     type="number"
