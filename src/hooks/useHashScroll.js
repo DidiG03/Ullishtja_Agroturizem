@@ -16,12 +16,11 @@ const scrollToHash = (hash, behavior) => {
  * after the route change.
  */
 export default function useHashScroll() {
-  const location = useLocation();
-  const prevPathRef = useRef(location.pathname);
+  const { pathname, hash } = useLocation();
+  const prevPathRef = useRef(pathname);
   const didMountRef = useRef(false);
 
   useLayoutEffect(() => {
-    const { hash, pathname } = location;
     const isFirstPaint = !didMountRef.current;
     didMountRef.current = true;
     const pathChanged = prevPathRef.current !== pathname;
@@ -42,5 +41,5 @@ export default function useHashScroll() {
       cancelled = true;
       timers.forEach(clearTimeout);
     };
-  }, [location.pathname, location.hash]);
+  }, [pathname, hash]);
 }

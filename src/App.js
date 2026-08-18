@@ -305,16 +305,31 @@ function App() {
       {/* Events Section */}
       <section id="events" className="events-section">
         <div className="container">
-          <div className="section-content">
-            <h2 id="events-heading">{t.events.title}</h2>
-            <h3 className="section-subtitle">{t.events.subtitle}</h3>
-            <p className="section-text">
-              {t.events.text1}
-            </p>
-            <p className="section-text">
-              {t.events.text2}
-            </p>
-            {/* <div className="features-list">
+          <div className="section-grid">
+            <div className="section-image">
+              <SectionMedia
+                posterBase="events-poster"
+                videoId="dji-20240806130609-0022-d"
+                alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 42vw"
+              />
+              <div className="image-overlay">
+                <div className="overlay-content">
+                  <span className="overlay-icon">🎊</span>
+                  <span className="overlay-text">Special Events</span>
+                </div>
+              </div>
+            </div>
+            <div className="section-content">
+              <h2 id="events-heading">{t.events.title}</h2>
+              <h3 className="section-subtitle">{t.events.subtitle}</h3>
+              <p className="section-text">
+                {t.events.text1}
+              </p>
+              <p className="section-text">
+                {t.events.text2}
+              </p>
+              {/* <div className="features-list">
               <div className="feature-item">
                 <span className="feature-icon">💒</span>
                 <span className="feature-text">{t.events.features.weddings}</span>
@@ -332,19 +347,16 @@ function App() {
                 <span className="feature-text">{t.events.features.capacity}</span>
               </div>
             </div> */}
-          </div>
-        </div>
-        <div className="section-image section-image-breakout">
-          <SectionMedia
-            posterBase="events-poster"
-            videoId="dji-20240806130609-0022-d"
-            alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw"
-          />
-          <div className="image-overlay">
-            <div className="overlay-content">
-              <span className="overlay-icon">🎊</span>
-              <span className="overlay-text">Special Events</span>
+              <div className="menu-cta-container alacarte-cta">
+                <a
+                  href="/images/image_menu/events-menu.pdf"
+                  className="mobile-menu-btn"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {t.events.viewMenu}
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -721,11 +733,6 @@ function App() {
                   <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-value contact-link" onClick={handleEmailClick}>
                     hi@ullishtja-agroturizem.com
                   </a>
-                </div>
-                <div className="contact-item">
-                  <span className="contact-value">
-                    {t.contact.info.hours.text.replace('\n', ' • ')}
-                  </span>
                 </div>
               </div>
 

@@ -61,8 +61,9 @@ export const translations = {
       features: {
         weddings: "Fejesë Tradicionale",
         family: "Festa Familjare",
-        capacity: "Deri në 120 mysafirë"
-      }
+        capacity: "Deri në 60 mysafirë"
+      },
+      viewMenu: "Menuja e Eventeve"
     },
     // A la Carte Section
     alacarte: {
@@ -224,7 +225,7 @@ export const translations = {
         },
         {
           q: "A organizoni dasma dhe evente?",
-          a: "Po. Hapësira jonë pret festa familjare dhe evente deri në rreth 120 mysafirë. Na kontaktoni për të planifikuar menunë dhe detajet."
+          a: "Po. Hapësira jonë pret festa familjare dhe evente deri në rreth 60 mysafirë. Na kontaktoni për të planifikuar menunë dhe detajet."
         },
         {
           q: "Si mund të rezervoj?",
@@ -990,8 +991,9 @@ export const translations = {
         weddings: "Traditional Engagements",
         corporate: "Corporate Events",
         family: "Family Celebrations", 
-        capacity: "Up to 120 guests"
-      }
+        capacity: "Up to 60 guests"
+      },
+      viewMenu: "Event's Menu"
     },
     // A la Carte Section
     alacarte: {
@@ -1153,7 +1155,7 @@ export const translations = {
         },
         {
           q: "Can we host a wedding or event?",
-          a: "Yes. Our venue hosts family celebrations and events for up to about 120 guests. Contact us to plan the menu and details."
+          a: "Yes. Our venue hosts family celebrations and events for up to about 60 guests. Contact us to plan the menu and details."
         },
         {
           q: "How can I book a table?",
@@ -1919,8 +1921,9 @@ export const translations = {
         weddings: "Fidanzamenti Tradizionali",
         corporate: "Eventi Aziendali",
         family: "Celebrazioni Familiari",
-        capacity: "Fino a 120 ospiti"
-      }
+        capacity: "Fino a 60 ospiti"
+      },
+      viewMenu: "Menu Eventi"
     },
     // A la Carte Section
     alacarte: {
@@ -2082,7 +2085,7 @@ export const translations = {
         },
         {
           q: "Si possono organizzare matrimoni ed eventi?",
-          a: "Sì. Lo spazio accoglie feste di famiglia ed eventi fino a circa 120 ospiti. Contattateci per pianificare menu e dettagli."
+          a: "Sì. Lo spazio accoglie feste di famiglia ed eventi fino a circa 60 ospiti. Contattateci per pianificare menu e dettagli."
         },
         {
           q: "Come posso prenotare un tavolo?",

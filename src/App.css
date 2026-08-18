@@ -223,16 +223,6 @@ h2::after {
   }
 }
 
-/* Full-bleed breakout image used at the bottom of sections */
-.section-image-breakout {
-  width: 100%;
-  max-width: 100%;
-  margin-left: 0;
-  margin-right: 0;
-  border-radius: 0;
-  box-shadow: none;
-}
-
 /* Animated Background */
 .hero-background {
   position: absolute;
@@ -1714,24 +1704,43 @@ body.scroll-locked {
   }
 
   /* Events & A la Carte Sections - Mobile Enhanced */
-  /* No bottom padding on events / no top padding on menu so breakout image meets Menu flush */
-  .events-section {
-    padding: var(--section-y) 0 0;
-  }
-
+  .events-section,
   .alacarte-section {
-    padding: 0 0 var(--section-y);
+    padding: var(--section-y) 0;
   }
 
-  .section-image-breakout {
-    margin-top: 0;
-    margin-bottom: 0;
+  /* Full-bleed media and CTAs — no cream gutters beside the photos */
+  .events-section .container,
+  .alacarte-section .container {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .events-section .section-content,
+  .alacarte-section .section-content {
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+
+  .events-section .alacarte-cta,
+  .alacarte-section .alacarte-cta {
+    margin-left: calc(var(--gutter) * -1);
+    margin-right: calc(var(--gutter) * -1);
+    width: auto;
   }
 
   .section-grid {
     grid-template-columns: 1fr;
     gap: 3rem;
     min-height: auto;
+  }
+
+  .section-grid .section-content {
+    order: 1;
+  }
+
+  .section-grid .section-image {
+    order: 2;
   }
 
   .section-grid.reverse {
