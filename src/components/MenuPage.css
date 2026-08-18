@@ -321,23 +321,6 @@
   transform: scale(0.96);
 }
 
-.menu-page-fab--primary {
-  background: var(--accent-gold);
-  border-color: var(--accent-gold);
-  color: var(--dark-bg);
-}
-
-.menu-page-fab--primary:hover,
-.menu-page-fab--primary:focus-visible {
-  background: var(--accent-gold-hover);
-  color: var(--dark-bg);
-}
-
-.menu-page-fab:disabled {
-  opacity: 0.6;
-  cursor: wait;
-}
-
 body.scroll-locked .menu-page-fabs {
   opacity: 0;
   visibility: hidden;

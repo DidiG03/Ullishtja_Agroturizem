@@ -2144,6 +2144,16 @@ body.scroll-locked {
 /* Enhanced smooth scrolling */
 html {
   scroll-behavior: smooth;
+  /* Keep hash targets clear of the fixed navbar */
+  scroll-padding-top: calc(88px + env(safe-area-inset-top, 0px));
+}
+
+#home,
+#about,
+#events,
+#contact,
+#faq {
+  scroll-margin-top: calc(88px + env(safe-area-inset-top, 0px));
 }
 
 /* Video sections optimization */

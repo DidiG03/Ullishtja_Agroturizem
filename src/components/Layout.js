@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { translations } from '../translations';
 import googleReviewsService from '../services/googleReviews';
 import SiteNav from './SiteNav';
@@ -152,11 +153,11 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
               <div className="footer-section footer-links">
                 <h4 className="footer-title">{t.footer.quickLinks}</h4>
                 <nav className="footer-nav">
-                  <a href="/#home" className="footer-link">{t.nav.home}</a>
-                  <a href="/#about" className="footer-link">{t.nav.about}</a>
-                  <a href={`/menu${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.menu}</a>
-                  <a href={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.blog}</a>
-                  <a href="/#contact" className="footer-link">{t.nav.contact}</a>
+                  <Link to={{ pathname: '/', search: currentLanguage === 'al' ? '' : `?lang=${currentLanguage}`, hash: '#home' }} className="footer-link">{t.nav.home}</Link>
+                  <Link to={{ pathname: '/', search: currentLanguage === 'al' ? '' : `?lang=${currentLanguage}`, hash: '#about' }} className="footer-link">{t.nav.about}</Link>
+                  <Link to={`/menu${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.menu}</Link>
+                  <Link to={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.blog}</Link>
+                  <Link to={{ pathname: '/', search: currentLanguage === 'al' ? '' : `?lang=${currentLanguage}`, hash: '#contact' }} className="footer-link">{t.nav.contact}</Link>
                 </nav>
               </div>
             </div>

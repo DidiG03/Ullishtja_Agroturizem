@@ -7,10 +7,17 @@ function buildLangPath(path, lang) {
   return lang === 'al' ? path : `${path}?lang=${lang}`;
 }
 
+function buildHomeHash(hash, lang) {
+  return {
+    pathname: '/',
+    search: lang === 'al' ? '' : `?lang=${lang}`,
+    hash,
+  };
+}
+
 function SiteNav({ t, currentLanguage, onLanguageChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const isHome = location.pathname === '/';
   const isMenuPage = location.pathname === '/menu';
   const isBlogPage = location.pathname.startsWith('/blog');
 
@@ -36,32 +43,17 @@ function SiteNav({ t, currentLanguage, onLanguageChange }) {
   }, []);
 
   const navLinks = [
-    { href: isHome ? '#home' : '/#home', label: t.nav.home, isHash: true },
-    { href: isHome ? '#about' : '/#about', label: t.nav.about, isHash: true },
-    { href: menuPath, label: t.nav.menu, isHash: false, active: isMenuPage },
-    { href: blogPath, label: t.nav.blog, isHash: false, active: isBlogPage },
-    { href: isHome ? '#contact' : '/#contact', label: t.nav.contact, isHash: true },
+    { to: buildHomeHash('#home', currentLanguage), label: t.nav.home },
+    { to: buildHomeHash('#about', currentLanguage), label: t.nav.about },
+    { to: menuPath, label: t.nav.menu, active: isMenuPage },
+    { to: blogPath, label: t.nav.blog, active: isBlogPage },
+    { to: buildHomeHash('#contact', currentLanguage), label: t.nav.contact },
   ];
 
   const renderLink = (link, className, onNavigate) => {
     const classes = `${className}${link.active ? ` ${className}--active` : ''}`;
-    if (link.isHash) {
-      return (
-        <a
-          key={link.label}
-          href={link.href}
-          className={classes}
-          onClick={(e) => {
-            link.onClick?.(e);
-            onNavigate?.();
-          }}
-        >
-          {link.label}
-        </a>
-      );
-    }
     return (
-      <Link key={link.label} to={link.href} className={classes} onClick={onNavigate}>
+      <Link key={link.label} to={link.to} className={classes} onClick={onNavigate}>
         {link.label}
       </Link>
     );

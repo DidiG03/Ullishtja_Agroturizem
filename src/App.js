@@ -5,6 +5,7 @@ import { translations } from './translations';
 import googleReviewsService from './services/googleReviews';
 import googleAdsService from './services/googleAdsService';
 import useScrollOptimization from './hooks/useScrollOptimization';
+import useHashScroll from './hooks/useHashScroll';
 import useMobileOptimizations from './hooks/useMobileOptimizations';
 import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
 import SEOHead from './components/SEOHead';
@@ -88,6 +89,7 @@ function App() {
   const [reviewsData, setReviewsData] = useState(null);
 
   useScrollOptimization();
+  useHashScroll();
   const { enableBodyScroll } = useMobileOptimizations();
 
   const t = useMemo(() => translations[currentLanguage], [currentLanguage]);

@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { translations } from '../translations';
 import MenuService from '../services/menuService';
-import pdfExportService from '../services/pdfExportService';
-import googleAdsService from '../services/googleAdsService';
 import integratedAnalyticsService from '../services/integratedAnalytics';
 import SEOHead from './SEOHead';
 import Layout from './Layout';
@@ -70,27 +68,6 @@ const ShareIcon = () => (
   </svg>
 );
 
-const LinkIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M10 13a5 5 0 007.07 0l1.41-1.41a5 5 0 00-7.07-7.07L10 5.93" />
-    <path d="M14 11a5 5 0 00-7.07 0L5.52 12.41a5 5 0 007.07 7.07L14 18.07" />
-  </svg>
-);
-
-const BookmarkIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M6 4h12a1 1 0 011 1v16l-7-4-7 4V5a1 1 0 011-1z" />
-  </svg>
-);
-
-const PdfIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z" />
-    <path d="M14 3v5h5" />
-    <path d="M8 13h8M8 17h5" />
-  </svg>
-);
-
 function MenuPage({ currentLanguage: propLanguage }) {
   const [currentLanguage, setCurrentLanguage] = useState(propLanguage || getInitialLanguage());
   const [categories, setCategories] = useState([]);
@@ -98,7 +75,6 @@ function MenuPage({ currentLanguage: propLanguage }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [toast, setToast] = useState('');
-  const [pdfLoading, setPdfLoading] = useState(false);
 
   const t = translations[currentLanguage] || translations.al;
   const copy = t.menuPage;
@@ -248,31 +224,6 @@ function MenuPage({ currentLanguage: propLanguage }) {
     showToast(copied ? copy.copied : copy.error);
   };
 
-  const handleCopyLink = async () => {
-    const copied = await copyToClipboard(menuUrl(activeCategory));
-    showToast(copied ? copy.copied : copy.error);
-  };
-
-  const handleBookmark = async () => {
-    const copied = await copyToClipboard(menuUrl(activeCategory));
-    showToast(copied ? copy.bookmarkHint : copy.error);
-  };
-
-  const handlePdf = async () => {
-    if (pdfLoading) return;
-    setPdfLoading(true);
-    try {
-      googleAdsService.trackMenuDownload(currentLanguage);
-      integratedAnalyticsService.trackPDFDownload('full-menu', currentLanguage);
-      await pdfExportService.openPDFInNewWindow(categories, currentLanguage);
-    } catch (err) {
-      console.error('Error exporting PDF:', err);
-      showToast(copy.pdfError);
-    } finally {
-      setPdfLoading(false);
-    }
-  };
-
   return (
     <Layout currentLanguage={currentLanguage}>
       <div className="menu-page">
@@ -392,34 +343,6 @@ function MenuPage({ currentLanguage: propLanguage }) {
             title={copy.share}
           >
             <ShareIcon />
-          </button>
-          <button
-            type="button"
-            className="menu-page-fab"
-            onClick={handleCopyLink}
-            aria-label={copy.copyLink}
-            title={copy.copyLink}
-          >
-            <LinkIcon />
-          </button>
-          <button
-            type="button"
-            className="menu-page-fab"
-            onClick={handleBookmark}
-            aria-label={copy.bookmark}
-            title={copy.bookmark}
-          >
-            <BookmarkIcon />
-          </button>
-          <button
-            type="button"
-            className="menu-page-fab menu-page-fab--primary"
-            onClick={handlePdf}
-            disabled={pdfLoading || loading}
-            aria-label={pdfLoading ? copy.pdfPreparing : copy.pdf}
-            title={pdfLoading ? copy.pdfPreparing : copy.pdf}
-          >
-            <PdfIcon />
           </button>
         </div>
       </div>
