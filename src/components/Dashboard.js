@@ -3,6 +3,7 @@ import { useUser, UserButton } from '@clerk/clerk-react';
 import { Navigate } from 'react-router-dom';
 import MenuManagement from './MenuManagement';
 import BlogManagement from './BlogManagement';
+import CreatorVideosManagement from './CreatorVideosManagement';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -43,6 +44,8 @@ const Dashboard = () => {
     switch (activeTab) {
       case 'blog':
         return <BlogManagement />;
+      case 'videos':
+        return <CreatorVideosManagement />;
       case 'menu':
       default:
         return <MenuManagement />;
@@ -109,12 +112,23 @@ const Dashboard = () => {
               </svg>
               {!sidebarCollapsed && <span className="nav-text">Blog</span>}
             </button>
+            <button
+              className={`nav-tab ${activeTab === 'videos' ? 'active' : ''}`}
+              onClick={() => setActiveTab('videos')}
+              title="Creator Videos"
+            >
+              <svg className="nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none" />
+              </svg>
+              {!sidebarCollapsed && <span className="nav-text">Videos</span>}
+            </button>
           </div>
         </nav>
 
         <main
           className={`dashboard-main${
-            activeTab === 'menu' || activeTab === 'blog' ? ' dashboard-main--contained' : ''
+            activeTab === 'menu' || activeTab === 'blog' || activeTab === 'videos' ? ' dashboard-main--contained' : ''
           }`}
         >
           {renderTabContent()}

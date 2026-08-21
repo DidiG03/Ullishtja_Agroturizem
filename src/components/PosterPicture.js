@@ -30,7 +30,7 @@ export default function PosterPicture({
         className={className}
         loading={loading}
         decoding="async"
-        fetchPriority={fetchPriority}
+        {...(fetchPriority ? { fetchpriority: fetchPriority } : {})}
         width={width}
         height={height}
       />

@@ -17,6 +17,7 @@ const API_ROUTES = [
   ['pos', 'pos.js'],
   ['sitemap', 'sitemap.js'],
   ['pos-menu', 'pos.js'],
+  ['creator-videos', 'creator-videos.js'],
 ];
 
 const handlerCache = new Map();

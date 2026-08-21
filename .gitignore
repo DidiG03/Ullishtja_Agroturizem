@@ -19,6 +19,12 @@ public/images/Images_restorant/*.MOV
 public/images/Images_restorant/*.heic
 public/images/Images_restorant/*.HEIC
 
+# Local creator-video uploads (production uses Vercel Blob)
+uploads/creator-videos/*
+!uploads/creator-videos/.gitkeep
+public/videos/creators/*
+!public/videos/creators/.gitkeep
+
 # macOS metadata
 .DS_Store
 .env*.local

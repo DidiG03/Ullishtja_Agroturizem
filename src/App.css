@@ -1704,7 +1704,10 @@ body.scroll-locked {
   }
 
   /* Events & A la Carte Sections - Mobile Enhanced */
-  .events-section,
+  .events-section {
+    padding: var(--section-y) 0 0;
+  }
+
   .alacarte-section {
     padding: var(--section-y) 0;
   }

@@ -497,6 +497,10 @@ export const translations = {
       loadingReviews: "Duke ngarkuar recensionet...",
       unableToLoad: "Nuk mund të ngarkojmë recensionet në këtë moment."
     },
+    creatorVideos: {
+      title: "Na shohin krijuesit",
+      subtitle: "Video nga vizitorë që e treguan Ullishten me sytë e tyre"
+    },
     // Blog Section
     blog: {
       title: "Blogu i Ullishtes",
@@ -1427,6 +1431,10 @@ export const translations = {
       loadingReviews: "Loading reviews...",
       unableToLoad: "Unable to load reviews at this moment."
     },
+    creatorVideos: {
+      title: "As seen by creators",
+      subtitle: "Videos from visitors who shared Ullishtja in their own words"
+    },
     // Blog Section
     blog: {
       title: "Ullishtja's Blog",
@@ -2356,6 +2364,10 @@ export const translations = {
       writeReview: "Scrivi una recensione su Google",
       loadingReviews: "Caricamento recensioni...",
       unableToLoad: "Impossibile caricare le recensioni in questo momento."
+    },
+    creatorVideos: {
+      title: "Ci raccontano i creator",
+      subtitle: "Video di visitatori che hanno raccontato Ullishtja con i loro occhi"
     },
     // Blog Section
     blog: {

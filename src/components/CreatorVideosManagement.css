@@ -1,0 +1,299 @@
+.cvm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-height: 0;
+  height: 100%;
+  overflow: auto;
+  padding: 0.25rem;
+}
+
+.cvm-header h2 {
+  margin: 0 0 0.35rem;
+  color: #2d3748;
+  font-size: 1.5rem;
+}
+
+.cvm-header p {
+  margin: 0;
+  color: #4a5568;
+  max-width: 52ch;
+}
+
+.cvm-banner {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.cvm-banner--error {
+  background: #fff5f5;
+  color: #c53030;
+}
+
+.cvm-banner--success {
+  background: #f0fff4;
+  color: #276749;
+}
+
+.cvm-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem 1rem;
+  background: #fff;
+  padding: 1.25rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.cvm-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #4a5568;
+}
+
+.cvm-field--wide {
+  grid-column: 1 / -1;
+}
+
+.cvm-field input[type='text'],
+.cvm-field input[type='file'] {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  font: inherit;
+  color: #1a202c;
+  background: #fff;
+}
+
+.cvm-trim {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.85rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f7fafc;
+}
+
+.cvm-trim-preview {
+  width: 160px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #1a1a1a;
+}
+
+.cvm-trim-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.cvm-trim-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.cvm-trim-field input[type='range'] {
+  width: 100%;
+  accent-color: #2d4a36;
+}
+
+.cvm-trim-hint {
+  font-size: 0.8rem;
+  color: #718096;
+}
+
+.cvm-trim-use {
+  justify-self: start;
+  align-self: start;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+  cursor: pointer;
+}
+
+.cvm-submit {
+  grid-column: 1 / -1;
+  justify-self: start;
+  border: 0;
+  border-radius: 8px;
+  background: #2d4a36;
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+  cursor: pointer;
+}
+
+.cvm-submit:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.cvm-progress {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.cvm-progress-track {
+  height: 10px;
+  border-radius: 999px;
+  background: #edf2f7;
+  overflow: hidden;
+}
+
+.cvm-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: #2d4a36;
+  transition: width 0.15s ease-out;
+}
+
+.cvm-progress-fill.is-indeterminate {
+  width: 40% !important;
+  animation: cvmProgressSlide 1.2s ease-in-out infinite;
+}
+
+.cvm-progress-label {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #4a5568;
+}
+
+@keyframes cvmProgressSlide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(280%); }
+}
+
+.cvm-empty {
+  color: #4a5568;
+}
+
+.cvm-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cvm-item {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 1rem;
+  align-items: center;
+  background: #fff;
+  padding: 0.75rem;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.cvm-item.is-hidden {
+  opacity: 0.6;
+}
+
+.cvm-thumb {
+  width: 72px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #1a1a1a;
+}
+
+.cvm-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cvm-status {
+  font-size: 0.8rem;
+  color: #718096;
+}
+
+.cvm-item-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cvm-item-actions button {
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  border-radius: 8px;
+  padding: 0.45rem 0.7rem;
+  cursor: pointer;
+}
+
+.cvm-item-actions .is-danger {
+  color: #c53030;
+  border-color: #fed7d7;
+}
+
+@media (max-width: 720px) {
+  .cvm {
+    padding: 0;
+  }
+
+  .cvm-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .cvm-form,
+  .cvm-item,
+  .cvm-trim {
+    grid-template-columns: 1fr;
+  }
+
+  .cvm-form {
+    padding: 1rem;
+  }
+
+  .cvm-field input[type='text'],
+  .cvm-field input[type='file'] {
+    font-size: 16px;
+    min-height: 44px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .cvm-trim {
+    justify-items: center;
+    padding: 0.75rem;
+  }
+
+  .cvm-trim-preview {
+    width: min(100%, 220px);
+    height: auto;
+    aspect-ratio: 9 / 16;
+    max-height: 42vh;
+  }
+
+  .cvm-trim-field input[type='range'] {
+    min-height: 44px;
+  }
+
+  .cvm-trim-use,
+  .cvm-submit,
+  .cvm-item-actions button {
+    min-height: 44px;
+    width: 100%;
+    touch-action: manipulation;
+  }
+
+  .cvm-submit {
+    justify-self: stretch;
+  }
+
+  .cvm-item-actions {
+    width: 100%;
+  }
+}

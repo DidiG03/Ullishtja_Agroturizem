@@ -6,7 +6,7 @@ export const productionCsp = [
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
   "img-src 'self' data: https: blob:",
-  "media-src 'self' blob:",
+  "media-src 'self' blob: https:",
   "connect-src 'self' https:",
   "frame-src 'self' https://www.google.com https://maps.google.com https://accounts.google.com https://challenges.cloudflare.com https://clerk.ullishtja-agroturizem.com https://*.clerk.com",
   "worker-src 'self' blob:",

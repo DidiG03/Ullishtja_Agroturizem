@@ -244,6 +244,23 @@ model BlogImage {
   @@map("blog_images")
 }
 
+model CreatorVideo {
+  id           String   @id @default(cuid())
+  creatorName  String
+  handle       String?
+  caption      String?
+  videoUrl     String
+  posterUrl    String?
+  startSeconds Float    @default(0)
+  displayOrder Int      @default(0)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([isActive, displayOrder])
+  @@map("creator_videos")
+}
+
 // Enums
 enum ReservationStatus {
   PENDING

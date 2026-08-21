@@ -17,6 +17,7 @@ import FaqSection from './components/FaqSection';
 import AboutStoryVideo from './components/AboutStoryVideo';
 
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
+const CreatorVideos = React.lazy(() => import('./components/CreatorVideos'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
   
 
@@ -429,6 +430,10 @@ function App() {
       {/* Google Reviews Section */}
       <Suspense fallback={<div className="loading-section">Loading reviews...</div>}>
         <GoogleReviews currentLanguage={currentLanguage} translations={t} />
+      </Suspense>
+
+      <Suspense fallback={null}>
+        <CreatorVideos currentLanguage={currentLanguage} translations={t} />
       </Suspense>
 
       {/* Contact Section */}

@@ -51,6 +51,13 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(
+  '/videos/creators',
+  express.static(path.join(process.cwd(), 'uploads', 'creator-videos'), {
+    maxAge: '7d',
+    immutable: true,
+  })
+);
 
 const { registerVercelApiRoutes } = require('./vercelRoutes.js');
 
