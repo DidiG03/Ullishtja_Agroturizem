@@ -47,12 +47,12 @@ const VideoCard = ({ video, cardKey, isActive, onRequestPlay, onInteract }) => {
   const clipDuration = Math.max(0, rawDuration - startAt);
   const clipTime = Math.min(clipDuration, Math.max(0, rawTime - startAt));
 
-  const snapToStart = (el) => {
+  const snapToStart = useCallback((el) => {
     if (!el || startAt <= 0) return;
     if (el.currentTime < startAt - 0.08) {
       el.currentTime = startAt;
     }
-  };
+  }, [startAt]);
 
   const syncTime = (el) => {
     if (!el) return;
@@ -91,7 +91,7 @@ const VideoCard = ({ video, cardKey, isActive, onRequestPlay, onInteract }) => {
       el.removeEventListener('webkitendfullscreen', playIfAllowed);
       document.removeEventListener('fullscreenchange', playIfAllowed);
     };
-  }, [isActive, onInteract, startAt]);
+  }, [isActive, onInteract, startAt, snapToStart]);
 
   const handleVolumeChange = (event) => {
     const el = event.currentTarget;
