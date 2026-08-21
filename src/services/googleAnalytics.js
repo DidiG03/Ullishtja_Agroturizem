@@ -4,12 +4,26 @@ const GOOGLE_ADS_ID = 'AW-17442877024';
 
 let gtagLoadPromise = null;
 
+function shouldLoadGtag() {
+  if (typeof window === 'undefined') return false;
+  const host = window.location.hostname;
+  if (host === 'localhost' || host === '127.0.0.1') {
+    return process.env.REACT_APP_ENABLE_ANALYTICS === 'true';
+  }
+  return true;
+}
+
 function loadGtagScript() {
   if (gtagLoadPromise) {
     return gtagLoadPromise;
   }
 
-  gtagLoadPromise = new Promise((resolve, reject) => {
+  if (!shouldLoadGtag()) {
+    gtagLoadPromise = Promise.resolve(false);
+    return gtagLoadPromise;
+  }
+
+  gtagLoadPromise = new Promise((resolve) => {
     window.dataLayer = window.dataLayer || [];
     window.gtag = function gtag() {
       window.dataLayer.push(arguments);
@@ -19,8 +33,11 @@ function loadGtagScript() {
     const script = document.createElement('script');
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Failed to load gtag.js'));
+    script.onload = () => resolve(true);
+    script.onerror = () => {
+      gtagLoadPromise = null;
+      resolve(false);
+    };
     document.head.appendChild(script);
   });
 
@@ -39,7 +56,11 @@ class GoogleAnalyticsService {
     if (this.initialized) return;
 
     try {
-      await loadGtagScript();
+      const loaded = await loadGtagScript();
+      if (!loaded) {
+        this.isEnabled = false;
+        return;
+      }
 
       window.gtag('config', GOOGLE_ADS_ID);
 
@@ -58,8 +79,8 @@ class GoogleAnalyticsService {
       }
 
       this.initialized = true;
-    } catch (error) {
-      console.error('Failed to initialize Google Analytics:', error);
+    } catch {
+      this.isEnabled = false;
     }
   }
 

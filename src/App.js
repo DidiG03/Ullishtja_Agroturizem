@@ -15,9 +15,9 @@ import HeroBackgroundVideo from './components/HeroBackgroundVideo';
 import SectionMedia from './components/SectionMedia';
 import FaqSection from './components/FaqSection';
 import AboutStoryVideo from './components/AboutStoryVideo';
+import CreatorVideos from './components/CreatorVideos';
 
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
-const CreatorVideos = React.lazy(() => import('./components/CreatorVideos'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
   
 
@@ -432,9 +432,7 @@ function App() {
         <GoogleReviews currentLanguage={currentLanguage} translations={t} />
       </Suspense>
 
-      <Suspense fallback={null}>
-        <CreatorVideos currentLanguage={currentLanguage} translations={t} />
-      </Suspense>
+      <CreatorVideos currentLanguage={currentLanguage} translations={t} />
 
       {/* Contact Section */}
       <section id="contact" className="contact contact-premium">

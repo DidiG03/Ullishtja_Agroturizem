@@ -40,6 +40,7 @@ const VideoCard = ({ video, cardKey, isActive, onRequestPlay, onInteract }) => {
   const userPausedRef = useRef(false);
   const [muted, setMuted] = useState(true);
   const [paused, setPaused] = useState(true);
+  const [buffering, setBuffering] = useState(true);
   const [rawTime, setRawTime] = useState(0);
   const [rawDuration, setRawDuration] = useState(0);
   const startAt = Number(video.startSeconds) > 0 ? Number(video.startSeconds) : 0;
@@ -70,8 +71,11 @@ const VideoCard = ({ video, cardKey, isActive, onRequestPlay, onInteract }) => {
     if (!isActive) {
       el.pause();
       setPaused(true);
+      setBuffering(false);
       return undefined;
     }
+
+    setBuffering(true);
 
     const playIfAllowed = () => {
       if (isVideoFullscreen(el) || !userPausedRef.current) {
@@ -188,8 +192,19 @@ const VideoCard = ({ video, cardKey, isActive, onRequestPlay, onInteract }) => {
                 setRawTime(el.currentTime || 0);
                 if (duration > 0) setRawDuration(duration);
               }}
+              onWaiting={() => setBuffering(true)}
+              onStalled={() => setBuffering(true)}
+              onSeeking={() => setBuffering(true)}
+              onLoadStart={() => setBuffering(true)}
+              onPlaying={() => setBuffering(false)}
+              onCanPlay={() => setBuffering(false)}
+              onCanPlayThrough={() => setBuffering(false)}
+              onSeeked={(event) => {
+                if (event.currentTarget.readyState >= 3) setBuffering(false);
+              }}
               onEnded={(event) => {
                 const el = event.currentTarget;
+                setBuffering(true);
                 el.currentTime = startAt;
                 el.play().catch(() => {});
               }}
@@ -207,6 +222,11 @@ const VideoCard = ({ video, cardKey, isActive, onRequestPlay, onInteract }) => {
                 }
               }}
             />
+            {buffering ? (
+              <div className="creator-video-loader" role="status" aria-label="Loading video">
+                <span className="creator-video-spinner" aria-hidden="true" />
+              </div>
+            ) : null}
             <div className="creator-video-bar">
               <button type="button" className="creator-video-bar-btn" onClick={togglePlay} aria-label={paused ? 'Play' : 'Pause'}>
                 {paused ? '▶' : '❚❚'}
@@ -258,8 +278,7 @@ const VideoCard = ({ video, cardKey, isActive, onRequestPlay, onInteract }) => {
 
 function CreatorVideos({ translations }) {
   const [videos, setVideos] = useState([]);
-  const [readyToFetch, setReadyToFetch] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [shouldScroll, setShouldScroll] = useState(false);
   const [liteMode, setLiteMode] = useState(false);
@@ -297,25 +316,7 @@ function CreatorVideos({ translations }) {
   }, []);
 
   useEffect(() => {
-    const node = sectionRef.current;
-    if (!node) return undefined;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setReadyToFetch(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '720px 0px' }
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!readyToFetch) return undefined;
     let cancelled = false;
-    setLoading(true);
     creatorVideoService
       .list()
       .then((result) => {
@@ -330,14 +331,14 @@ function CreatorVideos({ translations }) {
     return () => {
       cancelled = true;
     };
-  }, [readyToFetch]);
+  }, []);
 
   useEffect(() => {
     const node = sectionRef.current;
     if (!node || videos.length === 0) return undefined;
     const observer = new IntersectionObserver(
       ([entry]) => setSectionInView(entry.isIntersecting),
-      { threshold: 0.12 }
+      { threshold: 0, rootMargin: '200px 0px' }
     );
     observer.observe(node);
     return () => observer.disconnect();
@@ -399,45 +400,56 @@ function CreatorVideos({ translations }) {
   const playingKey =
     pageHidden || !sectionInView || (useMarquee && !isPaused) ? null : activeKey;
 
+  if (!copy || (!loading && videos.length === 0)) {
+    return null;
+  }
+
   return (
     <section
       ref={sectionRef}
-      className={`creator-videos-section${videos.length ? '' : ' is-pending'}`}
+      className="creator-videos-section"
       aria-labelledby="creator-videos-heading"
     >
-      {loading || !copy || videos.length === 0 ? null : (
-        <>
-          <div className="container">
-            <div className="creator-videos-header">
-              <h2 id="creator-videos-heading">{copy.title}</h2>
-              {copy.subtitle ? <p className="creator-videos-subtitle">{copy.subtitle}</p> : null}
-            </div>
-          </div>
+      <div className="container">
+        <div className="creator-videos-header">
+          <h2 id="creator-videos-heading">{copy.title}</h2>
+          {copy.subtitle ? <p className="creator-videos-subtitle">{copy.subtitle}</p> : null}
+        </div>
+      </div>
 
+      <div
+        className={`creator-videos-carousel${useMarquee ? '' : ' is-static'}${shouldScroll && !useMarquee ? ' is-swipe' : ''}`}
+        onMouseEnter={() => useMarquee && setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onFocus={() => useMarquee && setIsPaused(true)}
+        onBlur={() => setIsPaused(false)}
+        onTouchStart={() => useMarquee && setIsPaused(true)}
+      >
+        {useMarquee ? (
+          <>
+            <div className="creator-videos-fade creator-videos-fade-left" aria-hidden="true" />
+            <div className="creator-videos-fade creator-videos-fade-right" aria-hidden="true" />
+          </>
+        ) : null}
+        <div
+          ref={viewportRef}
+          className={`creator-videos-viewport${useMarquee ? '' : ' is-static'}${shouldScroll && !useMarquee ? ' is-swipe' : ''}`}
+        >
           <div
-            className={`creator-videos-carousel${useMarquee ? '' : ' is-static'}${shouldScroll && !useMarquee ? ' is-swipe' : ''}`}
-            onMouseEnter={() => useMarquee && setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-            onFocus={() => useMarquee && setIsPaused(true)}
-            onBlur={() => setIsPaused(false)}
-            onTouchStart={() => useMarquee && setIsPaused(true)}
+            ref={trackRef}
+            className={`creator-videos-track${useMarquee ? '' : ' is-static'}${isPaused ? ' paused' : ''}`}
+            style={{ '--scroll-duration': `${scrollDuration}s` }}
           >
-            {useMarquee ? (
-              <>
-                <div className="creator-videos-fade creator-videos-fade-left" aria-hidden="true" />
-                <div className="creator-videos-fade creator-videos-fade-right" aria-hidden="true" />
-              </>
-            ) : null}
-            <div
-              ref={viewportRef}
-              className={`creator-videos-viewport${useMarquee ? '' : ' is-static'}${shouldScroll && !useMarquee ? ' is-swipe' : ''}`}
-            >
-              <div
-                ref={trackRef}
-                className={`creator-videos-track${useMarquee ? '' : ' is-static'}${isPaused ? ' paused' : ''}`}
-                style={{ '--scroll-duration': `${scrollDuration}s` }}
-              >
-                {displayVideos.map((video, index) => {
+            {videos.length === 0
+              ? [0, 1, 2, 3].map((index) => (
+                  <div key={`skeleton-${index}`} className="creator-video-card creator-video-card--skeleton" aria-hidden="true">
+                    <div className="creator-video-frame" />
+                    <div className="creator-video-meta">
+                      <span className="creator-video-skeleton-line" />
+                    </div>
+                  </div>
+                ))
+              : displayVideos.map((video, index) => {
                   const cardKey = `${video.id}-${index}`;
                   return (
                     <VideoCard
@@ -450,11 +462,9 @@ function CreatorVideos({ translations }) {
                     />
                   );
                 })}
-              </div>
-            </div>
           </div>
-        </>
-      )}
+        </div>
+      </div>
     </section>
   );
 }

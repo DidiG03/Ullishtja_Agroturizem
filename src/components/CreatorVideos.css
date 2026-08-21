@@ -3,19 +3,6 @@
   background: var(--cream);
   position: relative;
   overflow: hidden;
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 720px;
-}
-
-.creator-videos-section.is-pending {
-  padding: 0;
-  min-height: 1px;
-  contain-intrinsic-size: 1px 1px;
-  background: transparent;
-}
-
-.creator-videos-section.is-pending::before {
-  display: none;
 }
 
 .creator-videos-section::before {
@@ -136,8 +123,6 @@
   border-radius: var(--radius-sm);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
-  content-visibility: auto;
-  contain-intrinsic-size: 280px 560px;
 }
 
 .creator-videos-viewport.is-swipe {
@@ -251,6 +236,30 @@
   z-index: 1;
 }
 
+.creator-video-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: rgba(13, 27, 18, 0.28);
+}
+
+.creator-video-spinner {
+  width: 42px;
+  height: 42px;
+  border: 3px solid rgba(201, 169, 110, 0.25);
+  border-top-color: var(--accent-gold);
+  border-radius: 50%;
+  animation: creatorVideoSpin 0.75s linear infinite;
+}
+
+@keyframes creatorVideoSpin {
+  to { transform: rotate(360deg); }
+}
+
 .creator-video-bar {
   position: absolute;
   left: 0;
@@ -340,15 +349,26 @@
   .creator-videos-fade {
     display: none;
   }
+
+  .creator-video-spinner {
+    animation-duration: 1.4s;
+  }
+}
+
+.creator-video-card--skeleton .creator-video-frame {
+  background: #e8e2d8;
+}
+
+.creator-video-skeleton-line {
+  display: block;
+  height: 0.85rem;
+  width: 55%;
+  margin: 0.2rem auto 0;
+  border-radius: 999px;
+  background: #e8e2d8;
 }
 
 @media (max-width: 900px) {
-  .creator-videos-section,
-  .creator-video-card {
-    content-visibility: visible;
-    contain-intrinsic-size: auto;
-  }
-
   .creator-videos-track {
     --creator-cols: 2;
     --creator-gap: 0.85rem;

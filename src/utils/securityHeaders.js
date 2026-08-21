@@ -32,7 +32,7 @@ export const securityHeaders = {
   // Content Security Policy (restrictive but functional)
   'Content-Security-Policy': process.env.NODE_ENV === 'production'
     ? productionCsp
-    : "default-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' http: https: ws: wss:;",
+    : "default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com; connect-src 'self' http: https: ws: wss:;",
   
   // Strict Transport Security (HTTPS only)
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
