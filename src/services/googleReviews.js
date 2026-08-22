@@ -212,11 +212,6 @@ class GoogleReviewsService {
       const result = await response.json();
       
       if (result.success && result.data) {
-        if (result.source === 'mock' || result.source === 'mock_fallback') {
-          console.info('Using mock Google Reviews data (API keys not configured)');
-        } else {
-          console.info('Successfully fetched real Google Reviews data');
-        }
         return result.data;
       } else {
         console.info('API response indicates failure, using local mock data:', result.error || 'Unknown error');

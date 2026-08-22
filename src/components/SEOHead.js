@@ -91,7 +91,7 @@ const SEOHead = ({
   const title = customTitle || currentSeoData.title;
   const description = customDescription || currentSeoData.description;
   const keywords = customKeywords || currentSeoData.keywords;
-  const image = customImage || "https://ullishtja-agroturizem.com/images/posters/hero-poster.jpg";
+  const image = customImage || "https://ullishtja-agroturizem.com/images/posters/hero-poster-1400.jpg";
   const robotsContent =
     customRobots || 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1';
 

@@ -18,7 +18,7 @@
     
     <!-- Image information for SEO -->
     <image:image>
-      <image:loc>https://ullishtja-agroturizem.com/images/posters/hero-poster.jpg</image:loc>
+      <image:loc>https://ullishtja-agroturizem.com/images/posters/hero-poster-1400.jpg</image:loc>
       <image:title>Ullishtja Agroturizem Restaurant - Mountain Views</image:title>
       <image:caption>Authentic Albanian restaurant with breathtaking 360° mountain views</image:caption>
     </image:image>
@@ -28,12 +28,12 @@
       <image:caption>Official logo of Ullishtja Agroturizem Albanian restaurant</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://ullishtja-agroturizem.com/images/posters/alacarte-poster.jpg</image:loc>
+      <image:loc>https://ullishtja-agroturizem.com/images/posters/alacarte-poster-1280.jpg</image:loc>
       <image:title>Albanian A la Carte Menu</image:title>
       <image:caption>Traditional Albanian cuisine and farm-to-table dining experience</image:caption>
     </image:image>
     <image:image>
-      <image:loc>https://ullishtja-agroturizem.com/images/posters/events-poster.jpg</image:loc>
+      <image:loc>https://ullishtja-agroturizem.com/images/posters/events-poster-1280.jpg</image:loc>
       <image:title>Wedding and Events Venue</image:title>
       <image:caption>Beautiful venue for weddings, events and celebrations in Durres, Albania</image:caption>
     </image:image>

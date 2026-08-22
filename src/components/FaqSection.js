@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import PosterPicture from './PosterPicture';
 import './FaqSection.css';
 
 const MOBILE_MEDIA = '(max-width: 768px)';
-const POSTER = '/images/Images_restorant/IMG_9622.png';
+const POSTER_BASE = 'faq-poster';
+// The <video> poster attribute takes a single URL, so it gets the mid-size variant.
+const POSTER = '/images/posters/faq-poster-960.webp';
 const VIDEO_DESKTOP = '/videos/faq/faq-bg.mp4';
 const VIDEO_MOBILE = '/videos/faq/faq-bg-mobile.mp4';
 
@@ -70,12 +73,12 @@ function FaqSection({ t }) {
       ref={sectionRef}
     >
       <div className="faq-section-bg" aria-hidden="true">
-        <img
-          className="faq-section-poster"
-          src={POSTER}
+        <PosterPicture
+          base={POSTER_BASE}
           alt=""
+          className="faq-section-poster"
+          sizes="100vw"
           loading="lazy"
-          decoding="async"
         />
         {videoSrc && (
           <video

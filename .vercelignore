@@ -1,0 +1,16 @@
+# Raw camera exports that live in public/images for local reference only. They are
+# already git-ignored, so Git deploys never see them — this guards against a
+# `vercel` CLI deploy uploading ~500MB of source footage.
+#
+# Do NOT add the poster originals here (alacarte-poster.jpg, hero-poster-mobile.png,
+# etc). `npm run build` runs optimize-posters, which needs them as inputs to
+# generate the responsive WebP variants the site actually serves.
+public/images/wetransfer_ullishtja/
+*.mov
+*.MOV
+*.heic
+*.HEIC
+
+# Local dev/server artifacts that are not part of the static deployment
+uploads/
+build/

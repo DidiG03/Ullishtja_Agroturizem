@@ -12,8 +12,7 @@ code {
     monospace;
 }
 
-/* Device capability classes are set by MobileLoadingOptimizer.
-   Component-level video styling lives in AdaptiveVideo.css. */
+/* Device capability classes are set by MobileLoadingOptimizer. */
 .low-memory-device video,
 .battery-saver-mode video {
   will-change: auto;
@@ -21,19 +20,6 @@ code {
   -webkit-transform: none;
   backface-visibility: visible;
   -webkit-backface-visibility: visible;
-}
-
-.low-memory-device .adaptive-video-container {
-  will-change: auto;
-  transform: none;
-  -webkit-transform: none;
-  perspective: none;
-  -webkit-perspective: none;
-}
-
-.low-memory-device .video-poster,
-.battery-saver-mode .adaptive-video {
-  transition: none;
 }
 
 .battery-saver-mode .loading-spinner {

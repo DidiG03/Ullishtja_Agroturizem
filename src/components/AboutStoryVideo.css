@@ -9,6 +9,12 @@
   background: var(--dark-bg);
 }
 
+.about-story-video picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
 .about-story-video-poster,
 .about-story-video-el {
   position: absolute;

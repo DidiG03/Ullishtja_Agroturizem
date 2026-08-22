@@ -7,31 +7,12 @@ const MobileLoadingOptimizer = () => {
     if (isMobile) {
       // Register video service worker for aggressive caching
       registerVideoServiceWorker();
-      
-      // Preload critical images and video posters for mobile
-      const criticalImages = [
-        '/images/ullishtja_logo.jpeg',
-        '/videos/dji-20240806130059-0020-d-poster.jpg',
-        '/videos/dji-20240806130609-0022-d-poster.jpg',
-        '/images/food.jpeg'
-      ];
-      
-      criticalImages.forEach(src => {
-        const img = new Image();
-        img.src = src;
-        img.setAttribute('fetchpriority', 'high');
-      });
-      
-      // Add loading priority hints to existing images
-      const images = document.querySelectorAll('img');
-      images.forEach((img, index) => {
-        if (index < 3) {
-          img.setAttribute('fetchpriority', 'high');
-        } else {
-          img.setAttribute('loading', 'lazy');
-        }
-      });
-      
+
+      // Above-the-fold images are preloaded from index.html, where the browser can
+      // act on them during HTML parsing. Doing it again here only competed with the
+      // LCP image, and three of the four paths pointed at files that never existed —
+      // which the SPA rewrite answered with index.html rather than a 404.
+
       // Scroll behaviour lives in App.css. Never set transform or
       // -webkit-overflow-scrolling on body: either one makes body the containing
       // block for position:fixed children, which drops the floating WhatsApp

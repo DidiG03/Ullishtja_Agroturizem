@@ -80,9 +80,20 @@ function App() {
       }
     };
 
-    detectLanguageByCountry();
+    // Third-party geo lookup that can only ever re-render text. Held until the
+    // browser is idle so it does not compete with the hero assets for bandwidth.
+    let idleId;
+    let timeoutId;
+    if ('requestIdleCallback' in window) {
+      idleId = window.requestIdleCallback(detectLanguageByCountry, { timeout: 3000 });
+    } else {
+      timeoutId = window.setTimeout(detectLanguageByCountry, 1500);
+    }
+
     return () => {
       isCancelled = true;
+      if (idleId && 'cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
+      if (timeoutId) window.clearTimeout(timeoutId);
       abortController.abort();
     };
   }, [analytics]);
@@ -184,21 +195,14 @@ function App() {
       <section id="home" className="hero">
         {/* Animated Background */}
         <div className="hero-background">
+          {/* Poster URLs live in App.css so media queries can pick the right size —
+              see the matching preloads in public/index.html. */}
           <div
             className="hero-bg-image hero-bg-image--mobile"
             role="img"
             aria-label="Ullishtja Agroturizem restaurant and garden in Durrës, Albania"
-            style={{
-              backgroundImage: "url('/images/posters/hero-poster-mobile-900.webp')",
-            }}
           />
-          <div
-            className="hero-bg-image hero-bg-image--desktop"
-            aria-hidden="true"
-            style={{
-              backgroundImage: "url('/images/posters/hero-poster-1600.webp')",
-            }}
-          />
+          <div className="hero-bg-image hero-bg-image--desktop" aria-hidden="true" />
           <HeroBackgroundVideo
             src="/videos/hero/hero-bg-mobile.mp4"
             poster="/images/posters/hero-poster-mobile-900.webp"
@@ -310,7 +314,6 @@ function App() {
             <div className="section-image">
               <SectionMedia
                 posterBase="events-poster"
-                videoId="dji-20240806130609-0022-d"
                 alt="Beautiful wedding and events venue at Ullishtja Agroturizem - Perfect for celebrations up to 120 guests with stunning Albanian mountain backdrop"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 42vw"
               />
@@ -370,7 +373,6 @@ function App() {
             <div className="section-image">
               <SectionMedia
                 posterBase="alacarte-poster"
-                videoId="dji-20240806130059-0020-d"
                 alt="Authentic Albanian a la carte cuisine featuring traditional recipes, fresh farm ingredients, and seasonal specialties at Ullishtja Agroturizem"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 42vw"
               />

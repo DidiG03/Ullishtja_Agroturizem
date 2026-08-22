@@ -11,10 +11,6 @@ export const useGoogleAnalytics = () => {
   // Initialize integrated analytics on mount
   useEffect(() => {
     integratedAnalyticsService.initialize();
-    
-    // Log which services are active
-    const activeServices = integratedAnalyticsService.getActiveServices();
-    console.log('Active analytics services:', activeServices);
   }, []);
 
   // Track page views on route changes

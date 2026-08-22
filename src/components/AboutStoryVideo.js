@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import PosterPicture from './PosterPicture';
 import './AboutStoryVideo.css';
 
 const MOBILE_MEDIA = '(max-width: 768px)';
-const POSTER = '/images/Images_restorant/IMG_9624.jpg';
+const POSTER_BASE = 'story-poster';
+// The <video> poster attribute takes a single URL, so it gets the mid-size variant.
+const POSTER = '/images/posters/story-poster-960.webp';
 const VIDEO_DESKTOP = '/videos/story/story.mp4';
 const VIDEO_MOBILE = '/videos/story/story-mobile.mp4';
 
@@ -56,12 +59,12 @@ function AboutStoryVideo({ alt }) {
 
   return (
     <div className="about-story-video" ref={sectionRef} aria-hidden={!alt}>
-      <img
-        className="about-story-video-poster"
-        src={POSTER}
+      <PosterPicture
+        base={POSTER_BASE}
         alt={alt || ''}
+        className="about-story-video-poster"
+        sizes="100vw"
         loading="lazy"
-        decoding="async"
       />
       {videoSrc && (
         <video

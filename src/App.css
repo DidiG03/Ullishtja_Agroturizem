@@ -246,6 +246,10 @@ h2::after {
   animation: none;
 }
 
+/* The hero poster URLs live in the inline critical CSS in public/index.html, next
+   to the matching <link rel="preload"> tags — both so the LCP image is
+   discoverable while the HTML is still parsing, and because css-loader would try
+   to resolve a root-relative url() against src/ rather than public/. */
 .hero-bg-image--desktop {
   display: none;
   background-position: center 35%;
@@ -704,9 +708,9 @@ h2::after {
 .events-section {
   padding: var(--section-y) 0;
   background: #ffffff;
-  /* Performance optimization */
-  will-change: transform;
-  transform: translateZ(0);
+  /* `contain` lets the browser skip re-layout of the section's subtree. A standing
+     will-change/translateZ was also here, but neither section animates: it only
+     pinned two full-width compositor layers in GPU memory for the whole session. */
   contain: layout style paint;
 }
 
@@ -714,9 +718,6 @@ h2::after {
 .alacarte-section {
   padding: var(--section-y) 0;
   background: var(--cream);
-  /* Performance optimization */
-  will-change: transform;
-  transform: translateZ(0);
   contain: layout style paint;
 }
 
@@ -820,44 +821,19 @@ h2::after {
   color: var(--primary-forest);
 }
 
-/* Section media — poster on desktop, video on mobile */
-.section-media--mobile {
-  display: none;
-  width: 100%;
-  height: 100%;
-}
-
-.section-media--desktop {
+/* Section media — responsive poster on every breakpoint */
+.section-media {
   display: block;
   width: 100%;
   height: 100%;
 }
 
-.section-media--mobile .adaptive-video-container,
-.section-media--mobile .adaptive-video,
-.section-media--mobile .video-fallback-image,
-.section-media--mobile .video-poster,
-.section-media--mobile .poster-image {
+.section-media picture,
+.section-media img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.section-media--mobile .adaptive-video-container {
-  position: absolute;
-  inset: 0;
-}
-
-@media (max-width: 768px) {
-  .section-media--desktop {
-    display: none;
-  }
-
-  .section-media--mobile {
-    display: block;
-    position: absolute;
-    inset: 0;
-  }
 }
 
 /* Section Image — Premium */

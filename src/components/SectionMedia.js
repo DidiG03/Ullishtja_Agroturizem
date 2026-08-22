@@ -1,31 +1,18 @@
-import React, { Suspense, useEffect, useState } from 'react';
+import React from 'react';
 import PosterPicture from './PosterPicture';
 
-const AdaptiveVideo = React.lazy(() => import('./AdaptiveVideo'));
-
-const MOBILE_MEDIA = '(max-width: 768px)';
-
-function useIsMobileViewport() {
-  const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== 'undefined' ? window.matchMedia(MOBILE_MEDIA).matches : false
-  );
-
-  useEffect(() => {
-    const mq = window.matchMedia(MOBILE_MEDIA);
-    const onChange = () => setIsMobile(mq.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
-
-  return isMobile;
-}
-
 /**
- * Desktop: poster image. Mobile (≤768px): autoplaying video with poster fallback.
+ * Responsive image for the Events / A-la-carte section blocks.
+ *
+ * This used to branch to a <video> on mobile, but the per-section video files it
+ * pointed at were never generated. Because the SPA rewrite answers unknown paths
+ * with index.html, every mobile visitor fetched HTML as a video, hit the error
+ * handler, and then downloaded the full-width JPEG fallback on top of the WebP
+ * poster it had already loaded. Serving the responsive picture directly lets
+ * mobile take the 640w WebP instead.
  */
 export default function SectionMedia({
   posterBase,
-  videoId,
   alt,
   className = 'section-img',
   sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 80vw',
@@ -34,43 +21,18 @@ export default function SectionMedia({
   width = 1200,
   height = 874,
 }) {
-  const isMobile = useIsMobileViewport();
-  const posterWebp = `/images/posters/${posterBase}-1280.webp`;
-  const posterJpeg = `/images/posters/${posterBase}-1280.jpg`;
-
   return (
-    <>
-      {!isMobile && (
-        <div className="section-media section-media--desktop">
-          <Suspense fallback={null}>
-            <PosterPicture
-              base={posterBase}
-              alt={alt}
-              className={className}
-              sizes={sizes}
-              loading={loading}
-              fetchPriority={fetchPriority}
-              width={width}
-              height={height}
-            />
-          </Suspense>
-        </div>
-      )}
-
-      {isMobile && (
-        <Suspense fallback={null}>
-          <div className="section-media section-media--mobile">
-            <AdaptiveVideo
-              videoId={videoId}
-              poster={posterWebp}
-              fallbackImage={posterJpeg}
-              alt={alt}
-              className={className}
-              lazy
-            />
-          </div>
-        </Suspense>
-      )}
-    </>
+    <div className="section-media">
+      <PosterPicture
+        base={posterBase}
+        alt={alt}
+        className={className}
+        sizes={sizes}
+        loading={loading}
+        fetchPriority={fetchPriority}
+        width={width}
+        height={height}
+      />
+    </div>
   );
 }

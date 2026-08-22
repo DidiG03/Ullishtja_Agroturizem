@@ -498,7 +498,7 @@ export const translations = {
       unableToLoad: "Nuk mund të ngarkojmë recensionet në këtë moment."
     },
     creatorVideos: {
-      title: "Na shohin krijuesit",
+      title: "Si na shohin krijuesit",
       subtitle: "Video nga vizitorë që e treguan Ullishten me sytë e tyre"
     },
     // Blog Section
