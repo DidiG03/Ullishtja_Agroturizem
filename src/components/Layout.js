@@ -156,7 +156,6 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
                   <Link to={{ pathname: '/', search: currentLanguage === 'al' ? '' : `?lang=${currentLanguage}`, hash: '#home' }} className="footer-link">{t.nav.home}</Link>
                   <Link to={{ pathname: '/', search: currentLanguage === 'al' ? '' : `?lang=${currentLanguage}`, hash: '#about' }} className="footer-link">{t.nav.about}</Link>
                   <Link to={`/menu${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.menu}</Link>
-                  <Link to={`/blog${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.blog}</Link>
                   <Link to={{ pathname: '/', search: currentLanguage === 'al' ? '' : `?lang=${currentLanguage}`, hash: '#contact' }} className="footer-link">{t.nav.contact}</Link>
                 </nav>
               </div>

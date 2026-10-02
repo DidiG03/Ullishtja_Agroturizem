@@ -19,9 +19,7 @@ function SiteNav({ t, currentLanguage, onLanguageChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const isMenuPage = location.pathname === '/menu';
-  const isBlogPage = location.pathname.startsWith('/blog');
 
-  const blogPath = buildLangPath('/blog', currentLanguage);
   const menuPath = buildLangPath('/menu', currentLanguage);
 
   const closeMobile = useCallback(() => {
@@ -46,7 +44,6 @@ function SiteNav({ t, currentLanguage, onLanguageChange }) {
     { to: buildHomeHash('#home', currentLanguage), label: t.nav.home },
     { to: buildHomeHash('#about', currentLanguage), label: t.nav.about },
     { to: menuPath, label: t.nav.menu, active: isMenuPage },
-    { to: blogPath, label: t.nav.blog, active: isBlogPage },
     { to: buildHomeHash('#contact', currentLanguage), label: t.nav.contact },
   ];
 

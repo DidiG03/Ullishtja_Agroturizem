@@ -15,7 +15,6 @@ import HeroBackgroundVideo from './components/HeroBackgroundVideo';
 import SectionMedia from './components/SectionMedia';
 import FaqSection from './components/FaqSection';
 import AboutStoryVideo from './components/AboutStoryVideo';
-import CreatorVideos from './components/CreatorVideos';
 
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
@@ -169,7 +168,6 @@ function App() {
     };
   }, [reviewsData]);
 
-  const blogPath = currentLanguage === 'al' ? '/blog' : `/blog?lang=${currentLanguage}`;
   const menuPath = currentLanguage === 'al' ? '/menu' : `/menu?lang=${currentLanguage}`;
 
   return (
@@ -433,8 +431,6 @@ function App() {
       <Suspense fallback={<div className="loading-section">Loading reviews...</div>}>
         <GoogleReviews currentLanguage={currentLanguage} translations={t} />
       </Suspense>
-
-      <CreatorVideos currentLanguage={currentLanguage} translations={t} />
 
       {/* Contact Section */}
       <section id="contact" className="contact contact-premium">
@@ -748,7 +744,6 @@ function App() {
                   <a href="#home" className="footer-link">{t.nav.home}</a>
                   <a href="#about" className="footer-link">{t.nav.about}</a>
                   <a href={menuPath} className="footer-link">{t.nav.menu}</a>
-                  <a href={blogPath} className="footer-link">{t.nav.blog}</a>
                   <a href="#contact" className="footer-link">{t.nav.contact}</a>
                   <a href="#faq" className="footer-link">{t.faq.title}</a>
                 </nav>

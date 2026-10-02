@@ -1,5 +1,3 @@
-import prisma from '../src/lib/prisma.js';
-
 const BASE = 'https://ullishtja-agroturizem.com';
 
 function homeUrl(lang) {
@@ -8,16 +6,6 @@ function homeUrl(lang) {
 
 function menuUrl(lang) {
   return lang === 'al' ? `${BASE}/menu` : `${BASE}/menu?lang=${lang}`;
-}
-
-function blogUrl(lang) {
-  return lang === 'al' ? `${BASE}/blog` : `${BASE}/blog?lang=${lang}`;
-}
-
-function blogPostUrl(slug, lang) {
-  return lang === 'al'
-    ? `${BASE}/blog/${slug}`
-    : `${BASE}/blog/${slug}?lang=${lang}`;
 }
 
 function hreflangLinks(urlFactory) {
@@ -34,14 +22,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const publishedPosts = await prisma.blogPost.findMany({
-      where: { isPublished: true },
-      select: { slug: true, publishedAt: true, updatedAt: true, isFeatured: true },
-      orderBy: { publishedAt: 'desc' },
-    });
-
     const today = new Date().toISOString().split('T')[0];
-    const hasBlogPosts = publishedPosts.length > 0;
 
     let urls = `
   <url>
@@ -81,40 +62,6 @@ export default async function handler(req, res) {
     <priority>0.8</priority>${hreflangLinks(menuUrl)}
   </url>`;
 
-    if (hasBlogPosts) {
-      urls += `
-  <url>
-    <loc>${BASE}/blog</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>${hreflangLinks(blogUrl)}
-  </url>
-  <url>
-    <loc>${BASE}/blog?lang=en</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>${hreflangLinks(blogUrl)}
-  </url>
-  <url>
-    <loc>${BASE}/blog?lang=it</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.8</priority>${hreflangLinks(blogUrl)}
-  </url>`;
-
-      publishedPosts.forEach((post) => {
-        const lastmod = (post.updatedAt || post.publishedAt || new Date()).toISOString().split('T')[0];
-        const priority = post.isFeatured ? '0.8' : '0.6';
-        urls += `
-  <url>
-    <loc>${BASE}/blog/${post.slug}</loc>
-    <lastmod>${lastmod}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>${priority}</priority>${hreflangLinks((lang) => blogPostUrl(post.slug, lang))}
-  </url>`;
-      });
-    }
-
     const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urls}
 </urlset>`;
@@ -128,7 +75,5 @@ export default async function handler(req, res) {
       error: 'Failed to generate sitemap',
       details: error.message,
     });
-  } finally {
-    await prisma.$disconnect();
   }
 }
