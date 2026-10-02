@@ -9,6 +9,7 @@
     "@fontsource/cormorant-garamond": "^5.2.11",
     "@fontsource/inter": "^5.2.8",
     "@fontsource/playfair-display": "^5.2.8",
+    "@opennextjs/cloudflare": "^1.20.7",
     "@prisma/client": "^6.10.1",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
@@ -24,6 +25,7 @@
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
     "multer": "^2.0.2",
+    "next": "^16.3.8",
     "node-fetch": "^2.7.0",
     "prisma": "^6.10.1",
     "react": "^18.2.0",
@@ -36,9 +38,9 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
+    "build": "npm run optimize-posters && npx prisma generate && react-scripts build",
     "start": "react-scripts start",
     "start:prod-data": "REACT_APP_USE_PRODUCTION_API=true react-scripts start",
-    "build": "npm run optimize-posters && npx prisma generate && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "NODE_ENV=development node server/index.js",
@@ -54,7 +56,11 @@
     "seed-blog-categories": "node scripts/seed-blog-categories.js",
     "migrate-blog-schema": "node scripts/migrate-blog-schema.js",
     "setup": "npm install && npx prisma generate",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "eslintConfig": {
     "extends": [
@@ -73,5 +79,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "wrangler": "^4.147.0"
   }
 }
