@@ -149,12 +149,12 @@ export default async function handler(req, res) {
 
   try {
     const placeId = process.env.GOOGLE_PLACE_ID || process.env.REACT_APP_GOOGLE_PLACE_ID;
-    const apiKey = process.env.GOOGLE_PLACES_API_KEY || process.env.REACT_APP_GOOGLE_PLACES_API_KEY;
+    const apiKey = process.env.GOOGLE_PLACES_API_KEY;
 
     if (hasBusinessProfileConfig()) {
       try {
         const processedData = await fetchFromBusinessProfile();
-        res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+        res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=604800');
         return res.status(200).json({
           success: true,
           data: processedData,
@@ -167,6 +167,7 @@ export default async function handler(req, res) {
 
     if (!placeId || !apiKey) {
       console.warn('Missing Google Places configuration. Returning mock data.');
+      res.setHeader('Cache-Control', 'no-store');
       return res.status(200).json({
         success: true,
         data: getMockReviewsData(),
@@ -175,7 +176,7 @@ export default async function handler(req, res) {
     }
 
     const processedData = await fetchFromPlaces(placeId, apiKey);
-    res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+    res.setHeader('Cache-Control', 'public, s-maxage=86400, stale-while-revalidate=604800');
 
     return res.status(200).json({
       success: true,
@@ -184,6 +185,7 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error('Error fetching Google reviews:', error);
+    res.setHeader('Cache-Control', 'no-store');
     return res.status(200).json({
       success: true,
       data: getMockReviewsData(),

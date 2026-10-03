@@ -1,11 +1,13 @@
 import { upload } from '@vercel/blob/client';
 import apiClient from '../utils/apiClient';
+import { getApiAuthHeader } from '../utils/apiAuth';
 
 const useDirectBlob =
   process.env.NODE_ENV === 'production' ||
   process.env.REACT_APP_USE_PRODUCTION_API === 'true';
 
-function uploadWithXhr(url, file, onProgress) {
+async function uploadWithXhr(url, file, onProgress) {
+  const authHeader = await getApiAuthHeader();
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const form = new FormData();
@@ -58,6 +60,7 @@ function uploadWithXhr(url, file, onProgress) {
     );
 
     xhr.open('POST', url);
+    Object.entries(authHeader).forEach(([key, value]) => xhr.setRequestHeader(key, value));
     xhr.send(form);
   });
 }

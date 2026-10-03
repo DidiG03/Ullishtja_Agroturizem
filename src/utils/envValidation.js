@@ -36,10 +36,6 @@ export const optionalEnvVars = {
   REACT_APP_GOOGLE_PLACE_ID: {
     description: 'Google Places ID for reviews'
   },
-  REACT_APP_GOOGLE_PLACES_API_KEY: {
-    description: 'Google Places API key',
-    sensitive: true
-  },
   REACT_APP_GA_TRACKING_ID: {
     description: 'Google Analytics tracking ID'
   },

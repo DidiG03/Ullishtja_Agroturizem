@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useUser, UserButton } from '@clerk/clerk-react';
+import { useUser, useAuth, UserButton } from '@clerk/clerk-react';
 import { Navigate } from 'react-router-dom';
 import MenuManagement from './MenuManagement';
 import BlogManagement from './BlogManagement';
 import CreatorVideosManagement from './CreatorVideosManagement';
+import { setApiTokenGetter } from '../utils/apiAuth';
 import './Dashboard.css';
 
 const Dashboard = () => {
   const { isSignedIn, user } = useUser();
+  const { getToken } = useAuth();
+  // Registered during render so children's mount-time fetches already carry the token.
+  setApiTokenGetter(getToken);
   const [activeTab, setActiveTab] = useState('menu');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 

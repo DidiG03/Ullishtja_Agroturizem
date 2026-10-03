@@ -1,6 +1,7 @@
 import fs from 'fs';
 import formidable from 'formidable';
 import prisma, { withPrismaRetry } from '../src/lib/prisma.js';
+import { requireAdmin } from './lib/adminAuth.js';
 import {
   storeCreatorVideoFromPath,
   storeCreatorPosterFromDataUrl,
@@ -81,9 +82,17 @@ export default async function handler(req, res) {
   const contentType = req.headers['content-type'] || '';
   const { id, all, resource } = req.query || {};
 
+  const isBlobResource = req.method === 'POST' && (resource === 'blob' || resource === 'upload-token');
+  const wantsHidden = req.method === 'GET' && (String(all) === '1' || String(all) === 'true');
+  // Everything except the public list and Vercel's signed upload-completed callback needs an admin.
+  if (!isBlobResource && (req.method !== 'GET' || wantsHidden)) {
+    if (!(await requireAdmin(req, res))) return;
+  }
+
   try {
-    if (req.method === 'POST' && (resource === 'blob' || resource === 'upload-token')) {
+    if (isBlobResource) {
       const body = await getJsonBody(req);
+      if (body?.type !== 'blob.upload-completed' && !(await requireAdmin(req, res))) return;
       const { handleUpload } = await import('@vercel/blob/client');
       const json = await handleUpload({
         body,

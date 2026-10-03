@@ -4,6 +4,7 @@
 // - Posts: /api/blog?resource=posts [GET, POST, PUT, DELETE]
 
 import prisma from '../src/lib/prisma.js';
+import { getAdminUserId, requireAdmin } from './lib/adminAuth.js';
 
 export default async function handler(req, res) {
   // CORS
@@ -16,6 +17,10 @@ export default async function handler(req, res) {
   }
 
   const { resource = 'posts', id } = req.query || {};
+
+  // Reads are public (published posts only unless the caller is an admin); all writes need an admin.
+  const isAdminRequest = req.method === 'GET' ? Boolean(await getAdminUserId(req)) : false;
+  if (req.method !== 'GET' && !(await requireAdmin(req, res))) return;
 
   try {
     if (resource === 'categories') {
@@ -93,7 +98,7 @@ export default async function handler(req, res) {
     // Posts resource
     if (req.method === 'GET') {
       const { category, featured, published, language = 'al', id, admin } = req.query || {};
-      const isAdmin = admin === 'true' || admin === '1';
+      const isAdmin = isAdminRequest && (admin === 'true' || admin === '1');
       const lang = String(language).toLowerCase();
       const suffix = lang === 'it' ? 'IT' : lang === 'en' ? 'EN' : 'AL';
 
@@ -104,7 +109,7 @@ export default async function handler(req, res) {
             category: { select: { id: true, nameAL: true, nameEN: true, nameIT: true, slug: true } },
           },
         });
-        if (!post) {
+        if (!post || (!isAdminRequest && !post.isPublished)) {
           return res.status(404).json({ success: false, error: 'Post not found' });
         }
         if (isAdmin) {
@@ -126,7 +131,7 @@ export default async function handler(req, res) {
       }
 
       const whereClause = {};
-      if (published === 'true') whereClause.isPublished = true;
+      if (!isAdminRequest || published === 'true') whereClause.isPublished = true;
       else if (published === 'false') whereClause.isPublished = false;
       if (category && category !== 'all') whereClause.category = { slug: category };
       if (featured !== undefined) whereClause.isFeatured = String(featured) === 'true';

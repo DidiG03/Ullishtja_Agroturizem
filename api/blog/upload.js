@@ -2,6 +2,7 @@
 import formidable from 'formidable';
 import fs from 'fs';
 import { storeBlogImage, parseDataUrl } from '../lib/blogImageStorage.js';
+import { requireAdmin } from '../lib/adminAuth.js';
 
 export const config = {
   api: {
@@ -25,6 +26,8 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
+
+  if (!(await requireAdmin(req, res))) return;
 
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, error: 'Method not allowed' });

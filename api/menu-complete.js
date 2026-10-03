@@ -2,6 +2,7 @@
 // Handles categories, items, and complete menu data
 
 import prisma from '../src/lib/prisma.js';
+import { requireAdmin } from './lib/adminAuth.js';
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -12,6 +13,9 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
+
+  // Reading the menu is public; every write (incl. import/clear) needs an admin.
+  if (req.method !== 'GET' && !(await requireAdmin(req, res))) return;
 
   const { path } = req.query;
 

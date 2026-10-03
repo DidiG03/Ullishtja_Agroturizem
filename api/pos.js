@@ -2,6 +2,7 @@
 // Menu: GET /api/pos?resource=menu&lang=al&flat=false&includeInactive=false
 
 import prisma from '../src/lib/prisma.js';
+import { requireAdmin } from './lib/adminAuth.js';
 
 function coerceBoolean(value, defaultValue = false) {
   if (value === undefined || value === null || value === '') return defaultValue;
@@ -61,6 +62,7 @@ export default async function handler(req, res) {
     const language = String(lang).toLowerCase();
     const isFlat = coerceBoolean(flat, false);
     const includeInactiveBool = coerceBoolean(includeInactive, false);
+    if (includeInactiveBool && !(await requireAdmin(req, res))) return;
 
     const suffix = language === 'it' ? 'IT' : language === 'en' ? 'EN' : 'AL';
     const langOrder = suffix === 'EN' ? ['EN', 'AL', 'IT'] : suffix === 'IT' ? ['IT', 'AL', 'EN'] : ['AL', 'EN', 'IT'];
