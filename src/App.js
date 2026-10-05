@@ -58,52 +58,6 @@ function App() {
   const [currentLanguage, setCurrentLanguage] = useState(getInitialLanguage());
   const analytics = useAnalyticsTracking();
 
-  // Refine language using IP geolocation (first visit only)
-  useEffect(() => {
-    const saved = localStorage.getItem('preferredLanguage');
-    if (saved && ['al', 'en', 'it'].includes(saved)) {
-      return;
-    }
-
-    let isCancelled = false;
-    const abortController = new AbortController();
-
-    const detectLanguageByCountry = async () => {
-      try {
-        const response = await fetch('https://ipapi.co/json/', { signal: abortController.signal });
-        if (!response.ok) throw new Error('Geo IP request failed');
-        const data = await response.json();
-        const countryCode = (data.country || data.country_code || data.countryCode || '').toUpperCase();
-
-        // Only switch to Albanian based on geo; otherwise keep default Albanian
-        if (countryCode === 'AL' && !isCancelled) {
-          setCurrentLanguage('al');
-          localStorage.setItem('preferredLanguage', 'al');
-          analytics.trackLanguageChange('al', 'geo-detect');
-        }
-      } catch (error) {
-        // Silent fallback: keep browser-derived language
-      }
-    };
-
-    // Third-party geo lookup that can only ever re-render text. Held until the
-    // browser is idle so it does not compete with the hero assets for bandwidth.
-    let idleId;
-    let timeoutId;
-    if ('requestIdleCallback' in window) {
-      idleId = window.requestIdleCallback(detectLanguageByCountry, { timeout: 3000 });
-    } else {
-      timeoutId = window.setTimeout(detectLanguageByCountry, 1500);
-    }
-
-    return () => {
-      isCancelled = true;
-      if (idleId && 'cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
-      if (timeoutId) window.clearTimeout(timeoutId);
-      abortController.abort();
-    };
-  }, [analytics]);
-
   const [reviewsData, setReviewsData] = useState(null);
 
   useScrollOptimization();
