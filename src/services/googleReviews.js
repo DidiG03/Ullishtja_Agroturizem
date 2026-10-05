@@ -190,8 +190,16 @@ class GoogleReviewsService {
     };
   }
 
-  // Fetch real Google Reviews or return mock data
-  async fetchGoogleReviews() {
+  // Fetch real Google Reviews or return mock data. Shared by every component on the
+  // page (footer, reviews section), so only one request is made per page load.
+  fetchGoogleReviews() {
+    if (!this.reviewsPromise) {
+      this.reviewsPromise = this.requestGoogleReviews();
+    }
+    return this.reviewsPromise;
+  }
+
+  async requestGoogleReviews() {
     try {
       // Always try to fetch real reviews from our backend API first
       const response = await fetch('/api/google-reviews');
