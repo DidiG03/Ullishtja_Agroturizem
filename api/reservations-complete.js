@@ -21,9 +21,9 @@ export default async function handler(req, res) {
       : String(path).split(',').filter(Boolean)
     : [];
 
-  // Only creating a reservation (POST /) is public; everything else exposes or changes customer data.
-  const isPublicCreate = req.method === 'POST' && pathArray.length === 0;
-  if (!isPublicCreate && !(await requireAdmin(req, res))) return;
+  // Admin-only while the public reservation form is disabled. Re-opening POST for
+  // customers needs input validation, rate limiting and a forced 'pending' status.
+  if (!(await requireAdmin(req, res))) return;
 
   try {
     if (pathArray.length === 0) {
