@@ -7,8 +7,10 @@ const sharp = require('sharp');
 const fs = require('fs');
 const path = require('path');
 
+// Originals live outside public/ so they are not deployed; outputs go to public/.
+const SOURCE_DIR = path.join(__dirname, '../assets-src/posters');
+const RESTAURANT_DIR = path.join(__dirname, '../assets-src/restaurant');
 const POSTERS_DIR = path.join(__dirname, '../public/images/posters');
-const RESTAURANT_DIR = path.join(__dirname, '../public/images/Images_restorant');
 
 const jobs = [
   {
@@ -61,7 +63,7 @@ const jobs = [
 ];
 
 async function processJob(job) {
-  const inputPath = path.join(job.inputDir || POSTERS_DIR, job.input);
+  const inputPath = path.join(job.inputDir || SOURCE_DIR, job.input);
   if (!fs.existsSync(inputPath)) {
     console.warn(`[optimize-posters] skip (missing): ${job.input}`);
     return;
