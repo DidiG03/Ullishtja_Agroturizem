@@ -2,13 +2,13 @@
 // Keep Content-Security-Policy in sync with vercel.json headers for /(.*)
 export const productionCsp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com https://*.clerk.accounts.dev https://*.clerk.com https://clerk.com https://clerk.ullishtja-agroturizem.com",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.google.com https://va.vercel-scripts.com https://*.clerk.accounts.dev https://*.clerk.com https://clerk.com https://clerk.ullishtja-agroturizem.com",
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
   "img-src 'self' data: https: blob:",
   "media-src 'self' blob: https:",
   "connect-src 'self' https:",
-  "frame-src 'self' https://www.google.com https://maps.google.com https://accounts.google.com https://challenges.cloudflare.com https://clerk.ullishtja-agroturizem.com https://*.clerk.com",
+  "frame-src 'self' https://www.google.com https://td.doubleclick.net https://www.googletagmanager.com https://maps.google.com https://accounts.google.com https://challenges.cloudflare.com https://clerk.ullishtja-agroturizem.com https://*.clerk.com",
   "worker-src 'self' blob:",
   "object-src 'none'",
   "base-uri 'self'",
@@ -32,7 +32,7 @@ export const securityHeaders = {
   // Content Security Policy (restrictive but functional)
   'Content-Security-Policy': process.env.NODE_ENV === 'production'
     ? productionCsp
-    : "default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://va.vercel-scripts.com; connect-src 'self' http: https: ws: wss:;",
+    : "default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.google.com https://va.vercel-scripts.com; connect-src 'self' http: https: ws: wss:;",
   
   // Strict Transport Security (HTTPS only)
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
