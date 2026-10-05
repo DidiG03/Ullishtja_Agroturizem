@@ -7,15 +7,15 @@ import Layout from './Layout';
 import './MenuPage.css';
 
 const getInitialLanguage = () => {
-  const storedLanguage = localStorage.getItem('preferredLanguage');
-  if (storedLanguage && ['al', 'en', 'it'].includes(storedLanguage)) {
-    return storedLanguage;
-  }
-
   const urlLang = new URLSearchParams(window.location.search).get('lang');
   if (urlLang && ['al', 'en', 'it'].includes(urlLang)) {
     localStorage.setItem('preferredLanguage', urlLang);
     return urlLang;
+  }
+
+  const storedLanguage = localStorage.getItem('preferredLanguage');
+  if (storedLanguage && ['al', 'en', 'it'].includes(storedLanguage)) {
+    return storedLanguage;
   }
 
   const browserLang = (navigator.language || navigator.languages?.[0] || '').toLowerCase();

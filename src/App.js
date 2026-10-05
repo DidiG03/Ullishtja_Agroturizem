@@ -25,9 +25,16 @@ const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadi
 
 //
 
-// Helper function to get language from localStorage or detect browser language
+const SUPPORTED_LANGUAGES = ['al', 'en', 'it'];
+
+// Language priority: ?lang= in the URL (what links, the sitemap and crawlers use),
+// then the saved preference, then the browser language.
 const getInitialLanguage = () => {
-  // Use saved preference if available
+  const urlLang = new URLSearchParams(window.location.search).get('lang');
+  if (urlLang && SUPPORTED_LANGUAGES.includes(urlLang)) {
+    return urlLang;
+  }
+
   const storedLanguage = localStorage.getItem('preferredLanguage');
   if (storedLanguage && ['al', 'en', 'it'].includes(storedLanguage)) {
     return storedLanguage;
@@ -151,6 +158,12 @@ function App() {
     
     // Store language preference in localStorage
     localStorage.setItem('preferredLanguage', lang);
+
+    // Keep ?lang= in sync so the URL, canonical link and shared links match the content
+    const url = new URL(window.location.href);
+    if (lang === 'al') url.searchParams.delete('lang');
+    else url.searchParams.set('lang', lang);
+    window.history.replaceState(window.history.state, '', url);
     
     // Track language change
     if (previousLanguage !== lang) {
