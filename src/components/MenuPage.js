@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { translations } from '../translations';
+import { useTranslations } from '../i18n';
 import MenuService from '../services/menuService';
 import integratedAnalyticsService from '../services/integratedAnalytics';
 import SEOHead from './SEOHead';
@@ -76,7 +76,7 @@ function MenuPage({ currentLanguage: propLanguage }) {
   const [error, setError] = useState(false);
   const [toast, setToast] = useState('');
 
-  const t = translations[currentLanguage] || translations.al;
+  const t = useTranslations(currentLanguage);
   const copy = t.menuPage;
 
   const visibleCategories = useMemo(

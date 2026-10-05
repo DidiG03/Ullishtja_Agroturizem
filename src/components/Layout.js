@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { translations } from '../translations';
+import React, { useState, useEffect } from 'react';
+import { useTranslations } from '../i18n';
 import SiteNav from './SiteNav';
 import SiteFooter from './SiteFooter';
 import '../App.css'; // Import main app styles for navbar and footer
@@ -36,7 +36,7 @@ const getInitialLanguage = () => {
 const Layout = ({ children, currentLanguage: propLanguage }) => {
   const [currentLanguage, setCurrentLanguage] = useState(propLanguage || getInitialLanguage());
 
-  const t = useMemo(() => translations[currentLanguage], [currentLanguage]);
+  const t = useTranslations(currentLanguage);
 
   // Effect to sync language changes
   useEffect(() => {

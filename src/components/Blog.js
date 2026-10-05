@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import './Blog.css';
 import './blog/blogContentImages.css';
-import { translations } from '../translations';
+import { useTranslations } from '../i18n';
 import SEOHead from './SEOHead';
 import Layout from './Layout';
 import blogService from '../services/blogService';
@@ -51,7 +51,7 @@ const Blog = ({ currentLanguage: propLanguage }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const t = translations[currentLanguage] || translations.al;
+  const t = useTranslations(currentLanguage);
 
   const buildBlogPath = (postSlug = null, lang = currentLanguage) => {
     const basePath = postSlug ? `/blog/${postSlug}` : '/blog';

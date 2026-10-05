@@ -1,7 +1,7 @@
-import React, { useState, useEffect, Suspense, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, Suspense, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
-import { translations } from './translations';
+import { useTranslations } from './i18n';
 import googleAdsService from './services/googleAdsService';
 import useScrollOptimization from './hooks/useScrollOptimization';
 import useHashScroll from './hooks/useHashScroll';
@@ -63,7 +63,7 @@ function App() {
   useHashScroll();
   const { enableBodyScroll } = useMobileOptimizations();
 
-  const t = useMemo(() => translations[currentLanguage], [currentLanguage]);
+  const t = useTranslations(currentLanguage);
 
   // Removed localization helpers (unused)
 
