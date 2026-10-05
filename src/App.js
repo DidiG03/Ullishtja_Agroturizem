@@ -2,7 +2,6 @@ import React, { useState, useEffect, Suspense, useCallback, useMemo } from 'reac
 import { Link } from 'react-router-dom';
 import './App.css';
 import { translations } from './translations';
-import googleReviewsService from './services/googleReviews';
 import googleAdsService from './services/googleAdsService';
 import useScrollOptimization from './hooks/useScrollOptimization';
 import useHashScroll from './hooks/useHashScroll';
@@ -10,6 +9,7 @@ import useMobileOptimizations from './hooks/useMobileOptimizations';
 import { useAnalyticsTracking } from './hooks/useGoogleAnalytics';
 import SEOHead from './components/SEOHead';
 import SiteNav from './components/SiteNav';
+import SiteFooter from './components/SiteFooter';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import HeroBackgroundVideo from './components/HeroBackgroundVideo';
 import SectionMedia from './components/SectionMedia';
@@ -58,7 +58,6 @@ function App() {
   const [currentLanguage, setCurrentLanguage] = useState(getInitialLanguage());
   const analytics = useAnalyticsTracking();
 
-  const [reviewsData, setReviewsData] = useState(null);
 
   useScrollOptimization();
   useHashScroll();
@@ -92,20 +91,6 @@ function App() {
     };
   }, [enableBodyScroll]);
 
-  // Load Google Reviews data
-  useEffect(() => {
-    const loadReviews = async () => {
-      try {
-        const data = await googleReviewsService.fetchGoogleReviews();
-        setReviewsData(data);
-      } catch (error) {
-        console.error('Error loading reviews:', error);
-      }
-    };
-
-    loadReviews();
-  }, []);
-
   const changeLanguage = useCallback((lang) => {
     const previousLanguage = currentLanguage;
     setCurrentLanguage(lang);
@@ -124,16 +109,6 @@ function App() {
       analytics.trackLanguageChange(lang, previousLanguage);
     }
   }, [currentLanguage, analytics]);
-
-  const reviewsDisplay = useMemo(() => {
-    if (!reviewsData) return { stars: '⭐⭐⭐⭐⭐', rating: '0.0', count: '0' };
-    
-    return {
-      stars: googleReviewsService.generateStarDisplay(reviewsData.averageRating),
-      rating: googleReviewsService.formatRating(reviewsData.averageRating),
-      count: reviewsData.totalReviews
-    };
-  }, [reviewsData]);
 
   const menuPath = currentLanguage === 'al' ? '/menu' : `/menu?lang=${currentLanguage}`;
 
@@ -666,78 +641,7 @@ function App() {
 
       <FaqSection t={t} />
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            {/* Footer Main Content */}
-            <div className="footer-main">
-              {/* Company Info */}
-              <div className="footer-section footer-company">
-                <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Footer Logo" className="footer-logo" loading="lazy" width="144" height="72" />
-                <p className="footer-description">{t.footer.tagline}</p>
-                <div className="footer-rating">
-                  <div className="rating-stars">
-                    {reviewsDisplay.stars}
-                  </div>
-                  <span className="rating-text">
-                    {reviewsData ? `${reviewsDisplay.rating} (${reviewsDisplay.count} ${t.hero.googleReviews})` : t.hero.loadingReviews}
-                  </span>
-                </div>
-              </div>
-
-              {/* Contact Information */}
-              <div className="footer-section footer-contact">
-                <h4 className="footer-title">{t.contact.title}</h4>
-                <div className="contact-item">
-                  <span className="contact-value">Ullishtja Agroturizem, Durres, Albania</span>
-                </div>
-                <div className="contact-item">
-                  <a href="tel:+355684090405" className="contact-value contact-link" onClick={handlePhoneClick}>
-                    +355 68 409 0405
-                  </a>
-                </div>
-                <div className="contact-item">
-                  <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-value contact-link" onClick={handleEmailClick}>
-                    hi@ullishtja-agroturizem.com
-                  </a>
-                </div>
-              </div>
-
-              {/* Quick Links */}
-              <div className="footer-section footer-links">
-                <h4 className="footer-title">{t.footer.quickLinks}</h4>
-                <nav className="footer-nav">
-                  <a href="#home" className="footer-link">{t.nav.home}</a>
-                  <a href="#about" className="footer-link">{t.nav.about}</a>
-                  <a href={menuPath} className="footer-link">{t.nav.menu}</a>
-                  <a href="#contact" className="footer-link">{t.nav.contact}</a>
-                  <a href="#faq" className="footer-link">{t.faq.title}</a>
-                </nav>
-              </div>
-            </div>
-
-            {/* Footer Bottom */}
-            <div className="footer-bottom">
-              <div className="footer-copyright">
-                <p>{t.footer.copyright}</p>
-              </div>
-              <div className="footer-links-bottom">
-                <LanguageSwitcher
-                  variant="footer"
-                  label="full"
-                  className="footer-lang"
-                  currentLanguage={currentLanguage}
-                  onLanguageChange={changeLanguage}
-                />
-                <div className="admin-link-container">
-                  <a href="/admin-login" className="admin-link">Admin</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter t={t} currentLanguage={currentLanguage} onLanguageChange={changeLanguage} />
 
     </div>
   );

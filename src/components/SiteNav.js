@@ -3,11 +3,11 @@ import { Link, useLocation } from 'react-router-dom';
 import LanguageSwitcher from './LanguageSwitcher';
 import FloatingWhatsApp from './FloatingWhatsApp';
 
-function buildLangPath(path, lang) {
+export function buildLangPath(path, lang) {
   return lang === 'al' ? path : `${path}?lang=${lang}`;
 }
 
-function buildHomeHash(hash, lang) {
+export function buildHomeHash(hash, lang) {
   return {
     pathname: '/',
     search: lang === 'al' ? '' : `?lang=${lang}`,

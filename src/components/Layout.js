@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import { translations } from '../translations';
-import googleReviewsService from '../services/googleReviews';
 import SiteNav from './SiteNav';
-import LanguageSwitcher from './LanguageSwitcher';
+import SiteFooter from './SiteFooter';
 import '../App.css'; // Import main app styles for navbar and footer
 
 // Helper function to get language from localStorage or detect browser language
@@ -37,7 +35,6 @@ const getInitialLanguage = () => {
 
 const Layout = ({ children, currentLanguage: propLanguage }) => {
   const [currentLanguage, setCurrentLanguage] = useState(propLanguage || getInitialLanguage());
-  const [reviewsData, setReviewsData] = useState(null);
 
   const t = useMemo(() => translations[currentLanguage], [currentLanguage]);
 
@@ -47,20 +44,6 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
       setCurrentLanguage(propLanguage);
     }
   }, [propLanguage, currentLanguage]);
-
-  // Effect to load reviews data
-  useEffect(() => {
-    const loadReviews = async () => {
-      try {
-        const data = await googleReviewsService.fetchGoogleReviews();
-        setReviewsData(data);
-      } catch (error) {
-        console.error('Failed to load reviews:', error);
-      }
-    };
-
-    loadReviews();
-  }, []);
 
   // Language change handler
   const changeLanguage = (lang) => {
@@ -82,17 +65,6 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
     }));
   };
 
-  // Memoize review display components
-  const reviewsDisplay = useMemo(() => {
-    if (!reviewsData) return { stars: '⭐⭐⭐⭐⭐', rating: '0.0', count: '0' };
-    
-    return {
-      stars: googleReviewsService.generateStarDisplay(reviewsData.averageRating),
-      rating: googleReviewsService.formatRating(reviewsData.averageRating),
-      count: reviewsData.totalReviews
-    };
-  }, [reviewsData]);
-
   return (
     <div className="layout has-site-nav">
       <SiteNav
@@ -106,82 +78,7 @@ const Layout = ({ children, currentLanguage: propLanguage }) => {
         {React.cloneElement(children, { currentLanguage, translations: t })}
       </main>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            {/* Footer Main Content */}
-            <div className="footer-main">
-              {/* Company Info */}
-              <div className="footer-section footer-company">
-                <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Footer Logo" className="footer-logo" />
-                <p className="footer-description">{t.footer.tagline}</p>
-                <div className="footer-rating">
-                  <div className="rating-stars">
-                    {reviewsDisplay.stars}
-                  </div>
-                  <span className="rating-text">
-                    {reviewsData ? `${reviewsDisplay.rating} (${reviewsDisplay.count} ${t.hero.googleReviews})` : t.hero.loadingReviews}
-                  </span>
-                </div>
-              </div>
-
-              {/* Contact Information */}
-              <div className="footer-section footer-contact">
-                <h4 className="footer-title">{t.contact.title}</h4>
-                <div className="contact-item">
-                  <span className="contact-value">Ullishtja Agroturizem, Durres, Albania</span>
-                </div>
-                <div className="contact-item">
-                  <a href="tel:+355684090405" className="contact-value contact-link">
-                    +355 68 409 0405
-                  </a>
-                </div>
-                <div className="contact-item">
-                  <a href="mailto:hi@ullishtja-agroturizem.com" className="contact-value contact-link">
-                    hi@ullishtja-agroturizem.com
-                  </a>
-                </div>
-                <div className="contact-item">
-                  <span className="contact-value">
-                    {t.contact.info.hours.text.replace('\n', ' • ')}
-                  </span>
-                </div>
-              </div>
-
-              {/* Quick Links */}
-              <div className="footer-section footer-links">
-                <h4 className="footer-title">{t.footer.quickLinks}</h4>
-                <nav className="footer-nav">
-                  <Link to={{ pathname: '/', search: currentLanguage === 'al' ? '' : `?lang=${currentLanguage}`, hash: '#home' }} className="footer-link">{t.nav.home}</Link>
-                  <Link to={{ pathname: '/', search: currentLanguage === 'al' ? '' : `?lang=${currentLanguage}`, hash: '#about' }} className="footer-link">{t.nav.about}</Link>
-                  <Link to={`/menu${currentLanguage !== 'al' ? '?lang=' + currentLanguage : ''}`} className="footer-link">{t.nav.menu}</Link>
-                  <Link to={{ pathname: '/', search: currentLanguage === 'al' ? '' : `?lang=${currentLanguage}`, hash: '#contact' }} className="footer-link">{t.nav.contact}</Link>
-                </nav>
-              </div>
-            </div>
-
-            {/* Footer Bottom */}
-            <div className="footer-bottom">
-              <div className="footer-copyright">
-                <p>{t.footer.copyright}</p>
-              </div>
-              <div className="footer-links-bottom">
-                <LanguageSwitcher
-                  variant="footer"
-                  label="full"
-                  className="footer-lang"
-                  currentLanguage={currentLanguage}
-                  onLanguageChange={changeLanguage}
-                />
-                <div className="admin-link-container">
-                  <a href="/admin-login" className="admin-link">Admin</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter t={t} currentLanguage={currentLanguage} onLanguageChange={changeLanguage} />
     </div>
   );
 };
