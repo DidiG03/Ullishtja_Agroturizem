@@ -40,24 +40,31 @@ export default function HeroBackgroundVideo({ poster, src }) {
     };
   }, []);
 
-  // The hero poster is the LCP element. Mounting the video straight away puts a
-  // ~1MB download in the same contention window, so wait for the main thread to
-  // go idle first — the poster is already painted as a CSS background underneath.
+  // The video is a ~1MB download. Starting it while the page is still loading
+  // takes bandwidth from the fonts, poster and scripts on slow mobile networks,
+  // so wait for the load event and then for the main thread to go idle — the
+  // poster is already painted as a CSS background underneath.
   useEffect(() => {
     if (!enabled) return undefined;
 
     let idleId;
     let timeoutId;
 
-    if ('requestIdleCallback' in window) {
-      idleId = window.requestIdleCallback(() => setAfterFirstPaint(true), {
-        timeout: 2500,
-      });
-    } else {
-      timeoutId = window.setTimeout(() => setAfterFirstPaint(true), 1200);
-    }
+    const scheduleVideo = () => {
+      if ('requestIdleCallback' in window) {
+        idleId = window.requestIdleCallback(() => setAfterFirstPaint(true), {
+          timeout: 2500,
+        });
+      } else {
+        timeoutId = window.setTimeout(() => setAfterFirstPaint(true), 1200);
+      }
+    };
+
+    if (document.readyState === 'complete') scheduleVideo();
+    else window.addEventListener('load', scheduleVideo, { once: true });
 
     return () => {
+      window.removeEventListener('load', scheduleVideo);
       if (idleId && 'cancelIdleCallback' in window) window.cancelIdleCallback(idleId);
       if (timeoutId) window.clearTimeout(timeoutId);
     };
