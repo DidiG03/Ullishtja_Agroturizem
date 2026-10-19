@@ -1,28 +1,17 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslations } from '../i18n';
+import { localizedPath, useTranslations } from '../i18n';
+import useLanguage from '../hooks/useLanguage';
 import MenuService from '../services/menuService';
 import integratedAnalyticsService from '../services/integratedAnalytics';
 import SEOHead from './SEOHead';
 import Layout from './Layout';
 import './MenuPage.css';
 
-const getInitialLanguage = () => {
-  const urlLang = new URLSearchParams(window.location.search).get('lang');
-  if (urlLang && ['al', 'en', 'it'].includes(urlLang)) {
-    localStorage.setItem('preferredLanguage', urlLang);
-    return urlLang;
-  }
-
-  const storedLanguage = localStorage.getItem('preferredLanguage');
-  if (storedLanguage && ['al', 'en', 'it'].includes(storedLanguage)) {
-    return storedLanguage;
-  }
-
-  const browserLang = (navigator.language || navigator.languages?.[0] || '').toLowerCase();
-  if (browserLang.startsWith('sq') || browserLang.startsWith('al')) return 'al';
-  if (browserLang.startsWith('it')) return 'it';
-  if (browserLang.startsWith('en')) return 'en';
-  return 'al';
+// scripts/prerender.js embeds the menu in the static HTML so the dishes are in the
+// page source for search engines and show without waiting for the API.
+const getEmbeddedMenu = () => {
+  if (typeof window === 'undefined' || !Array.isArray(window.__MENU_DATA__)) return null;
+  return window.__MENU_DATA__;
 };
 
 const localized = (item, field, language) => {
@@ -68,11 +57,11 @@ const ShareIcon = () => (
   </svg>
 );
 
-function MenuPage({ currentLanguage: propLanguage }) {
-  const [currentLanguage, setCurrentLanguage] = useState(propLanguage || getInitialLanguage());
-  const [categories, setCategories] = useState([]);
+function MenuPage() {
+  const { language: currentLanguage } = useLanguage();
+  const [categories, setCategories] = useState(() => getEmbeddedMenu() || []);
   const [activeCategory, setActiveCategory] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => !getEmbeddedMenu());
   const [error, setError] = useState(false);
   const [toast, setToast] = useState('');
 
@@ -86,7 +75,7 @@ function MenuPage({ currentLanguage: propLanguage }) {
 
   const menuUrl = useCallback((hash) => {
     const origin = window.location.origin;
-    const path = currentLanguage === 'al' ? '/menu' : `/menu?lang=${currentLanguage}`;
+    const path = localizedPath('/menu', currentLanguage);
     const fragment = hash ? `#${hash}` : '';
     return `${origin}${path}${fragment}`;
   }, [currentLanguage]);
@@ -101,9 +90,11 @@ function MenuPage({ currentLanguage: propLanguage }) {
     return () => clearTimeout(timer);
   }, [toast]);
 
-  const loadMenu = useCallback(async () => {
+  // With an embedded menu already on screen this refreshes it quietly, and a
+  // failed refresh keeps showing the embedded copy rather than an error.
+  const loadMenu = useCallback(async ({ background = false } = {}) => {
     try {
-      setLoading(true);
+      if (!background) setLoading(true);
       setError(false);
       const data = await MenuService.getCompleteMenu();
       if (!data?.success) {
@@ -113,36 +104,22 @@ function MenuPage({ currentLanguage: propLanguage }) {
       setCategories(categoriesData);
     } catch (err) {
       console.error('Error loading menu:', err);
-      setError(true);
-      setCategories([]);
+      if (!background) {
+        setError(true);
+        setCategories([]);
+      }
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    loadMenu();
+    loadMenu({ background: Boolean(getEmbeddedMenu()) });
   }, [loadMenu]);
 
   useEffect(() => {
     integratedAnalyticsService.trackMenuView(currentLanguage, 'full-menu-page');
   }, [currentLanguage]);
-
-  useEffect(() => {
-    const handleLanguageChanged = (event) => {
-      const lang = event.detail?.language;
-      if (lang && lang !== currentLanguage) {
-        setCurrentLanguage(lang);
-      }
-    };
-
-    if (propLanguage && propLanguage !== currentLanguage) {
-      setCurrentLanguage(propLanguage);
-    }
-
-    window.addEventListener('languageChanged', handleLanguageChanged);
-    return () => window.removeEventListener('languageChanged', handleLanguageChanged);
-  }, [propLanguage, currentLanguage]);
 
   useEffect(() => {
     if (loading || !visibleCategories.length) return undefined;
@@ -227,8 +204,8 @@ function MenuPage({ currentLanguage: propLanguage }) {
   return (
     <Layout currentLanguage={currentLanguage}>
       <div className="menu-page">
-        <SEOHead currentLanguage={currentLanguage} pageSection="menu" />
-        <h1 className="menu-page-sr-only">{copy.title}</h1>
+        <SEOHead language={currentLanguage} page="menu" menuCategories={visibleCategories} />
+        <h1 className="menu-page-sr-only">{copy.title} – Ullishtja Agroturizem</h1>
 
         {!loading && !error && visibleCategories.length > 0 && (
           <nav className="menu-page-cats" aria-label={copy.title}>
@@ -262,7 +239,7 @@ function MenuPage({ currentLanguage: propLanguage }) {
             {error && !loading && (
               <div className="menu-page-status">
                 <p>{copy.error}</p>
-                <button type="button" className="menu-page-retry" onClick={loadMenu}>
+                <button type="button" className="menu-page-retry" onClick={() => loadMenu()}>
                   {copy.retry}
                 </button>
               </div>

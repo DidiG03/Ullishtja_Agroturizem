@@ -103,7 +103,7 @@ const ReviewCard = ({
         </div>
       </div>
 
-      <h4 className="reviewer-name">{review.authorName}</h4>
+      <h3 className="reviewer-name">{review.authorName}</h3>
       <span className="review-time">{getRelativeTimeLabel(review, currentLanguage)}</span>
 
       <div className="review-rating">

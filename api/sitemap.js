@@ -1,79 +1,53 @@
 const BASE = 'https://ullishtja-agroturizem.com';
 
-function homeUrl(lang) {
-  return lang === 'al' ? `${BASE}/` : `${BASE}/?lang=${lang}`;
+// Albanian at the root, the other languages under a prefix — the same scheme as
+// src/i18n.js (localizedPath) and the files scripts/prerender.js writes.
+const LANGUAGES = [
+  { code: 'al', hreflang: 'sq', prefix: '' },
+  { code: 'en', hreflang: 'en', prefix: '/en' },
+  { code: 'it', hreflang: 'it', prefix: '/it' },
+];
+
+const PAGES = ['/', '/menu'];
+
+function pageUrl(page, language) {
+  if (!language.prefix) return `${BASE}${page}`;
+  return page === '/' ? `${BASE}${language.prefix}` : `${BASE}${language.prefix}${page}`;
 }
 
-function menuUrl(lang) {
-  return lang === 'al' ? `${BASE}/menu` : `${BASE}/menu?lang=${lang}`;
-}
-
-function hreflangLinks(urlFactory) {
-  return `
-    <xhtml:link rel="alternate" hreflang="sq" href="${urlFactory('al')}" />
-    <xhtml:link rel="alternate" hreflang="en" href="${urlFactory('en')}" />
-    <xhtml:link rel="alternate" hreflang="it" href="${urlFactory('it')}" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="${urlFactory('al')}" />`;
+// Every language version lists all of its alternates (and itself), which is what
+// search engines expect for hreflang in a sitemap.
+function alternates(page) {
+  const links = LANGUAGES.map(
+    (language) =>
+      `\n    <xhtml:link rel="alternate" hreflang="${language.hreflang}" href="${pageUrl(page, language)}" />`
+  );
+  links.push(
+    `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${pageUrl(page, LANGUAGES[0])}" />`
+  );
+  return links.join('');
 }
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  try {
-    const today = new Date().toISOString().split('T')[0];
+  const urls = PAGES.flatMap((page) =>
+    LANGUAGES.map(
+      (language) => `
+  <url>
+    <loc>${pageUrl(page, language)}</loc>${alternates(page)}
+  </url>`
+    )
+  ).join('');
 
-    let urls = `
-  <url>
-    <loc>${BASE}/</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>${hreflangLinks(homeUrl)}
-  </url>
-  <url>
-    <loc>${BASE}/?lang=en</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>${hreflangLinks(homeUrl)}
-  </url>
-  <url>
-    <loc>${BASE}/?lang=it</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>${hreflangLinks(homeUrl)}
-  </url>
-  <url>
-    <loc>${BASE}/menu</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>${hreflangLinks(menuUrl)}
-  </url>
-  <url>
-    <loc>${BASE}/menu?lang=en</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>${hreflangLinks(menuUrl)}
-  </url>
-  <url>
-    <loc>${BASE}/menu?lang=it</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>${hreflangLinks(menuUrl)}
-  </url>`;
-
-    const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${urls}
-</urlset>`;
+</urlset>
+`;
 
-    res.setHeader('Content-Type', 'application/xml');
-    res.setHeader('Cache-Control', 'public, max-age=3600');
-    return res.status(200).send(sitemap);
-  } catch (error) {
-    console.error('Sitemap generation error:', error);
-    return res.status(500).json({
-      error: 'Failed to generate sitemap',
-      details: error.message,
-    });
-  }
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  return res.status(200).send(sitemap);
 }

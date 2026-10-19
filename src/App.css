@@ -2447,7 +2447,70 @@ html {
   display: block;
 }
 
+/* Static map shown until the visitor loads the live Google map (MapEmbed.js) */
+.map-preview {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 340px;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: #f2efe9;
+  overflow: hidden;
+}
+
+.map-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.map-preview-pin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -100%);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+}
+
+.map-preview-label {
+  position: absolute;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translateX(-50%);
+  padding: 0.65rem 1.4rem;
+  background: var(--dark-bg);
+  color: #fff;
+  border: 1px solid var(--accent-gold);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.map-preview:hover .map-preview-label,
+.map-preview:focus-visible .map-preview-label {
+  background: var(--accent-gold);
+  color: var(--dark-bg);
+}
+
+.map-preview-credit {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 1px 6px;
+  background: rgba(255, 255, 255, 0.75);
+  color: #333;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+}
+
 .contact-premium .contact-location-copy {
+  font-style: normal;
   margin: 1rem 0 1.15rem;
   color: rgba(255, 255, 255, 0.82);
   font-size: 1.05rem;
@@ -2562,4 +2625,33 @@ html {
   .contact-premium .contact-info-value {
     font-size: 1rem;
   }
+}
+
+/* 404 page */
+.not-found {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--section-y) + 72px) 0 var(--section-y);
+  text-align: center;
+}
+
+.not-found h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--primary-forest);
+  margin: 0 0 1rem;
+}
+
+.not-found .hero-actions {
+  justify-content: center;
+}
+
+.not-found .cta-button.secondary {
+  color: var(--primary-forest);
+  border-color: var(--accent-gold);
+}
+
+.footer address {
+  font-style: normal;
 }

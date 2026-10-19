@@ -6,6 +6,11 @@
 }
 
 .lang-switcher__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  line-height: normal;
   padding: 8px 14px;
   border: 1px solid rgba(201, 169, 110, 0.4);
   background: transparent;

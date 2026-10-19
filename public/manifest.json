@@ -1,7 +1,7 @@
 {
-  "short_name": "Ullishtja Agriturizem",
-  "name": "Ullishtja Agriturizem - Albanian Restaurant",
-  "description": "Authentic Albanian dining experience with farm-to-table cuisine and breathtaking mountain views",
+  "short_name": "Ullishtja",
+  "name": "Ullishtja Agroturizem",
+  "description": "Traditional Albanian restaurant in Durrës with farm-to-table dishes, family recipes and space for events.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -12,18 +12,24 @@
       "src": "logo192.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose": "maskable any"
+      "purpose": "any"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "maskable any"
+      "purpose": "any"
     }
   ],
-  "start_url": ".",
+  "start_url": "/",
   "display": "standalone",
   "theme_color": "#0d1b12",
   "background_color": "#0d1b12",
-  "categories": ["food", "lifestyle", "travel"]
+  "categories": [
+    "food",
+    "lifestyle",
+    "travel"
+  ],
+  "scope": "/",
+  "lang": "sq"
 }

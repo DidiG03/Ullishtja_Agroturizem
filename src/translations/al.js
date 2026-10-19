@@ -29,7 +29,7 @@ const al = {
   // About Section
   about: {
     title: "Historia Jonë",
-    text1: "E vendosur në qytetin e bukur dhe antik shqiptar të Durrësit, Ullishtja Agriturizem ofron një përvojë autentike nga ferma në tavolinë. Restoranti ynë kremton traditat e pasura kulinare të Shqipërisë, duke përdorur përbërës të freskët nga kopshtet tona dhe fermat lokale.",
+    text1: "E vendosur në qytetin e bukur dhe antik shqiptar të Durrësit, Ullishtja Agroturizem ofron një përvojë autentike nga ferma në tavolinë. Restoranti ynë kremton traditat e pasura kulinare të Shqipërisë, duke përdorur përbërës të freskët nga kopshtet tona dhe fermat lokale.",
     text2: "E themeluar në vitin 2021, ne krenohemi që shërbejmë ushqime tradicionale shqiptare të përgatitura me dashuri dhe kujdes, ashtu si i bënin të parët tanë. Çdo pjatë tregon një histori të trashëgimisë dhe profesionalizmit tonë.",
     features: {
       fresh: {
@@ -56,7 +56,7 @@ const al = {
   events: {
     title: "Eventet",
     subtitle: "Krijoni Kujtime të Përhershme",
-    text1: "Ullishtja Agriturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga fejesat tradicionale dhe eventet familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
+    text1: "Ullishtja Agroturizem ofron hapësira të bukura dhe atmosferë të ngrohtë për të gjitha ngjarjet tuaja speciale. Nga fejesat tradicionale dhe eventet familjare, ne sigurojmë që çdo moment të jetë i paharrueshëm.",
     text2: "Stafi ynë i dedikuar bashkëpunon me ju për të planifikuar çdo detaj, nga menuja me specialitete lokale, tek dekorimi dhe koordinimi i plotë i eventit.",
     features: {
       weddings: "Fejesë Tradicionale",
@@ -134,6 +134,7 @@ const al = {
   // Contact Section
   contact: {
     title: "Na Vizitoni",
+    showMap: "Shfaq hartën",
     info: {
       title: "Vendndodhja",
       address: {
@@ -203,6 +204,11 @@ const al = {
     retry: "Provo Përsëri",
     empty: "Menuja është duke u përditësuar."
   },
+  notFound: {
+    title: "Faqja nuk u gjet",
+    text: "Faqja që kërkuat nuk ekziston ose është zhvendosur.",
+    home: "Kthehu në faqen kryesore"
+  },
   faq: {
     title: "Pyetjet e Shpeshta",
     subtitle: "Gjithçka që duhet të dini para se të na vizitoni",
@@ -235,7 +241,7 @@ const al = {
   },
   // Footer
   footer: {
-    copyright: "© 2026 Ullishtja Agriturizem. Të gjitha të drejtat e rezervuara.",
+    copyright: "© 2026 Ullishtja Agroturizem. Të gjitha të drejtat e rezervuara.",
     tagline: "Duke shërbyer kuzhinë autentike shqiptare që nga viti 2021",
     quickLinks: "Linqe të Shpejta",
     services: "Shërbimet",

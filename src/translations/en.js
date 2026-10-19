@@ -29,7 +29,7 @@ const en = {
   // About Section
   about: {
     title: "Our Story",
-    text1: "Nestled in the beautiful Albanian countryside, Ullishtja Agriturizem offers an authentic farm-to-table dining experience. Our restaurant celebrates the rich culinary traditions of Albania, using fresh ingredients from our own gardens and local farms.",
+    text1: "Nestled in the beautiful Albanian countryside, Ullishtja Agroturizem offers an authentic farm-to-table dining experience. Our restaurant celebrates the rich culinary traditions of Albania, using fresh ingredients from our own gardens and local farms.",
     text2: "Founded in 2021, we pride ourselves on serving traditional Albanian dishes prepared with love and care, just like our ancestors did. Every meal tells a story of our heritage and connection to the land.",
   },
   // Scroll Video Experience Section
@@ -56,7 +56,7 @@ const en = {
   events: {
     title: "Events",
     subtitle: "Create Lasting Memories",
-    text1: "Ullishtja Agriturizem offers beautiful spaces and warm atmosphere for all your special occasions. From traditional Albanian engagements to corporate retreats and family celebrations, we ensure every moment is unforgettable.",
+    text1: "Ullishtja Agroturizem offers beautiful spaces and warm atmosphere for all your special occasions. From traditional Albanian engagements to corporate retreats and family celebrations, we ensure every moment is unforgettable.",
     text2: "Our dedicated staff works with you to plan every detail, from personalized menus featuring local specialties to décor and complete event coordination.",
     features: {
       weddings: "Traditional Engagements",
@@ -135,6 +135,7 @@ const en = {
   // Contact Section
   contact: {
     title: "Visit Us",
+    showMap: "Show map",
     info: {
       title: "Location",
       address: {
@@ -204,6 +205,11 @@ const en = {
     retry: "Retry",
     empty: "The menu is being updated."
   },
+  notFound: {
+    title: "Page not found",
+    text: "The page you are looking for does not exist or has moved.",
+    home: "Back to the homepage"
+  },
   faq: {
     title: "Frequently Asked Questions",
     subtitle: "Everything you need to know before you visit",
@@ -236,7 +242,7 @@ const en = {
   },
   // Footer
   footer: {
-    copyright: "© 2026 Ullishtja Agriturizem. All rights reserved.",
+    copyright: "© 2026 Ullishtja Agroturizem. All rights reserved.",
     tagline: "Serving authentic Albanian cuisine since 2021",
     quickLinks: "Quick Links",
     services: "Our Services",

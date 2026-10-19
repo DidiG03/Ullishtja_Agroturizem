@@ -39,7 +39,8 @@ function FloatingWhatsApp({ currentLanguage = 'al', t }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={copy.ariaLabel}
+      // Starts with the visible label, as screen-reader voice control expects.
+      aria-label={`${copy.label} – WhatsApp`}
       onClick={handleClick}
     >
       <span className="floating-whatsapp__icon" aria-hidden="true">
