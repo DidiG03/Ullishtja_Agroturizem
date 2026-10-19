@@ -32,6 +32,7 @@ export default function SectionMedia({
         fetchPriority={fetchPriority}
         width={width}
         height={height}
+        mobileCrop
       />
     </div>
   );

@@ -20,6 +20,7 @@ const jobs = [
     jpegMax: 1280,
     webpQuality: 70,
     avifQuality: 45,
+    mobileCrop: true,
   },
   {
     input: 'events-poster.jpg',
@@ -28,6 +29,7 @@ const jobs = [
     jpegMax: 1280,
     webpQuality: 70,
     avifQuality: 45,
+    mobileCrop: true,
   },
   {
     input: 'hero-poster.jpg',
@@ -133,6 +135,32 @@ async function processJob(job) {
         .avif({ quality: job.avifQuality, effort: 4 })
         .toFile(outAvif);
       console.log(`[optimize-posters] ${path.basename(outAvif)}`);
+    }
+  }
+
+  // On phones the events / à la carte photos sit in a 300px-tall full-width strip
+  // (about 5:4), so the portrait originals were mostly cropped away by
+  // object-fit. These centre crops match that framing at ~60% of the pixels;
+  // PosterPicture serves them below 769px.
+  if (job.mobileCrop) {
+    const meta = await sharp(inputPath).metadata();
+    const cropHeight = Math.round((meta.width * 4) / 5);
+    const crop = {
+      left: 0,
+      top: Math.max(0, Math.round((meta.height - cropHeight) / 2)),
+      width: meta.width,
+      height: Math.min(cropHeight, meta.height),
+    };
+    for (const w of [640, 960]) {
+      const cropped = () =>
+        sharp(inputPath).extract(crop).resize(w, null, { withoutEnlargement: true });
+      await cropped()
+        .avif({ quality: job.avifQuality ?? 50, effort: 4 })
+        .toFile(path.join(POSTERS_DIR, `${job.base}-m-${w}.avif`));
+      await cropped()
+        .webp({ quality: job.webpQuality ?? 80, effort: 6 })
+        .toFile(path.join(POSTERS_DIR, `${job.base}-m-${w}.webp`));
+      console.log(`[optimize-posters] ${job.base}-m-${w}.avif/.webp (mobile crop)`);
     }
   }
 

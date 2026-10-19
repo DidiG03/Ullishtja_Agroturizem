@@ -485,20 +485,21 @@ h2::after {
   font-size: clamp(2.2rem, 7.2vw, 4.5rem);
   color: #ffffff;
   text-shadow: none;
-  animation: titleSlide 1s ease-out 0.3s both;
+  /* The hero headline and description are the page's largest content, so they
+     stay visible from the first paint (search engines time that paint) and only
+     move; the smaller details around them keep their fade-in. */
+  animation: heroRise 0.9s ease-out both;
   letter-spacing: -0.02em;
   white-space: nowrap;
   display: inline-block;
   line-height: 1.05;
 }
 
-@keyframes titleSlide {
+@keyframes heroRise {
   from {
-    opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(16px);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
   }
 }
@@ -511,7 +512,7 @@ h2::after {
   line-height: 1.9;
   max-width: 90%;
   font-weight: 300;
-  animation: fadeInUp 1s ease-out 1.1s both;
+  animation: heroRise 0.9s ease-out 0.1s both;
 }
 
 /* Hero Actions — Premium Buttons */
@@ -1598,7 +1599,7 @@ body.scroll-locked {
 
   .hero-content {
     order: 1; /* Content with action buttons comes first on mobile */
-    animation: fadeInUp 0.8s ease-out;
+    animation: heroRise 0.8s ease-out;
   }
 
   .hero-badge {

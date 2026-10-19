@@ -1,11 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PosterPicture from './PosterPicture';
+import useNearViewport from '../hooks/useNearViewport';
 import './AboutStoryVideo.css';
 
 const MOBILE_MEDIA = '(max-width: 768px)';
 const POSTER_BASE = 'story-poster';
-// The <video> poster attribute takes a single URL, so it gets the mid-size variant.
-const POSTER = '/images/posters/story-poster-960.webp';
 const VIDEO_DESKTOP = '/videos/story/story.mp4';
 const VIDEO_MOBILE = '/videos/story/story-mobile.mp4';
 
@@ -14,8 +13,12 @@ function AboutStoryVideo({ alt }) {
   const [canPlay, setCanPlay] = useState(false);
   const sectionRef = useRef(null);
   const videoRef = useRef(null);
+  // The poster picture underneath shows until the video can play (it stays
+  // transparent until then), so the video waits until it is nearly in view.
+  const nearViewport = useNearViewport(sectionRef);
 
   useEffect(() => {
+    if (!nearViewport) return undefined;
     const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     const mobileQuery = window.matchMedia(MOBILE_MEDIA);
 
@@ -34,7 +37,7 @@ function AboutStoryVideo({ alt }) {
       motionQuery.removeEventListener('change', chooseSource);
       mobileQuery.removeEventListener('change', chooseSource);
     };
-  }, []);
+  }, [nearViewport]);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -74,7 +77,6 @@ function AboutStoryVideo({ alt }) {
           loop
           playsInline
           preload="metadata"
-          poster={POSTER}
           onCanPlay={() => setCanPlay(true)}
           aria-hidden="true"
         >
