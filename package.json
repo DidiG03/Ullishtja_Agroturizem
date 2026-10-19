@@ -31,7 +31,8 @@
     "xlsx": "^0.18.5"
   },
   "scripts": {
-    "build": "npm run optimize-posters && npx prisma generate && react-scripts build",
+    "build": "npm run optimize-posters && npx prisma generate && react-scripts build && npm run prerender",
+    "prerender": "node scripts/prerender.js",
     "start": "react-scripts start",
     "start:prod-data": "REACT_APP_USE_PRODUCTION_API=true react-scripts start",
     "test": "react-scripts test",

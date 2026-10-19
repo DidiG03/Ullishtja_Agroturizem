@@ -18,24 +18,32 @@ const jobs = [
     base: 'alacarte-poster',
     widths: [640, 960, 1280],
     jpegMax: 1280,
+    webpQuality: 70,
+    avifQuality: 45,
   },
   {
     input: 'events-poster.jpg',
     base: 'events-poster',
     widths: [640, 960, 1280],
     jpegMax: 1280,
+    webpQuality: 70,
+    avifQuality: 45,
   },
   {
     input: 'hero-poster.jpg',
     base: 'hero-poster',
     widths: [800, 1200, 1600],
     jpegMax: 1400,
+    // Painted as a CSS background under a dark gradient and preloaded as WebP in
+    // index.html, so it stays WebP-only with a lower quality target.
+    webpQuality: 70,
   },
   {
     input: 'hero-poster-mobile.png',
     base: 'hero-poster-mobile',
     widths: [600, 900, 1200],
     jpegMax: null, // keep PNG-derived webp only for mobile hero bg
+    webpQuality: 70,
   },
   // Decorative full-bleed backdrops behind the story and FAQ sections. The
   // originals are camera exports (a 1.6MB PNG and a 496KB JPEG) that were being
@@ -49,6 +57,7 @@ const jobs = [
     widths: [640, 960, 1280],
     jpegMax: 1280,
     webpQuality: 62,
+    avifQuality: 40,
     jpegQuality: 70,
   },
   {
@@ -58,9 +67,47 @@ const jobs = [
     widths: [640, 960, 1280],
     jpegMax: 1280,
     webpQuality: 62,
+    avifQuality: 40,
     jpegQuality: 70,
   },
 ];
+
+// Open Graph / Twitter share image. Social cards are 1.91:1, and every poster is
+// portrait, so this crops the band of the hero photo around the entrance sign.
+const shareImage = {
+  input: 'hero-poster.jpg',
+  output: path.join(__dirname, '../public/images/og-image.jpg'),
+  extract: { left: 0, top: 1800, width: 2160, height: 1134 },
+};
+
+async function processShareImage() {
+  const inputPath = path.join(SOURCE_DIR, shareImage.input);
+  if (!fs.existsSync(inputPath)) {
+    console.warn(`[optimize-posters] skip (missing): ${shareImage.input}`);
+    return;
+  }
+  await sharp(inputPath)
+    .extract(shareImage.extract)
+    .resize(1200, 630)
+    .jpeg({ quality: 78, mozjpeg: true })
+    .toFile(shareImage.output);
+  console.log(`[optimize-posters] ${path.basename(shareImage.output)} (share image)`);
+}
+
+// The logo shows at 50–92 CSS px wide, but the only file was a 254px JPEG.
+const logo = {
+  input: path.join(__dirname, '../public/images/ullishtja_logo.jpeg'),
+  widths: [140, 254],
+};
+
+async function processLogo() {
+  if (!fs.existsSync(logo.input)) return;
+  for (const w of logo.widths) {
+    const out = path.join(path.dirname(logo.input), `ullishtja-logo-${w}.webp`);
+    await sharp(logo.input).resize(w).webp({ quality: 85 }).toFile(out);
+    console.log(`[optimize-posters] ${path.basename(out)} (logo)`);
+  }
+}
 
 async function processJob(job) {
   const inputPath = path.join(job.inputDir || SOURCE_DIR, job.input);
@@ -76,6 +123,17 @@ async function processJob(job) {
       .webp({ quality: job.webpQuality ?? 80, effort: 6 })
       .toFile(outWebp);
     console.log(`[optimize-posters] ${path.basename(outWebp)}`);
+
+    // AVIF is ~40% smaller than WebP at the same visual quality on these photos;
+    // PosterPicture lists it first and browsers without AVIF fall back to WebP.
+    if (job.avifQuality) {
+      const outAvif = path.join(POSTERS_DIR, `${job.base}-${w}.avif`);
+      await sharp(inputPath)
+        .resize(w, null, { fit: 'inside', withoutEnlargement: true })
+        .avif({ quality: job.avifQuality, effort: 4 })
+        .toFile(outAvif);
+      console.log(`[optimize-posters] ${path.basename(outAvif)}`);
+    }
   }
 
   if (job.jpegMax) {
@@ -96,6 +154,8 @@ async function main() {
   for (const job of jobs) {
     await processJob(job);
   }
+  await processShareImage();
+  await processLogo();
   console.log('[optimize-posters] done.');
 }
 

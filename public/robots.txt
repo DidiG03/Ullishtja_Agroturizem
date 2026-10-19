@@ -1,29 +1,12 @@
-# https://www.robotstxt.org/robotstxt.html
-# Robots.txt for Ullishtja Agroturizem - Albanian Restaurant
+# Ullishtja Agroturizem — https://ullishtja-agroturizem.com
 
 User-agent: *
 Allow: /
 Disallow: /admin-login
 Disallow: /dashboard
 Disallow: /api/
-Disallow: /scripts/
-Disallow: /server/
-Disallow: /*.json$
-Disallow: /build/
-Disallow: /node_modules/
+# The menu and reviews pages load these when rendered, so crawlers need them.
+Allow: /api/menu-complete
+Allow: /api/google-reviews
 
-# Allow important assets for SEO
-Allow: /images/
-Allow: /videos/
-Allow: /static/
-Allow: /manifest.json
-Allow: /favicon.ico
-Allow: /logo192.png
-Allow: /logo512.png
-
-# Crawl delay - be respectful
-Crawl-delay: 1
-
-# Sitemap location
 Sitemap: https://ullishtja-agroturizem.com/sitemap.xml
-

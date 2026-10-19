@@ -17,10 +17,10 @@ jest.mock('./services/googleReviews', () => ({
   },
 }));
 
-const renderAt = async (search) => {
-  window.history.pushState({}, '', `/${search}`);
+const renderAt = async (path) => {
+  window.history.pushState({}, '', path);
   render(
-    <MemoryRouter initialEntries={[`/${search}`]}>
+    <MemoryRouter initialEntries={[path]}>
       <App />
     </MemoryRouter>
   );
@@ -35,18 +35,24 @@ beforeEach(() => {
 });
 
 test('renders Albanian by default', async () => {
-  await renderAt('');
+  await renderAt('/');
   expect(screen.getAllByText('Rreth Nesh').length).toBeGreaterThan(0);
 });
 
-test('renders English for ?lang=en, even with a saved Albanian preference', async () => {
+test('renders English at /en, even with a saved Albanian preference', async () => {
   localStorage.setItem('preferredLanguage', 'al');
-  await renderAt('?lang=en');
+  await renderAt('/en');
   expect(screen.getAllByText('About').length).toBeGreaterThan(0);
   expect(screen.queryByText('Rreth Nesh')).not.toBeInTheDocument();
 });
 
-test('renders Italian for ?lang=it', async () => {
-  await renderAt('?lang=it');
+test('renders Italian at /it', async () => {
+  await renderAt('/it');
   expect(screen.getAllByText('Chi Siamo').length).toBeGreaterThan(0);
+});
+
+test('links to the menu in the current language', async () => {
+  await renderAt('/en');
+  const menuLinks = screen.getAllByRole('link', { name: 'Menu' });
+  expect(menuLinks.some((link) => link.getAttribute('href') === '/en/menu')).toBe(true);
 });

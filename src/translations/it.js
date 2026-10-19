@@ -29,7 +29,7 @@ const it = {
   // About Section
   about: {
     title: "La Nostra Storia",
-    text1: "Immerso nella splendida campagna albanese, Ullishtja Agriturizem offre un'autentica esperienza gastronomica dalla fattoria alla tavola. Il nostro ristorante celebra le ricche tradizioni culinarie dell'Albania, utilizzando ingredienti freschi dai nostri orti e dalle fattorie locali.",
+    text1: "Immerso nella splendida campagna albanese, Ullishtja Agroturizem offre un'autentica esperienza gastronomica dalla fattoria alla tavola. Il nostro ristorante celebra le ricche tradizioni culinarie dell'Albania, utilizzando ingredienti freschi dai nostri orti e dalle fattorie locali.",
     text2: "Fondato nel 2021, ci vantiamo di servire piatti tradizionali albanesi preparati con amore e cura, proprio come facevano i nostri antenati. Ogni pasto racconta una storia del nostro patrimonio e del legame con la terra.",
     features: {
       fresh: {
@@ -56,7 +56,7 @@ const it = {
   events: {
     title: "Eventi",
     subtitle: "Creare Ricordi Indimenticabili",
-    text1: "Ullishtja Agriturizem offre spazi bellissimi e un'atmosfera calorosa per tutte le vostre occasioni speciali. Dai fidanzamenti tradizionali albanesi ai ritiri aziendali e alle celebrazioni familiari, assicuriamo che ogni momento sia indimenticabile.",
+    text1: "Ullishtja Agroturizem offre spazi bellissimi e un'atmosfera calorosa per tutte le vostre occasioni speciali. Dai fidanzamenti tradizionali albanesi ai ritiri aziendali e alle celebrazioni familiari, assicuriamo che ogni momento sia indimenticabile.",
     text2: "Il nostro staff dedicato lavora con voi per pianificare ogni dettaglio, dai menu personalizzati con specialità locali alla decorazione e al coordinamento completo dell'evento.",
     features: {
       weddings: "Fidanzamenti Tradizionali",
@@ -135,6 +135,7 @@ const it = {
   // Contact Section
   contact: {
     title: "Visitateci",
+    showMap: "Mostra la mappa",
     info: {
       title: "Posizione",
       address: {
@@ -204,6 +205,11 @@ const it = {
     retry: "Riprova",
     empty: "Il menu è in aggiornamento."
   },
+  notFound: {
+    title: "Pagina non trovata",
+    text: "La pagina che cerchi non esiste o è stata spostata.",
+    home: "Torna alla home"
+  },
   faq: {
     title: "Domande Frequenti",
     subtitle: "Tutto quello che serve sapere prima di venirci a trovare",
@@ -236,7 +242,7 @@ const it = {
   },
   // Footer
   footer: {
-    copyright: "© 2026 Ullishtja Agriturizem. Tutti i diritti riservati.",
+    copyright: "© 2026 Ullishtja Agroturizem. Tutti i diritti riservati.",
     tagline: "Servendo autentica cucina albanese dal 2021",
     quickLinks: "Link Rapidi",
     services: "I Nostri Servizi",

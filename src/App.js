@@ -1,7 +1,8 @@
-import React, { useState, useEffect, Suspense, useCallback } from 'react';
+import React, { useEffect, Suspense, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import './App.css';
-import { useTranslations } from './i18n';
+import { localizedPath, useTranslations } from './i18n';
+import useLanguage from './hooks/useLanguage';
 import googleAdsService from './services/googleAdsService';
 import useScrollOptimization from './hooks/useScrollOptimization';
 import useHashScroll from './hooks/useHashScroll';
@@ -15,6 +16,8 @@ import HeroBackgroundVideo from './components/HeroBackgroundVideo';
 import SectionMedia from './components/SectionMedia';
 import FaqSection from './components/FaqSection';
 import AboutStoryVideo from './components/AboutStoryVideo';
+import MapEmbed from './components/MapEmbed';
+import { BUSINESS } from './seo/seo';
 
 const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 // const Gallery = React.lazy(() => import('./components/Gallery')); // Temporarily disabled
@@ -23,39 +26,8 @@ const GoogleReviews = React.lazy(() => import('./components/GoogleReviews'));
 
 const MobileLoadingOptimizer = React.lazy(() => import('./components/MobileLoadingOptimizer'));
 
-//
-
-const SUPPORTED_LANGUAGES = ['al', 'en', 'it'];
-
-// Language priority: ?lang= in the URL (what links, the sitemap and crawlers use),
-// then the saved preference, then the browser language.
-const getInitialLanguage = () => {
-  const urlLang = new URLSearchParams(window.location.search).get('lang');
-  if (urlLang && SUPPORTED_LANGUAGES.includes(urlLang)) {
-    return urlLang;
-  }
-
-  const storedLanguage = localStorage.getItem('preferredLanguage');
-  if (storedLanguage && ['al', 'en', 'it'].includes(storedLanguage)) {
-    return storedLanguage;
-  }
-
-  // Quick, offline guess from browser settings as a temporary value
-  const browserLang = navigator.language || navigator.languages?.[0];
-  if (browserLang) {
-    const langCode = browserLang.toLowerCase();
-    if (langCode.startsWith('sq') || langCode.startsWith('al')) return 'al';
-    if (langCode.startsWith('it')) return 'it';
-  }
-
-  // Default to Albanian
-  return 'al';
-};
-
-// Language selector will handle its own visibility logic
-
 function App() {
-  const [currentLanguage, setCurrentLanguage] = useState(getInitialLanguage());
+  const { language: currentLanguage, changeLanguage: switchLanguage } = useLanguage();
   const analytics = useAnalyticsTracking();
 
 
@@ -92,33 +64,18 @@ function App() {
   }, [enableBodyScroll]);
 
   const changeLanguage = useCallback((lang) => {
-    const previousLanguage = currentLanguage;
-    setCurrentLanguage(lang);
-    
-    // Store language preference in localStorage
-    localStorage.setItem('preferredLanguage', lang);
-
-    // Keep ?lang= in sync so the URL, canonical link and shared links match the content
-    const url = new URL(window.location.href);
-    if (lang === 'al') url.searchParams.delete('lang');
-    else url.searchParams.set('lang', lang);
-    window.history.replaceState(window.history.state, '', url);
-    
-    // Track language change
-    if (previousLanguage !== lang) {
-      analytics.trackLanguageChange(lang, previousLanguage);
+    if (lang !== currentLanguage) {
+      analytics.trackLanguageChange(lang, currentLanguage);
     }
-  }, [currentLanguage, analytics]);
+    switchLanguage(lang);
+  }, [currentLanguage, analytics, switchLanguage]);
 
-  const menuPath = currentLanguage === 'al' ? '/menu' : `/menu?lang=${currentLanguage}`;
+  const menuPath = localizedPath('/menu', currentLanguage);
 
   return (
     <div className="App has-site-nav">
       {/* SEO Head Component */}
-      <SEOHead 
-        currentLanguage={currentLanguage}
-        pageSection="home"
-      />
+      <SEOHead language={currentLanguage} page="home" t={t} />
 
       <SiteNav
         t={t}
@@ -130,7 +87,9 @@ function App() {
       <Suspense fallback={null}>
         <MobileLoadingOptimizer />
       </Suspense>
-      
+
+      <main id="main">
+
       {/* Hero Section */}
       <section id="home" className="hero">
         {/* Animated Background */}
@@ -386,22 +345,17 @@ function App() {
             <article className="contact-map-card">
               <h3 className="contact-block-title">{t.contact.info.address.title}</h3>
               <div className="contact-map-wrap">
-                <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2995.456!2d19.4335694!3d41.3402778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNDHCsDIwJzI1LjAiTiAxOcKwMjYnMDEuMCJF!5e0!3m2!1sen!2s!4v1699000000000!5m2!1sen!2s"
-                  width="100%"
-                  height="340"
-                  style={{ border: 0 }}
-                  allowFullScreen=""
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Ullishtja Agroturizem Location Map - Authentic Albanian Restaurant in Durres, Albania - Directions and Contact"
-                ></iframe>
+                <MapEmbed
+                  label={t.contact.showMap}
+                  title="Ullishtja Agroturizem location map – Durrës, Albania"
+                />
               </div>
 
-              <p className="contact-location-copy">
-                Ullishtja Agroturizem<br />
-                Durres, Albania
-              </p>
+              <address className="contact-location-copy">
+                {BUSINESS.name}<br />
+                {BUSINESS.streetAddress}<br />
+                {BUSINESS.postalCode} {BUSINESS.locality}, Albania
+              </address>
 
               <div className="contact-map-actions">
                 <a
@@ -640,6 +594,7 @@ function App() {
       </section>
 
       <FaqSection t={t} />
+      </main>
 
       <SiteFooter t={t} currentLanguage={currentLanguage} onLanguageChange={changeLanguage} />
 

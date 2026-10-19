@@ -2,23 +2,22 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import LanguageSwitcher from './LanguageSwitcher';
 import FloatingWhatsApp from './FloatingWhatsApp';
+import { localizedPath, stripLanguagePrefix } from '../i18n';
 
-export function buildLangPath(path, lang) {
-  return lang === 'al' ? path : `${path}?lang=${lang}`;
-}
+// Must match the logo preload in public/index.html.
+export const LOGO_SRC = '/images/ullishtja-logo-140.webp';
+export const LOGO_SRCSET = '/images/ullishtja-logo-140.webp 140w, /images/ullishtja-logo-254.webp 254w';
+
+export const buildLangPath = localizedPath;
 
 export function buildHomeHash(hash, lang) {
-  return {
-    pathname: '/',
-    search: lang === 'al' ? '' : `?lang=${lang}`,
-    hash,
-  };
+  return { pathname: localizedPath('/', lang), hash };
 }
 
 function SiteNav({ t, currentLanguage, onLanguageChange }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const isMenuPage = location.pathname === '/menu';
+  const isMenuPage = stripLanguagePrefix(location.pathname) === '/menu';
 
   const menuPath = buildLangPath('/menu', currentLanguage);
 
@@ -60,9 +59,11 @@ function SiteNav({ t, currentLanguage, onLanguageChange }) {
     <>
       <nav className="navbar" aria-label="Main navigation">
         <div className="nav-container">
-          <Link to="/" className="logo-home-link logo-container" onClick={closeMobile}>
+          <Link to={localizedPath('/', currentLanguage)} className="logo-home-link logo-container" onClick={closeMobile}>
             <img
-              src="/images/ullishtja_logo.jpeg"
+              src={LOGO_SRC}
+              srcSet={LOGO_SRCSET}
+              sizes="70px"
               alt="Ullishtja Agroturizem"
               className="logo"
               width="70"
@@ -111,8 +112,8 @@ function SiteNav({ t, currentLanguage, onLanguageChange }) {
           {...(mobileOpen ? {} : { inert: '' })}
         >
           <div className="mobile-nav-header">
-            <Link to="/" onClick={closeMobile}>
-              <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja" className="mobile-logo" />
+            <Link to={localizedPath('/', currentLanguage)} onClick={closeMobile}>
+              <img src={LOGO_SRC} srcSet={LOGO_SRCSET} sizes="64px" alt="Ullishtja Agroturizem" className="mobile-logo" width="254" height="199" />
             </Link>
             <button type="button" className="mobile-close-btn" onClick={closeMobile} aria-label="Close">
               ×

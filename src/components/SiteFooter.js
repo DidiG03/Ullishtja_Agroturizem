@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import googleReviewsService from '../services/googleReviews';
 import googleAdsService from '../services/googleAdsService';
 import LanguageSwitcher from './LanguageSwitcher';
-import { buildHomeHash, buildLangPath } from './SiteNav';
+import { buildHomeHash, buildLangPath, LOGO_SRC, LOGO_SRCSET } from './SiteNav';
+import { BUSINESS } from '../seo/seo';
 
 function SiteFooter({ t, currentLanguage, onLanguageChange }) {
   const [reviewsData, setReviewsData] = useState(null);
@@ -29,7 +30,7 @@ function SiteFooter({ t, currentLanguage, onLanguageChange }) {
           <div className="footer-main">
             {/* Company Info */}
             <div className="footer-section footer-company">
-              <img src="/images/ullishtja_logo.jpeg" alt="Ullishtja Agroturizem - Albanian Restaurant Footer Logo" className="footer-logo" loading="lazy" width="144" height="72" />
+              <img src={LOGO_SRC} srcSet={LOGO_SRCSET} sizes="92px" alt="Ullishtja Agroturizem" className="footer-logo" loading="lazy" width="92" height="72" />
               <p className="footer-description">{t.footer.tagline}</p>
               <div className="footer-rating">
                 <div className="rating-stars">
@@ -45,10 +46,12 @@ function SiteFooter({ t, currentLanguage, onLanguageChange }) {
 
             {/* Contact Information */}
             <div className="footer-section footer-contact">
-              <h4 className="footer-title">{t.contact.title}</h4>
-              <div className="contact-item">
-                <span className="contact-value">Ullishtja Agroturizem, Durres, Albania</span>
-              </div>
+              <h2 className="footer-title">{t.contact.title}</h2>
+              <address className="contact-item">
+                <span className="contact-value">
+                  {BUSINESS.streetAddress}, {BUSINESS.postalCode} {BUSINESS.locality}, Albania
+                </span>
+              </address>
               <div className="contact-item">
                 <a href="tel:+355684090405" className="contact-value contact-link" onClick={() => googleAdsService.trackPhoneCall()}>
                   +355 68 409 0405
@@ -64,11 +67,20 @@ function SiteFooter({ t, currentLanguage, onLanguageChange }) {
                   {t.contact.info.hours.text.replace('\n', ' • ')}
                 </span>
               </div>
+              <div className="contact-item">
+                <a href={BUSINESS.sameAs[0]} className="contact-value contact-link" target="_blank" rel="noopener noreferrer">
+                  Instagram
+                </a>
+                {' · '}
+                <a href={BUSINESS.sameAs[1]} className="contact-value contact-link" target="_blank" rel="noopener noreferrer">
+                  Facebook
+                </a>
+              </div>
             </div>
 
             {/* Quick Links */}
             <div className="footer-section footer-links">
-              <h4 className="footer-title">{t.footer.quickLinks}</h4>
+              <h2 className="footer-title">{t.footer.quickLinks}</h2>
               <nav className="footer-nav">
                 <Link to={buildHomeHash('#home', currentLanguage)} className="footer-link">{t.nav.home}</Link>
                 <Link to={buildHomeHash('#about', currentLanguage)} className="footer-link">{t.nav.about}</Link>
@@ -93,7 +105,7 @@ function SiteFooter({ t, currentLanguage, onLanguageChange }) {
                 onLanguageChange={onLanguageChange}
               />
               <div className="admin-link-container">
-                <a href="/admin-login" className="admin-link">Admin</a>
+                <a href="/admin-login" className="admin-link" rel="nofollow">Admin</a>
               </div>
             </div>
           </div>
